@@ -1,0 +1,432 @@
+import Foundation
+
+/// Geçici ülke veri seti — gerçek 254 bayrak/67 ülke haritası içerik havuzu ayrı bir
+/// içerik-üretim görevi olarak eklenecek (bkz. proje notları). Şimdilik Avrupa etabını
+/// gerçek verilerle test edebilmek için küçük bir alt küme.
+struct Country {
+    let code: String // ISO 3166-1 alpha-2
+    let name: String
+}
+
+enum Countries {
+    /// "Bayrakları Öğren" için tam ülke/bölge listesi (bkz. Bayrak Tahmin Kural Kitabı
+    /// böl. 02: "altında 254 bayrağın adıyla birlikte alfabetik listesi"). Bu, oyun
+    /// dışı bir keşif listesi — quiz soru havuzlarından (europe, vb.) bağımsızdır.
+    /// ISO 3166-1'in tamamına yakınını kapsar (249 girdi); tartışmalı/tanınmamış
+    /// devletler (ör. ayrılıkçı bölgeler) çocuk uygulaması bağlamında bilinçli olarak
+    /// dışarıda bırakıldı.
+    static let all: [Country] = [
+        Country(code: "VI", name: "ABD Virjin Adaları"),
+        Country(code: "AF", name: "Afganistan"),
+        Country(code: "DE", name: "Almanya"),
+        Country(code: "US", name: "Amerika Birleşik Devletleri"),
+        Country(code: "AS", name: "Amerikan Samoası"),
+        Country(code: "AD", name: "Andorra"),
+        Country(code: "AO", name: "Angola"),
+        Country(code: "AI", name: "Anguilla"),
+        Country(code: "AQ", name: "Antarktika"),
+        Country(code: "AG", name: "Antigua ve Barbuda"),
+        Country(code: "AR", name: "Arjantin"),
+        Country(code: "AL", name: "Arnavutluk"),
+        Country(code: "AW", name: "Aruba"),
+        Country(code: "AU", name: "Avustralya"),
+        Country(code: "AT", name: "Avusturya"),
+        Country(code: "AZ", name: "Azerbaycan"),
+        Country(code: "BS", name: "Bahamalar"),
+        Country(code: "BH", name: "Bahreyn"),
+        Country(code: "BD", name: "Bangladeş"),
+        Country(code: "BB", name: "Barbados"),
+        Country(code: "EH", name: "Batı Sahra"),
+        Country(code: "BY", name: "Belarus"),
+        Country(code: "BE", name: "Belçika"),
+        Country(code: "BZ", name: "Belize"),
+        Country(code: "BJ", name: "Benin"),
+        Country(code: "BM", name: "Bermuda"),
+        Country(code: "BT", name: "Bhutan"),
+        Country(code: "AE", name: "Birleşik Arap Emirlikleri"),
+        Country(code: "BO", name: "Bolivya"),
+        Country(code: "BA", name: "Bosna Hersek"),
+        Country(code: "BW", name: "Botsvana"),
+        Country(code: "BV", name: "Bouvet Adası"),
+        Country(code: "BR", name: "Brezilya"),
+        Country(code: "IO", name: "Britanya Hint Okyanusu Toprağı"),
+        Country(code: "VG", name: "Britanya Virjin Adaları"),
+        Country(code: "BN", name: "Brunei"),
+        Country(code: "BG", name: "Bulgaristan"),
+        Country(code: "BF", name: "Burkina Faso"),
+        Country(code: "BI", name: "Burundi"),
+        Country(code: "TD", name: "Çad"),
+        Country(code: "KY", name: "Cayman Adaları"),
+        Country(code: "GI", name: "Cebelitarık"),
+        Country(code: "CZ", name: "Çekya"),
+        Country(code: "DZ", name: "Cezayir"),
+        Country(code: "CX", name: "Christmas Adası"),
+        Country(code: "DJ", name: "Cibuti"),
+        Country(code: "CN", name: "Çin"),
+        Country(code: "CC", name: "Cocos Adaları"),
+        Country(code: "CK", name: "Cook Adaları"),
+        Country(code: "CW", name: "Curaçao"),
+        Country(code: "DK", name: "Danimarka"),
+        Country(code: "TL", name: "Doğu Timor"),
+        Country(code: "DO", name: "Dominik Cumhuriyeti"),
+        Country(code: "DM", name: "Dominika"),
+        Country(code: "EC", name: "Ekvador"),
+        Country(code: "GQ", name: "Ekvator Ginesi"),
+        Country(code: "SV", name: "El Salvador"),
+        Country(code: "ID", name: "Endonezya"),
+        Country(code: "ER", name: "Eritre"),
+        Country(code: "AM", name: "Ermenistan"),
+        Country(code: "EE", name: "Estonya"),
+        Country(code: "SZ", name: "Esvatini"),
+        Country(code: "ET", name: "Etiyopya"),
+        Country(code: "FK", name: "Falkland Adaları"),
+        Country(code: "FO", name: "Faroe Adaları"),
+        Country(code: "MA", name: "Fas"),
+        Country(code: "FJ", name: "Fiji"),
+        Country(code: "CI", name: "Fildişi Sahili"),
+        Country(code: "PH", name: "Filipinler"),
+        Country(code: "PS", name: "Filistin"),
+        Country(code: "FI", name: "Finlandiya"),
+        Country(code: "FR", name: "Fransa"),
+        Country(code: "TF", name: "Fransız Güney ve Antarktika Toprakları"),
+        Country(code: "GF", name: "Fransız Guyanası"),
+        Country(code: "PF", name: "Fransız Polinezyası"),
+        Country(code: "GA", name: "Gabon"),
+        Country(code: "GM", name: "Gambiya"),
+        Country(code: "GH", name: "Gana"),
+        Country(code: "GN", name: "Gine"),
+        Country(code: "GW", name: "Gine-Bissau"),
+        Country(code: "GD", name: "Grenada"),
+        Country(code: "GL", name: "Grönland"),
+        Country(code: "GP", name: "Guadeloupe"),
+        Country(code: "GU", name: "Guam"),
+        Country(code: "GT", name: "Guatemala"),
+        Country(code: "GG", name: "Guernsey"),
+        Country(code: "ZA", name: "Güney Afrika"),
+        Country(code: "GS", name: "Güney Georgia ve Güney Sandwich Adaları"),
+        Country(code: "KR", name: "Güney Kore"),
+        Country(code: "SS", name: "Güney Sudan"),
+        Country(code: "GE", name: "Gürcistan"),
+        Country(code: "GY", name: "Guyana"),
+        Country(code: "HT", name: "Haiti"),
+        Country(code: "HM", name: "Heard Adası ve McDonald Adaları"),
+        Country(code: "IN", name: "Hindistan"),
+        Country(code: "HR", name: "Hırvatistan"),
+        Country(code: "NL", name: "Hollanda"),
+        Country(code: "HN", name: "Honduras"),
+        Country(code: "HK", name: "Hong Kong"),
+        Country(code: "GB", name: "İngiltere"),
+        Country(code: "IQ", name: "Irak"),
+        Country(code: "IR", name: "İran"),
+        Country(code: "IE", name: "İrlanda"),
+        Country(code: "ES", name: "İspanya"),
+        Country(code: "IL", name: "İsrail"),
+        Country(code: "SE", name: "İsveç"),
+        Country(code: "CH", name: "İsviçre"),
+        Country(code: "IT", name: "İtalya"),
+        Country(code: "IS", name: "İzlanda"),
+        Country(code: "JM", name: "Jamaika"),
+        Country(code: "JP", name: "Japonya"),
+        Country(code: "JE", name: "Jersey"),
+        Country(code: "KH", name: "Kamboçya"),
+        Country(code: "CM", name: "Kamerun"),
+        Country(code: "CA", name: "Kanada"),
+        Country(code: "ME", name: "Karadağ"),
+        Country(code: "BQ", name: "Karayip Hollandası"),
+        Country(code: "QA", name: "Katar"),
+        Country(code: "KZ", name: "Kazakistan"),
+        Country(code: "KE", name: "Kenya"),
+        Country(code: "CY", name: "Kıbrıs"),
+        Country(code: "KG", name: "Kırgızistan"),
+        Country(code: "KI", name: "Kiribati"),
+        Country(code: "CO", name: "Kolombiya"),
+        Country(code: "KM", name: "Komorlar"),
+        Country(code: "CG", name: "Kongo Cumhuriyeti"),
+        Country(code: "CD", name: "Kongo Demokratik Cumhuriyeti"),
+        Country(code: "XK", name: "Kosova"),
+        Country(code: "CR", name: "Kosta Rika"),
+        Country(code: "CU", name: "Küba"),
+        Country(code: "KW", name: "Kuveyt"),
+        Country(code: "KP", name: "Kuzey Kore"),
+        Country(code: "MK", name: "Kuzey Makedonya"),
+        Country(code: "MP", name: "Kuzey Mariana Adaları"),
+        Country(code: "LA", name: "Laos"),
+        Country(code: "LS", name: "Lesotho"),
+        Country(code: "LV", name: "Letonya"),
+        Country(code: "LR", name: "Liberya"),
+        Country(code: "LY", name: "Libya"),
+        Country(code: "LI", name: "Lihtenştayn"),
+        Country(code: "LT", name: "Litvanya"),
+        Country(code: "LB", name: "Lübnan"),
+        Country(code: "LU", name: "Lüksemburg"),
+        Country(code: "HU", name: "Macaristan"),
+        Country(code: "MG", name: "Madagaskar"),
+        Country(code: "MO", name: "Makao"),
+        Country(code: "MW", name: "Malavi"),
+        Country(code: "MV", name: "Maldivler"),
+        Country(code: "MY", name: "Malezya"),
+        Country(code: "ML", name: "Mali"),
+        Country(code: "MT", name: "Malta"),
+        Country(code: "IM", name: "Man Adası"),
+        Country(code: "MH", name: "Marshall Adaları"),
+        Country(code: "MQ", name: "Martinik"),
+        Country(code: "MU", name: "Mauritius"),
+        Country(code: "YT", name: "Mayotte"),
+        Country(code: "MX", name: "Meksika"),
+        Country(code: "FM", name: "Mikronezya"),
+        Country(code: "EG", name: "Mısır"),
+        Country(code: "MN", name: "Moğolistan"),
+        Country(code: "MD", name: "Moldova"),
+        Country(code: "MC", name: "Monako"),
+        Country(code: "MS", name: "Montserrat"),
+        Country(code: "MR", name: "Moritanya"),
+        Country(code: "MZ", name: "Mozambik"),
+        Country(code: "MM", name: "Myanmar"),
+        Country(code: "NA", name: "Namibya"),
+        Country(code: "NR", name: "Nauru"),
+        Country(code: "NP", name: "Nepal"),
+        Country(code: "NE", name: "Nijer"),
+        Country(code: "NG", name: "Nijerya"),
+        Country(code: "NI", name: "Nikaragua"),
+        Country(code: "NU", name: "Niue"),
+        Country(code: "NF", name: "Norfolk Adası"),
+        Country(code: "NO", name: "Norveç"),
+        Country(code: "CF", name: "Orta Afrika Cumhuriyeti"),
+        Country(code: "UZ", name: "Özbekistan"),
+        Country(code: "PK", name: "Pakistan"),
+        Country(code: "PW", name: "Palau"),
+        Country(code: "PA", name: "Panama"),
+        Country(code: "PG", name: "Papua Yeni Gine"),
+        Country(code: "PY", name: "Paraguay"),
+        Country(code: "PE", name: "Peru"),
+        Country(code: "PN", name: "Pitcairn Adaları"),
+        Country(code: "PL", name: "Polonya"),
+        Country(code: "PT", name: "Portekiz"),
+        Country(code: "PR", name: "Porto Riko"),
+        Country(code: "RO", name: "Romanya"),
+        Country(code: "RW", name: "Ruanda"),
+        Country(code: "RU", name: "Rusya"),
+        Country(code: "RE", name: "Réunion"),
+        Country(code: "BL", name: "Saint Barthélemy"),
+        Country(code: "SH", name: "Saint Helena"),
+        Country(code: "KN", name: "Saint Kitts ve Nevis"),
+        Country(code: "LC", name: "Saint Lucia"),
+        Country(code: "MF", name: "Saint Martin"),
+        Country(code: "PM", name: "Saint Pierre ve Miquelon"),
+        Country(code: "VC", name: "Saint Vincent ve Grenadinler"),
+        Country(code: "WS", name: "Samoa"),
+        Country(code: "SM", name: "San Marino"),
+        Country(code: "SN", name: "Senegal"),
+        Country(code: "SC", name: "Seyşeller"),
+        Country(code: "SL", name: "Sierra Leone"),
+        Country(code: "CL", name: "Şili"),
+        Country(code: "SG", name: "Singapur"),
+        Country(code: "SX", name: "Sint Maarten"),
+        Country(code: "RS", name: "Sırbistan"),
+        Country(code: "SK", name: "Slovakya"),
+        Country(code: "SI", name: "Slovenya"),
+        Country(code: "SB", name: "Solomon Adaları"),
+        Country(code: "SO", name: "Somali"),
+        Country(code: "LK", name: "Sri Lanka"),
+        Country(code: "SD", name: "Sudan"),
+        Country(code: "SR", name: "Surinam"),
+        Country(code: "SY", name: "Suriye"),
+        Country(code: "SA", name: "Suudi Arabistan"),
+        Country(code: "SJ", name: "Svalbard ve Jan Mayen"),
+        Country(code: "ST", name: "São Tomé ve Príncipe"),
+        Country(code: "TJ", name: "Tacikistan"),
+        Country(code: "TZ", name: "Tanzanya"),
+        Country(code: "TH", name: "Tayland"),
+        Country(code: "TW", name: "Tayvan"),
+        Country(code: "TG", name: "Togo"),
+        Country(code: "TK", name: "Tokelau"),
+        Country(code: "TO", name: "Tonga"),
+        Country(code: "TT", name: "Trinidad ve Tobago"),
+        Country(code: "TN", name: "Tunus"),
+        Country(code: "TR", name: "Türkiye"),
+        Country(code: "TM", name: "Türkmenistan"),
+        Country(code: "TC", name: "Turks ve Caicos Adaları"),
+        Country(code: "TV", name: "Tuvalu"),
+        Country(code: "UG", name: "Uganda"),
+        Country(code: "UA", name: "Ukrayna"),
+        Country(code: "OM", name: "Umman"),
+        Country(code: "JO", name: "Ürdün"),
+        Country(code: "UY", name: "Uruguay"),
+        Country(code: "VU", name: "Vanuatu"),
+        Country(code: "VA", name: "Vatikan"),
+        Country(code: "VE", name: "Venezuela"),
+        Country(code: "VN", name: "Vietnam"),
+        Country(code: "WF", name: "Wallis ve Futuna"),
+        Country(code: "YE", name: "Yemen"),
+        Country(code: "NC", name: "Yeni Kaledonya"),
+        Country(code: "NZ", name: "Yeni Zelanda"),
+        Country(code: "CV", name: "Yeşil Burun Adaları"),
+        Country(code: "GR", name: "Yunanistan"),
+        Country(code: "ZM", name: "Zambiya"),
+        Country(code: "ZW", name: "Zimbabve"),
+        Country(code: "AX", name: "Åland Adaları"),
+    ]
+
+    static let europe: [Country] = [
+        Country(code: "DE", name: "Almanya"),
+        Country(code: "FR", name: "Fransa"),
+        Country(code: "ES", name: "İspanya"),
+        Country(code: "IT", name: "İtalya"),
+        Country(code: "GB", name: "İngiltere"),
+        Country(code: "NL", name: "Hollanda"),
+        Country(code: "BE", name: "Belçika"),
+        Country(code: "AT", name: "Avusturya"),
+        Country(code: "SE", name: "İsveç"),
+        Country(code: "NO", name: "Norveç"),
+        Country(code: "DK", name: "Danimarka"),
+        Country(code: "FI", name: "Finlandiya"),
+        Country(code: "PL", name: "Polonya"),
+        Country(code: "GR", name: "Yunanistan"),
+        Country(code: "PT", name: "Portekiz"),
+        Country(code: "CH", name: "İsviçre"),
+        Country(code: "IE", name: "İrlanda"),
+        Country(code: "TR", name: "Türkiye")
+    ]
+
+    static let asia: [Country] = [
+        Country(code: "CN", name: "Çin"),
+        Country(code: "JP", name: "Japonya"),
+        Country(code: "IN", name: "Hindistan"),
+        Country(code: "KR", name: "Güney Kore"),
+        Country(code: "TH", name: "Tayland"),
+        Country(code: "VN", name: "Vietnam"),
+        Country(code: "ID", name: "Endonezya"),
+        Country(code: "MY", name: "Malezya"),
+        Country(code: "SG", name: "Singapur"),
+        Country(code: "PH", name: "Filipinler"),
+        Country(code: "SA", name: "Suudi Arabistan"),
+        Country(code: "AE", name: "Birleşik Arap Emirlikleri"),
+        Country(code: "IL", name: "İsrail"),
+        Country(code: "PK", name: "Pakistan"),
+        Country(code: "BD", name: "Bangladeş"),
+        Country(code: "IR", name: "İran"),
+        Country(code: "IQ", name: "Irak"),
+        Country(code: "MN", name: "Moğolistan")
+    ]
+
+    static let africa: [Country] = [
+        Country(code: "EG", name: "Mısır"),
+        Country(code: "ZA", name: "Güney Afrika"),
+        Country(code: "NG", name: "Nijerya"),
+        Country(code: "KE", name: "Kenya"),
+        Country(code: "MA", name: "Fas"),
+        Country(code: "ET", name: "Etiyopya"),
+        Country(code: "GH", name: "Gana"),
+        Country(code: "TZ", name: "Tanzanya"),
+        Country(code: "DZ", name: "Cezayir"),
+        Country(code: "TN", name: "Tunus"),
+        Country(code: "SN", name: "Senegal"),
+        Country(code: "CI", name: "Fildişi Sahili"),
+        Country(code: "UG", name: "Uganda"),
+        Country(code: "CM", name: "Kamerun"),
+        Country(code: "ZM", name: "Zambiya"),
+        Country(code: "ZW", name: "Zimbabve"),
+        Country(code: "LY", name: "Libya"),
+        Country(code: "MG", name: "Madagaskar")
+    ]
+
+    static let northAmerica: [Country] = [
+        Country(code: "US", name: "Amerika Birleşik Devletleri"),
+        Country(code: "CA", name: "Kanada"),
+        Country(code: "MX", name: "Meksika"),
+        Country(code: "CU", name: "Küba"),
+        Country(code: "JM", name: "Jamaika"),
+        Country(code: "PA", name: "Panama"),
+        Country(code: "CR", name: "Kosta Rika"),
+        Country(code: "GT", name: "Guatemala"),
+        Country(code: "HN", name: "Honduras"),
+        Country(code: "NI", name: "Nikaragua"),
+        Country(code: "DO", name: "Dominik Cumhuriyeti"),
+        Country(code: "HT", name: "Haiti"),
+        Country(code: "BS", name: "Bahamalar"),
+        Country(code: "BZ", name: "Belize")
+    ]
+
+    static let southAmerica: [Country] = [
+        Country(code: "BR", name: "Brezilya"),
+        Country(code: "AR", name: "Arjantin"),
+        Country(code: "CL", name: "Şili"),
+        Country(code: "CO", name: "Kolombiya"),
+        Country(code: "PE", name: "Peru"),
+        Country(code: "VE", name: "Venezuela"),
+        Country(code: "EC", name: "Ekvador"),
+        Country(code: "BO", name: "Bolivya"),
+        Country(code: "PY", name: "Paraguay"),
+        Country(code: "UY", name: "Uruguay"),
+        Country(code: "GY", name: "Guyana"),
+        Country(code: "SR", name: "Surinam")
+    ]
+
+    static let oceania: [Country] = [
+        Country(code: "AU", name: "Avustralya"),
+        Country(code: "NZ", name: "Yeni Zelanda"),
+        Country(code: "FJ", name: "Fiji"),
+        Country(code: "PG", name: "Papua Yeni Gine"),
+        Country(code: "WS", name: "Samoa"),
+        Country(code: "TO", name: "Tonga"),
+        Country(code: "VU", name: "Vanuatu"),
+        Country(code: "SB", name: "Solomon Adaları"),
+        Country(code: "KI", name: "Kiribati"),
+        Country(code: "PW", name: "Palau"),
+        Country(code: "MH", name: "Marshall Adaları"),
+        Country(code: "TV", name: "Tuvalu")
+    ]
+
+    /// Antarktika'da yaşayan/egemen bir ülke yok — Bayrak Tahmin'in 7 kıtalık
+    /// yapısını korumak için (bkz. Kural Kitabı böl. 01) burada Antarktika
+    /// Antlaşması'nın orijinal imzacılarından, kıtada gerçek araştırma
+    /// istasyonu/toprak iddiası bulunan ülkeler kullanıldı — kurgu bir bayrak yok.
+    static let antarctica: [Country] = [
+        Country(code: "AR", name: "Arjantin"),
+        Country(code: "AU", name: "Avustralya"),
+        Country(code: "CL", name: "Şili"),
+        Country(code: "FR", name: "Fransa"),
+        Country(code: "NO", name: "Norveç"),
+        Country(code: "NZ", name: "Yeni Zelanda"),
+        Country(code: "GB", name: "İngiltere"),
+        Country(code: "US", name: "Amerika Birleşik Devletleri")
+    ]
+
+    /// "Karışık" bölümü 7 kıtanın tamamından rastgele sorar (bkz. Bayrak Tahmin
+    /// Kural Kitabı böl. 08: "tek bir kıtaya ağırlık verilmez").
+    static let mixed: [Country] = europe + asia + africa + northAmerica + southAmerica + oceania + antarctica
+
+    /// `HomeView`'deki kıta yolunda kullanılan isimden soru havuzuna eşleme.
+    static func pool(forContinent continent: String) -> [Country] {
+        switch continent {
+        case "Avrupa": europe
+        case "Asya": asia
+        case "Afrika": africa
+        case "Kuzey Amerika": northAmerica
+        case "Güney Amerika": southAmerica
+        case "Okyanusya": oceania
+        case "Antarktika": antarctica
+        default: mixed // "Karışık"
+        }
+    }
+
+    /// Bir etap için 10 soru üretir. `isRecall`=false ise bayrak→isim (etap 1-5),
+    /// true ise karışık yön (etap 6-8) — bkz. Bayrak Tahmin Kural Kitabı böl. 03.
+    static func makeQuestions(from pool: [Country], count: Int = GameRules.questionsPerStage, isRecall: Bool) -> [FlagQuestion] {
+        var result: [FlagQuestion] = []
+        for _ in 0..<count {
+            let shuffled = pool.shuffled()
+            let correct = shuffled[0]
+            let distractors = Array(shuffled.dropFirst().prefix(3))
+            let direction: FlagQuestion.Direction = isRecall && Bool.random() ? .nameToFlag : .flagToName
+            if direction == .nameToFlag {
+                let flagOptions = ([correct] + distractors).shuffled().map(\.code)
+                result.append(FlagQuestion(direction: .nameToFlag, countryCode: correct.code, countryName: correct.name, options: [], flagOptions: flagOptions))
+            } else {
+                let options = ([correct] + distractors).shuffled().map(\.name)
+                result.append(FlagQuestion(direction: .flagToName, countryCode: correct.code, countryName: correct.name, options: options))
+            }
+        }
+        return result
+    }
+}

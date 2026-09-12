@@ -9,13 +9,18 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        VStack(spacing: KasifSpacing.lg) {
+            Text("Kaşif")
+                .font(KasifTypography.display)
+                .foregroundStyle(KasifColor.textPrimary)
+            Button("Başlayalım") {}.buttonStyle(.kasifPrimary)
+            Button("Başlayalım") {}.buttonStyle(.kasifPrimary).disabled(true)
+            Button("Başlayalım") {}.buttonStyle(.kasifSecondary)
+            Button("Başlayalım") {}.buttonStyle(.kasifSecondary).disabled(true)
         }
-        .padding()
+        .padding(KasifSpacing.xxxl)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(KasifColor.bgCanvas)
     }
 }
 

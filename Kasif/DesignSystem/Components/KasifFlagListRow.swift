@@ -1,0 +1,47 @@
+import SwiftUI
+
+/// Figma Design System / Bileşenler / Flag List Row (node 334:11041). "Bayrakları Öğren"
+/// ve Harita Bilmece "Ülkeler" listesinde kullanılır. Tip=Basit (sadece isim) / Kıtalı
+/// (isim + kıta adı sağda).
+struct KasifFlagListRow: View {
+    /// ISO 3166-1 alpha-2 ülke kodu — bkz. KasifFlagAnswerOption'daki emoji-bayrak notu.
+    let countryCode: String
+    let countryName: String
+    var continentName: String? = nil
+
+    var body: some View {
+        HStack(spacing: 14) {
+            Text(KasifFlagAnswerOption.flagEmoji(for: countryCode))
+                .font(.system(size: 28))
+                .frame(width: 40, height: 28)
+
+            Text(countryName)
+                .font(.system(size: 15, weight: .semibold, design: .rounded))
+                .foregroundStyle(.black)
+                .lineLimit(1)
+                .layoutPriority(1)
+
+            if let continentName {
+                Spacer(minLength: KasifSpacing.sm)
+                Text(continentName)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(KasifColor.textMuted)
+                    .lineLimit(1)
+            } else {
+                Spacer(minLength: 0)
+            }
+        }
+        .padding(.horizontal, KasifSpacing.xs)
+        .padding(.vertical, 10)
+        .frame(height: 56)
+        .background(Color.white)
+    }
+}
+
+#Preview {
+    VStack(spacing: 0) {
+        KasifFlagListRow(countryCode: "DE", countryName: "Almanya")
+        KasifFlagListRow(countryCode: "RU", countryName: "Rusya", continentName: "Avrupa / Asya")
+    }
+    .background(KasifColor.bgCanvas)
+}
