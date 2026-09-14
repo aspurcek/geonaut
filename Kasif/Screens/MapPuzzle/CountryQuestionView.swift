@@ -33,7 +33,7 @@ struct CountryQuestionView: View {
 
             switch question.kind {
             case .highlightMapSelectName:
-                zoomedMapCard(center: question.country.mapCenter)
+                mapCard(for: question.country)
                     .frame(height: 200)
 
                 VStack(spacing: KasifSpacing.md) {
@@ -73,25 +73,35 @@ struct CountryQuestionView: View {
         }
     }
 
-    /// Dünya haritasını (bkz. KasifCountryMapOption'daki aynı teknik) hedef ülkenin
-    /// mapCenter'ı etrafında yakınlaştırıp vurgu noktası ekler — 67 ülke için ayrı ayrı
-    /// kırpılmış harita görseli export etmek yerine tek paylaşılan asset'i yeniden kullanır.
-    private func zoomedMapCard(center: CGPoint) -> some View {
-        GeometryReader { geo in
-            ZStack {
-                Image("ContinentMap-neutral")
+    /// Figma'nın gerçek "Country Map Crop" export'u varsa onu kullanır (bkz.
+    /// KasifCountryMapOption'daki aynı öncelik sırası); yoksa paylaşılan dünya
+    /// haritasını ülkenin mapCenter'ı etrafında yakınlaştırıp vurgu noktası ekler.
+    @ViewBuilder
+    private func mapCard(for country: MapCountry) -> some View {
+        Group {
+            if UIImage(named: "CountryMap-\(country.code)") != nil {
+                Image("CountryMap-\(country.code)")
                     .resizable()
-                    .frame(width: geo.size.width, height: geo.size.height)
-                    .scaleEffect(5, anchor: UnitPoint(x: center.x, y: center.y))
-                Circle()
-                    .fill(KasifColor.accentInfoStrong.opacity(0.55))
-                    .frame(width: 26, height: 26)
-                    .position(x: center.x * geo.size.width, y: center.y * geo.size.height)
+                    .scaledToFill()
+            } else {
+                GeometryReader { geo in
+                    ZStack {
+                        Image("ContinentMap-neutral")
+                            .resizable()
+                            .frame(width: geo.size.width, height: geo.size.height)
+                            .scaleEffect(5, anchor: UnitPoint(x: country.mapCenter.x, y: country.mapCenter.y))
+                        Circle()
+                            .fill(KasifColor.accentInfoStrong.opacity(0.55))
+                            .frame(width: 26, height: 26)
+                            .position(x: country.mapCenter.x * geo.size.width, y: country.mapCenter.y * geo.size.height)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: KasifRadius.lg))
+        .clipped()
     }
 
     private func select(_ option: MapCountry) {

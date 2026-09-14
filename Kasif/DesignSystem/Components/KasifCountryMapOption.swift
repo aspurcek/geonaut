@@ -3,12 +3,12 @@ import SwiftUI
 /// Figma Design System / Bileşenler / Country Map Option (node 339:15031). Harita
 /// Bilmece "Ülkeler" bölümünde "Bayrak → ülke haritası şıklı seç" soru tipinde kullanılır.
 ///
-/// Her ülkenin kendi kırpılmış harita görselini (Design System > Country Map Crop,
-/// 67 ülke) tek tek export etmek yerine — ki bu, gerçek fayda/efor oranı düşük bir iş
-/// olurdu (bkz. KasifFlagAnswerOption'ın emoji-bayrak tercihiyle aynı gerekçe) —
-/// paylaşılan "ContinentMap-neutral" dünya haritası, MapCountry.mapCenter etrafında
-/// yakınlaştırılıp (bkz. CountryQuestionView.zoomedMapCard, aynı teknik) ülkeye özel
-/// bir görünüm üretiyor. mapCenter verilmezse nötr bir ikon placeholder'a düşülür.
+/// Figma'nın "Design System > Country Map Crop" seti (node 339:14768) tam olarak
+/// oyunun kullandığı 17 ülkeyi kapsıyor (MapCountries.all ile birebir) — hepsi export
+/// edilip Assets.xcassets'e "CountryMap-<Kod>" adıyla eklendi. Asset yoksa (ör. ileride
+/// MapCountries'e yeni bir ülke eklenirse) paylaşılan "ContinentMap-neutral" dünya
+/// haritası mapCenter etrafında yakınlaştırılarak (bkz. CountryQuestionView.zoomedMapCard,
+/// aynı teknik) geçici bir görünüm üretir; ikisi de yoksa nötr ikon placeholder'a düşülür.
 struct KasifCountryMapOption: View {
     let countryCode: String
     let countryName: String
@@ -22,7 +22,11 @@ struct KasifCountryMapOption: View {
             VStack(spacing: 0) {
                 ZStack {
                     Color(hex: 0xF2F5FA)
-                    if let mapCenter {
+                    if UIImage(named: "CountryMap-\(countryCode)") != nil {
+                        Image("CountryMap-\(countryCode)")
+                            .resizable()
+                            .scaledToFill()
+                    } else if let mapCenter {
                         GeometryReader { geo in
                             ZStack {
                                 Image("ContinentMap-neutral")
