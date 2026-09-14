@@ -29,9 +29,20 @@ enum PlayerCloudKitService {
         }
     }
 
+    /// Var olan kaydı önce getirip üzerine yazar — sıfırdan bir CKRecord oluşturup
+    /// kaydetmek, kaydın recordChangeTag'ini taşımadığı için ikinci save'den itibaren
+    /// sunucudaki kayıtla "değişmemiş" sayılmayıp CKError.serverRecordChanged ile
+    /// başarısız olurdu (ve syncGameProgress/updateProfile gibi çağıranlar bunu
+    /// `try?` ile sessizce yutardı — ilerleme hiç kalıcı olmazdı).
     static func save(_ profile: PlayerProfile) async throws {
         let database = container.privateCloudDatabase
-        let record = CKRecord(recordType: recordType, recordID: recordID(for: profile.appleUserIdentifier))
+        let id = recordID(for: profile.appleUserIdentifier)
+        let record: CKRecord
+        do {
+            record = try await database.record(for: id)
+        } catch let error as CKError where error.code == .unknownItem {
+            record = CKRecord(recordType: recordType, recordID: id)
+        }
         record["displayName"] = profile.displayName
         record["email"] = profile.email
         record["points"] = profile.points

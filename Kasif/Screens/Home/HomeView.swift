@@ -118,6 +118,7 @@ struct HomeView: View {
                     let session = QuizSession(stageIndex: stageIndex, questions: Countries.makeQuestions(from: Countries.pool(forContinent: continent), isRecall: stageIndex >= 5))
                     QuizSessionView(
                         session: session,
+                        points: $points,
                         onFinished: { earnedPoints in
                             points += progress.pointsToAward(continent: continent, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             onRecordActivity()
@@ -184,6 +185,7 @@ struct HomeView: View {
                     let mapSession = MapQuizSession(stageIndex: stageIndex, questions: MapQuizGenerator.makeQuestions(stageIndex: stageIndex))
                     MapQuizSessionView(
                         session: mapSession,
+                        points: $points,
                         onFinished: { earnedPoints in
                             points += progress.pointsToAward(continent: MapPuzzleStructure.progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             onRecordActivity()
@@ -214,6 +216,7 @@ struct HomeView: View {
                     let countrySession = CountryQuizSession(stageIndex: stageIndex, questions: CountryQuizGenerator.makeQuestions(stageIndex: stageIndex))
                     CountryQuizSessionView(
                         session: countrySession,
+                        points: $points,
                         onFinished: { earnedPoints in
                             points += progress.pointsToAward(continent: CountryPuzzleStructure.progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             onRecordActivity()

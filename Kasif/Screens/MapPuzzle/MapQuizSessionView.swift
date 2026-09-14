@@ -4,6 +4,8 @@ import SwiftUI
 /// Bilmece Kural Kitabı böl. 06: can/puan/yıldız mekaniği Bayrak Tahmin ile birebir aynı).
 struct MapQuizSessionView: View {
     @State var session: MapQuizSession
+    /// Oyuncunun gerçek toplam puanı — bkz. QuizSessionView'daki aynı gerekçe.
+    @Binding var points: Int
     var onFinished: (_ pointsEarned: Int) -> Void
     var onExit: () -> Void
 
@@ -28,8 +30,11 @@ struct MapQuizSessionView: View {
 
         case .outOfHearts:
             OutOfHeartsView(
-                currentPoints: session.pointsEarnedThisSession,
-                onContinueWithPoints: { session.refillHeartsWithPoints() },
+                currentPoints: points,
+                onContinueWithPoints: {
+                    points -= GameRules.heartRefillCost
+                    session.refillHeartsWithPoints()
+                },
                 onRestartStage: { session.restart() }
             )
 
@@ -48,6 +53,7 @@ struct MapQuizSessionView: View {
 #Preview {
     MapQuizSessionView(
         session: MapQuizSession(stageIndex: 0, questions: MapQuizGenerator.makeQuestions(stageIndex: 0)),
+        points: .constant(340),
         onFinished: { _ in }, onExit: {}
     )
 }

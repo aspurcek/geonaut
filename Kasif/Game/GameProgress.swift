@@ -1,8 +1,8 @@
 import Foundation
 
-/// Oturum boyunca kalıcı ilerleme durumu — hangi etap/kıta bitirilmiş. Şu an bellek
-/// içi (uygulama kapanınca sıfırlanır); CloudKit senkronizasyonu eklendiğinde bu
-/// sınıf PlayerCloudKitService'e yazıp okuyacak şekilde genişletilecek.
+/// Oturum boyunca kalıcı ilerleme durumu — hangi etap/kıta bitirilmiş. RootTabView'in
+/// init'i PlayerProfile.completedStageKeys'ten geri yükler, onProgressChanged da
+/// PlayerCloudKitService'e yazar (bkz. AppState.syncGameProgress) — bellek-içi değil.
 ///
 /// Bkz. Bayrak Tahmin Kural Kitabı böl. 02: "Bir etap ancak öncekinin bitirilmesiyle açılır."
 @Observable

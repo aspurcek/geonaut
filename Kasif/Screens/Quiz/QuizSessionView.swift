@@ -4,6 +4,10 @@ import SwiftUI
 /// Etap Tamamlandı. Bkz. GameRules ve QuizSession.
 struct QuizSessionView: View {
     @State var session: QuizSession
+    /// Oyuncunun gerçek toplam puanı — "Puanla Devam Et" burada harcanır (bkz.
+    /// GameRules.heartRefillCost). session.pointsEarnedThisSession bu oturuma özel ve
+    /// harcanabilir bir bakiye değil, bu yüzden ayrı tutuluyor.
+    @Binding var points: Int
     var onFinished: (_ pointsEarned: Int) -> Void
     var onExit: () -> Void
 
@@ -28,8 +32,11 @@ struct QuizSessionView: View {
 
         case .outOfHearts:
             OutOfHeartsView(
-                currentPoints: session.pointsEarnedThisSession,
-                onContinueWithPoints: { session.refillHeartsWithPoints() },
+                currentPoints: points,
+                onContinueWithPoints: {
+                    points -= GameRules.heartRefillCost
+                    session.refillHeartsWithPoints()
+                },
                 onRestartStage: { session.restart() }
             )
 
@@ -48,6 +55,7 @@ struct QuizSessionView: View {
 #Preview {
     QuizSessionView(
         session: QuizSession(stageIndex: 0, questions: Countries.makeQuestions(from: Countries.europe, isRecall: false)),
+        points: .constant(340),
         onFinished: { _ in }, onExit: {}
     )
 }
