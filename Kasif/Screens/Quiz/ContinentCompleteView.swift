@@ -5,14 +5,17 @@ import SwiftUI
 /// o kıtanın kupası kazanılır."
 struct ContinentCompleteView: View {
     let continentName: String
-    let continentIcon: String
     var onContinue: () -> Void
+
+    private var icon: (icon: String, color: Color) {
+        BadgeCatalog.continentIcon(for: continentName) ?? ("🏆", KasifColor.accentHighlightStrong)
+    }
 
     var body: some View {
         VStack(spacing: KasifSpacing.lg) {
             Spacer()
 
-            KasifAchievementBadge(title: continentName, systemImage: continentIcon, state: .unlocked)
+            KasifAchievementBadge(title: continentName, icon: icon.icon, accentColor: icon.color, state: .unlocked)
                 .scaleEffect(1.1)
 
             Text("\(continentName) Kıtası Tamamlandı!")
@@ -39,5 +42,5 @@ struct ContinentCompleteView: View {
 }
 
 #Preview {
-    ContinentCompleteView(continentName: "Avrupa", continentIcon: "globe.europe.africa.fill", onContinue: {})
+    ContinentCompleteView(continentName: "Avrupa", onContinue: {})
 }

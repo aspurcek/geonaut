@@ -33,18 +33,18 @@ struct BadgesView: View {
 
                     badgeSection(
                         title: "Bayrak Tahmin", subtitle: "9 rozet + kategori kupası",
-                        badges: flagBadges.map { (title: Self.shortContinentName($0.title), image: $0.systemImage, unlocked: $0.unlocked) }
+                        badges: flagBadges.map { (title: Self.shortContinentName($0.title), icon: $0.icon, color: $0.accentColor, unlocked: $0.unlocked) }
                     )
 
                     badgeSection(
                         title: "Harita Bilmece", subtitle: "2 rozet + kategori kupası",
-                        badges: mapBadges.map { (title: $0.title, image: $0.systemImage, unlocked: $0.unlocked) }
+                        badges: mapBadges.map { (title: $0.title, icon: $0.icon, color: $0.accentColor, unlocked: $0.unlocked) }
                     )
 
                     badgeSection(
                         title: "Ana Diller",
                         subtitle: "yakında",
-                        badges: [(title: "Yakında", image: "lock.fill", unlocked: false)]
+                        badges: [(title: "Yakında", icon: "📚", color: KasifColor.accentTertiary, unlocked: false)]
                     )
                 }
                 .padding(.horizontal, KasifSpacing.xl)
@@ -57,7 +57,7 @@ struct BadgesView: View {
         .ignoresSafeArea(edges: .bottom)
     }
 
-    private func badgeSection(title: String, subtitle: String, badges: [(title: String, image: String, unlocked: Bool)]) -> some View {
+    private func badgeSection(title: String, subtitle: String, badges: [(title: String, icon: String, color: Color, unlocked: Bool)]) -> some View {
         VStack(alignment: .leading, spacing: KasifSpacing.lg) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -70,7 +70,7 @@ struct BadgesView: View {
 
             KasifFlowLayout {
                 ForEach(badges, id: \.title) { badge in
-                    KasifAchievementBadge(title: badge.title, systemImage: badge.image, state: badge.unlocked ? .unlocked : .locked)
+                    KasifAchievementBadge(title: badge.title, icon: badge.icon, accentColor: badge.color, state: badge.unlocked ? .unlocked : .locked)
                 }
             }
         }

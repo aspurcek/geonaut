@@ -1,4 +1,4 @@
-import Foundation
+import SwiftUI
 
 /// Rozetler & Kupalar ekranı (Figma node 355:13868, kullanıcı tarafından 2026-09-10'da
 /// tasarım üzerinden doğrulandı — bu dosyadaki sayılar PDF kural kitaplarındaki
@@ -29,34 +29,59 @@ enum BadgeCatalog {
         .haritaBilmece: "Harita Bilmece Kupası"
     ]
 
+    /// Rozet simgesi (emoji) ve kilit açıkken gösterilen daire rengi — Figma'nın
+    /// "Design System / Bileşenler / Achievement Badge" bölümündeki "Rozet Simgeleri"
+    /// referans paneliyle birebir (bkz. node 536:12128). Kilitliyken aynı emoji
+    /// KasifAchievementBadge tarafından gri tonlanıp soluklaştırılır (silhouette preview).
     struct BadgeInfo {
         let title: String
-        let systemImage: String
+        let icon: String
+        let accentColor: Color
         let unlocked: Bool
+    }
+
+    /// FlagGuessStructure.continents ile aynı sırada (Avrupa...Antarktika) — bkz.
+    /// Rozet Simgeleri referans paneli için seçilen renk/emoji eşleşmesi.
+    private static let continentIcons: [(icon: String, color: Color)] = [
+        ("🗼", KasifColor.accentPrimary),
+        ("🐼", KasifColor.accentSuccess),
+        ("🦁", KasifColor.accentHighlight),
+        ("🦅", KasifColor.accentTertiary),
+        ("🦙", KasifColor.accentPrimarySoft),
+        ("🦘", KasifColor.accentDanger),
+        ("🐧", KasifColor.accentInfo)
+    ]
+
+    /// ContinentCompleteView gibi rozet listesine ihtiyaç duymadan tek bir kıtanın
+    /// simgesini/rengini bilmesi gereken yerler için — aynı kaynağı (continentIcons)
+    /// kullanır, ayrı bir eşleme tutulmaz.
+    static func continentIcon(for continent: String) -> (icon: String, color: Color)? {
+        guard let index = FlagGuessStructure.continents.firstIndex(of: continent) else { return nil }
+        return continentIcons[index]
     }
 
     /// Gerçek GameProgress'ten okunan, Kupalar ekranı ve Profil'in rozet önizlemesi
     /// tarafından paylaşılan tek kaynak — ikisi ayrı ayrı sahte/örnek veri tutmasın diye.
     static func bayrakTahminBadges(progress: GameProgress) -> [BadgeInfo] {
-        FlagGuessStructure.continents.map { continent in
+        zip(FlagGuessStructure.continents, continentIcons).map { continent, iconInfo in
             BadgeInfo(
-                title: continent, systemImage: "globe.europe.africa.fill",
+                title: continent, icon: iconInfo.icon, accentColor: iconInfo.color,
                 unlocked: progress.isContinentCompleted(continent, stageCount: FlagGuessStructure.stagesPerSection)
             )
         } + [
             BadgeInfo(
-                title: "Karışık", systemImage: "shuffle",
+                title: "Karışık", icon: "🔀", accentColor: KasifColor.textSecondary,
                 unlocked: progress.isContinentCompleted("Karışık", stageCount: FlagGuessStructure.stagesPerSection)
             ),
-            BadgeInfo(title: "Bayrak Bilmece Kupası", systemImage: "trophy.fill", unlocked: progress.isFlagGuessCategoryCompleted())
+            BadgeInfo(title: "Bayrak Bilmece Kupası", icon: "🏆", accentColor: KasifColor.accentHighlightStrong, unlocked: progress.isFlagGuessCategoryCompleted())
         ]
     }
 
     static func haritaBilmeceBadges(progress: GameProgress) -> [BadgeInfo] {
         [
-            BadgeInfo(title: "Kıtalar Rozeti", systemImage: "globe.europe.africa.fill", unlocked: progress.isMapPuzzleContinentsCompleted()),
-            BadgeInfo(title: "Ülkeler Rozeti", systemImage: "map.fill", unlocked: progress.isMapPuzzleCountriesCompleted()),
-            BadgeInfo(title: "Harita Bilmece Kupası", systemImage: "trophy.fill", unlocked: progress.isMapPuzzleCategoryCompleted())
+            BadgeInfo(title: "Kıtalar Rozeti", icon: "🌍", accentColor: KasifColor.accentInfo, unlocked: progress.isMapPuzzleContinentsCompleted()),
+            BadgeInfo(title: "Ülkeler Rozeti", icon: "📍", accentColor: KasifColor.accentInfoStrong, unlocked: progress.isMapPuzzleCountriesCompleted()),
+            BadgeInfo(title: "Harita Bilmece Kupası", icon: "🏆", accentColor: KasifColor.accentHighlightStrong, unlocked: progress.isMapPuzzleCategoryCompleted())
         ]
     }
 

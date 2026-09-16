@@ -129,7 +129,7 @@ struct ProfileView: View {
             }
             HStack(spacing: 14) {
                 ForEach(previewBadges, id: \.title) { badge in
-                    KasifAchievementBadge(title: badge.title, systemImage: badge.systemImage, state: badge.unlocked ? .unlocked : .locked)
+                    KasifAchievementBadge(title: badge.title, icon: badge.icon, accentColor: badge.accentColor, state: badge.unlocked ? .unlocked : .locked)
                 }
             }
         }

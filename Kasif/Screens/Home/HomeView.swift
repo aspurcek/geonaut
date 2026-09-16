@@ -143,7 +143,6 @@ struct HomeView: View {
                 case .continentComplete(let continent):
                     ContinentCompleteView(
                         continentName: continent,
-                        continentIcon: ContinentPathNode.icon(for: continent),
                         onContinue: {
                             if progress.isFlagGuessCategoryCompleted() {
                                 path.append(Route.categoryComplete)
