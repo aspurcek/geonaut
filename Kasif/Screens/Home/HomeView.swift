@@ -15,11 +15,11 @@ struct HomeView: View {
     var progress: GameProgress
     var isGuest: Bool = false
     var onRequireSignIn: () -> Void = {}
-    /// Bir etap bitince AppState.recordDailyActivity()'ye kadar iletilir.
-    var onRecordActivity: () -> Void = {}
-    /// Bir etap bitip puan/ilerleme değiştiğinde çağrılır — AppState.syncGameProgress'e
-    /// kadar iletilir (bkz. RootTabView.swift).
-    var onProgressChanged: () -> Void = {}
+    /// Bir etap bitince çağrılır — AppState.recordStageCompletion'a kadar iletilir (bkz.
+    /// RootTabView.swift). Seri güncellemesi ve ilerleme senkronizasyonunu ayrı ayrı
+    /// çağırmamak bilinçli: ikisi de aynı anda ayrı CloudKit save() tetiklerse aynı kayıt
+    /// üzerinde yarışıp biri diğerini sessizce geçersiz kılabilirdi.
+    var onStageCompleted: () -> Void = {}
     @State private var path = NavigationPath()
 
     private enum Route: Hashable {
@@ -121,10 +121,9 @@ struct HomeView: View {
                         points: $points,
                         onFinished: { earnedPoints in
                             points += progress.pointsToAward(continent: continent, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            onRecordActivity()
                             progress.markStageCompleted(continent: continent, stageIndex: stageIndex)
                             progress.markCountriesSeen(session.questions.map(\.countryCode))
-                            onProgressChanged()
+                            onStageCompleted()
 
                             let continentJustFinished = progress.isContinentCompleted(continent, stageCount: FlagGuessStructure.stagesPerSection)
                             // Karışık'ın kendi kupası/tamamlama ekranı yok (bkz. Bayrak
@@ -188,10 +187,9 @@ struct HomeView: View {
                         points: $points,
                         onFinished: { earnedPoints in
                             points += progress.pointsToAward(continent: MapPuzzleStructure.progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            onRecordActivity()
                             progress.markStageCompleted(continent: MapPuzzleStructure.progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(mapSession.questions.map { $0.country.code })
-                            onProgressChanged()
+                            onStageCompleted()
                             if progress.isMapPuzzleCategoryCompleted() {
                                 path.append(Route.mapCategoryComplete)
                             } else {
@@ -219,10 +217,9 @@ struct HomeView: View {
                         points: $points,
                         onFinished: { earnedPoints in
                             points += progress.pointsToAward(continent: CountryPuzzleStructure.progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            onRecordActivity()
                             progress.markStageCompleted(continent: CountryPuzzleStructure.progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(countrySession.questions.map { $0.country.code })
-                            onProgressChanged()
+                            onStageCompleted()
                             if progress.isMapPuzzleCategoryCompleted() {
                                 path.append(Route.mapCategoryComplete)
                             } else {

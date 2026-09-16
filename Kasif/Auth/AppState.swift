@@ -127,20 +127,6 @@ final class AppState {
         Task { try? await PlayerCloudKitService.save(profile) }
     }
 
-    /// Bir etap tamamlandığında (Bayrak Tahmin ya da Harita Bilmece) çağrılır — kazanılan
-    /// puan ve GameProgress'in ham hâli profile yazılır, sonra CloudKit'e arka planda
-    /// kaydedilir. Bu olmadan ilerleme yalnızca RootTabView'in ömrü boyunca hafızada
-    /// kalırdı — uygulama kapanınca (ya da Ayarlar/Profil dışı bir yeniden girişte) kaybolurdu.
-    func syncGameProgress(points: Int, completedStageKeys: Set<String>, learnedCountryCodes: Set<String>, bestPointsByStage: [String]) {
-        guard case .signedIn(var profile) = phase else { return }
-        profile.points = points
-        profile.completedStageKeys = completedStageKeys
-        profile.learnedCountryCodes = learnedCountryCodes
-        profile.bestPointsByStage = bestPointsByStage
-        phase = .signedIn(profile)
-        Task { try? await PlayerCloudKitService.save(profile) }
-    }
-
     /// "Seri Kaybı Akışı" (bkz. Streak.swift) — "50 Puan ile Canlandır": puan düşer,
     /// `lastActiveDate` bugüne çekilir (seri sayısı korunur, artık "kayıp" sayılmaz).
     func reviveStreak() {
@@ -160,9 +146,19 @@ final class AppState {
         Task { try? await PlayerCloudKitService.save(profile) }
     }
 
-    /// Bir etap tamamlandığında çağrılır — bugün oynandığını işaretler ve seriyi
-    /// güncelde tutar. Aynı gün içindeki tekrar çağrılarda hiçbir şey değişmez.
-    func recordDailyActivity() {
+    /// Bir etap tamamlandığında (Bayrak Tahmin ya da Harita Bilmece) çağrılır — hem günlük
+    /// seriyi hem de kazanılan puan/GameProgress'in ham hâlini TEK bir profil mutasyonunda
+    /// birleştirip TEK bir CloudKit save() çağrısıyla kaydeder.
+    ///
+    /// ÖNEMLİ: Bunları eskiden ayrı ayrı metotlar (recordDailyActivity + syncGameProgress)
+    /// olarak, her biri kendi `Task { save(profile) }`'ini ateşleyerek çağırıyorduk. HomeView
+    /// ikisini de aynı etap-bitti olayında art arda çağırdığı için bu, AYNI CKRecord üzerinde
+    /// yarışan iki save() doğuruyordu: PlayerCloudKitService.save artık var olan kaydı önce
+    /// getirip üzerine yazdığından (bkz. o dosyadaki not), iki save aynı anda fetch edip
+    /// birbirinin üstüne yazmaya çalışınca kaybeden CKError.serverRecordChanged ile
+    /// (try? tarafından sessizce) reddedilir — o çağrının taşıdığı güncelleme (seri YA DA
+    /// puan/ilerleme) hiç CloudKit'e ulaşmadan kaybolabilirdi. Tek çağrı/tek save bunu ortadan kaldırır.
+    func recordStageCompletion(points: Int, completedStageKeys: Set<String>, learnedCountryCodes: Set<String>, bestPointsByStage: [String]) {
         guard case .signedIn(var profile) = phase else { return }
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
@@ -179,8 +175,13 @@ final class AppState {
             profile.streakDays = 1
         }
         // daysSince <= 0 ve streakDays > 0: bugün zaten oynanmış, sayı değişmez.
-
         profile.lastActiveDate = .now
+
+        profile.points = points
+        profile.completedStageKeys = completedStageKeys
+        profile.learnedCountryCodes = learnedCountryCodes
+        profile.bestPointsByStage = bestPointsByStage
+
         phase = .signedIn(profile)
         Task { try? await PlayerCloudKitService.save(profile) }
     }

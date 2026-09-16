@@ -78,9 +78,8 @@ private struct RootView: View {
                     onSaveSettings: { displayName, avatarColorHex in
                         appState.updateProfile(displayName: displayName, avatarColorHex: avatarColorHex)
                     },
-                    onRecordActivity: { appState.recordDailyActivity() },
-                    onSyncProgress: { points, completedStageKeys, learnedCountryCodes, bestPointsByStage in
-                        appState.syncGameProgress(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)
+                    onStageCompleted: { points, completedStageKeys, learnedCountryCodes, bestPointsByStage in
+                        appState.recordStageCompletion(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)
                     }
                 )
             }

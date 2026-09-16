@@ -1,8 +1,8 @@
 import Foundation
 
 /// Oturum boyunca kalıcı ilerleme durumu — hangi etap/kıta bitirilmiş. RootTabView'in
-/// init'i PlayerProfile.completedStageKeys'ten geri yükler, onProgressChanged da
-/// PlayerCloudKitService'e yazar (bkz. AppState.syncGameProgress) — bellek-içi değil.
+/// init'i PlayerProfile.completedStageKeys'ten geri yükler, onStageCompleted da
+/// PlayerCloudKitService'e yazar (bkz. AppState.recordStageCompletion) — bellek-içi değil.
 ///
 /// Bkz. Bayrak Tahmin Kural Kitabı böl. 02: "Bir etap ancak öncekinin bitirilmesiyle açılır."
 @Observable

@@ -32,7 +32,7 @@ enum PlayerCloudKitService {
     /// Var olan kaydı önce getirip üzerine yazar — sıfırdan bir CKRecord oluşturup
     /// kaydetmek, kaydın recordChangeTag'ini taşımadığı için ikinci save'den itibaren
     /// sunucudaki kayıtla "değişmemiş" sayılmayıp CKError.serverRecordChanged ile
-    /// başarısız olurdu (ve syncGameProgress/updateProfile gibi çağıranlar bunu
+    /// başarısız olurdu (ve recordStageCompletion/updateProfile gibi çağıranlar bunu
     /// `try?` ile sessizce yutardı — ilerleme hiç kalıcı olmazdı).
     static func save(_ profile: PlayerProfile) async throws {
         let database = container.privateCloudDatabase

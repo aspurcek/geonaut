@@ -19,12 +19,12 @@ struct RootTabView: View {
     var onRequireSignIn: () -> Void = {}
     /// Ayarlar ekranında "Kaydet" — AppState.updateProfile'a kadar iletilir.
     var onSaveSettings: (_ displayName: String, _ avatarColorHex: UInt32) -> Void = { _, _ in }
-    /// Bir etap bitince çağrılır — AppState.recordDailyActivity'ye kadar iletilir
-    /// (bkz. Streak.swift: günlük seri sayacını günceller).
-    var onRecordActivity: () -> Void = {}
-    /// Bir etap bitince (puan/ilerleme değiştiğinde) çağrılır — AppState.syncGameProgress'e
-    /// kadar iletilir, böylece ilerleme yalnızca bu oturumda değil CloudKit'te de kalıcı olur.
-    var onSyncProgress: (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
+    /// Bir etap bitince çağrılır — AppState.recordStageCompletion'a kadar iletilir; hem
+    /// günlük seriyi günceller hem ilerlemeyi CloudKit'e kalıcı yazar. Bilerek TEK bir
+    /// closure: seri güncellemesi ve ilerleme senkronizasyonu ayrı ayrı çağrılıp her biri
+    /// kendi CloudKit save()'ini ateşleseydi, aynı kayıt üzerinde yarışan iki save
+    /// doğardı (bkz. AppState.recordStageCompletion'daki not).
+    var onStageCompleted: (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
 
     @State private var selectedTab: KasifTab = .home
     @State private var progress: GameProgress
@@ -34,15 +34,13 @@ struct RootTabView: View {
         profile: PlayerProfile, isGuest: Bool = false,
         onRequireSignIn: @escaping () -> Void = {},
         onSaveSettings: @escaping (_ displayName: String, _ avatarColorHex: UInt32) -> Void = { _, _ in },
-        onRecordActivity: @escaping () -> Void = {},
-        onSyncProgress: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
+        onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
     ) {
         self.profile = profile
         self.isGuest = isGuest
         self.onRequireSignIn = onRequireSignIn
         self.onSaveSettings = onSaveSettings
-        self.onRecordActivity = onRecordActivity
-        self.onSyncProgress = onSyncProgress
+        self.onStageCompleted = onStageCompleted
         _progress = State(initialValue: GameProgress(
             completedStageKeys: profile.completedStageKeys,
             learnedCountryCodes: profile.learnedCountryCodes,
@@ -63,8 +61,8 @@ struct RootTabView: View {
                 points: $points, streak: profile.streakDays,
                 streakAtRisk: streakAtRisk,
                 progress: progress,
-                isGuest: isGuest, onRequireSignIn: onRequireSignIn, onRecordActivity: onRecordActivity,
-                onProgressChanged: { onSyncProgress(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport) }
+                isGuest: isGuest, onRequireSignIn: onRequireSignIn,
+                onStageCompleted: { onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport) }
             )
         case .cups:
             if isGuest {
