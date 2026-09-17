@@ -83,7 +83,8 @@ private struct RootView: View {
                     },
                     onStageCompleted: { points, completedStageKeys, learnedCountryCodes, bestPointsByStage in
                         appState.recordStageCompletion(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)
-                    }
+                    },
+                    onSignOut: { appState.signOut() }
                 )
             }
 

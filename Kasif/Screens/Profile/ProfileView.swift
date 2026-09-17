@@ -13,6 +13,7 @@ struct ProfileView: View {
     var onSaveSettings: (_ displayName: String) -> Void
     var onSaveAvatar: (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void
     var onSeeAllBadges: () -> Void
+    var onSignOut: () -> Void = {}
 
     private enum Route: Hashable { case settings, avatarBuilder }
     @State private var path = NavigationPath()
@@ -78,7 +79,8 @@ struct ProfileView: View {
                         onSave: { newName in
                             onSaveSettings(newName)
                             path.removeLast()
-                        }
+                        },
+                        onSignOut: onSignOut
                     )
                     .navigationBarHidden(true)
 

@@ -27,6 +27,8 @@ struct RootTabView: View {
     /// kendi CloudKit save()'ini ateşleseydi, aynı kayıt üzerinde yarışan iki save
     /// doğardı (bkz. AppState.recordStageCompletion'daki not).
     var onStageCompleted: (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
+    /// Ayarlar ekranındaki "Çıkış Yap" — AppState.signOut'a kadar iletilir.
+    var onSignOut: () -> Void = {}
 
     @State private var selectedTab: KasifTab = .home
     @State private var progress: GameProgress
@@ -37,7 +39,8 @@ struct RootTabView: View {
         onRequireSignIn: @escaping () -> Void = {},
         onSaveSettings: @escaping (_ displayName: String) -> Void = { _ in },
         onSaveAvatar: @escaping (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void = { _, _ in },
-        onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
+        onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in },
+        onSignOut: @escaping () -> Void = {}
     ) {
         self.profile = profile
         self.isGuest = isGuest
@@ -45,6 +48,7 @@ struct RootTabView: View {
         self.onSaveSettings = onSaveSettings
         self.onSaveAvatar = onSaveAvatar
         self.onStageCompleted = onStageCompleted
+        self.onSignOut = onSignOut
         _progress = State(initialValue: GameProgress(
             completedStageKeys: profile.completedStageKeys,
             learnedCountryCodes: profile.learnedCountryCodes,
@@ -83,7 +87,8 @@ struct RootTabView: View {
                     displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays,
                     avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
                     progress: progress,
-                    onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { selectedTab = .cups }
+                    onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { selectedTab = .cups },
+                    onSignOut: onSignOut
                 )
             }
         }

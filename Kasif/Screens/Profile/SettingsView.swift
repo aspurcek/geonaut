@@ -12,12 +12,15 @@ struct SettingsView: View {
     var onBack: () -> Void
     var onEditAvatar: () -> Void
     var onSave: (_ displayName: String) -> Void
+    var onSignOut: () -> Void
 
     @State private var draftName: String
+    @State private var isConfirmingSignOut = false
 
     init(
         displayName: String, email: String?, avatarColorHex: UInt32, character: AvatarCharacter,
-        onBack: @escaping () -> Void, onEditAvatar: @escaping () -> Void, onSave: @escaping (String) -> Void
+        onBack: @escaping () -> Void, onEditAvatar: @escaping () -> Void, onSave: @escaping (String) -> Void,
+        onSignOut: @escaping () -> Void = {}
     ) {
         self.displayName = displayName
         self.email = email
@@ -26,6 +29,7 @@ struct SettingsView: View {
         self.onBack = onBack
         self.onEditAvatar = onEditAvatar
         self.onSave = onSave
+        self.onSignOut = onSignOut
         _draftName = State(initialValue: displayName)
     }
 
@@ -86,6 +90,13 @@ struct SettingsView: View {
                         .buttonStyle(.kasifPrimary)
                         .frame(maxWidth: .infinity)
                         .disabled(!hasChanges)
+
+                        Button("Çıkış Yap") {
+                            isConfirmingSignOut = true
+                        }
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(KasifColor.accentDanger)
+                        .frame(maxWidth: .infinity)
                     }
                 }
                 .padding(.bottom, KasifSpacing.xxxl)
@@ -94,12 +105,16 @@ struct SettingsView: View {
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.md)
         .background(KasifColor.bgCanvas)
+        .alert("Çıkış yapmak istediğine emin misin?", isPresented: $isConfirmingSignOut) {
+            Button("Vazgeç", role: .cancel) {}
+            Button("Çıkış Yap", role: .destructive) { onSignOut() }
+        }
     }
 }
 
 #Preview {
     SettingsView(
         displayName: "Aslı", email: "asli.karabulut@gmail.com", avatarColorHex: 0xFF987E, character: AvatarCharacter(),
-        onBack: {}, onEditAvatar: {}, onSave: { _ in }
+        onBack: {}, onEditAvatar: {}, onSave: { _ in }, onSignOut: {}
     )
 }
