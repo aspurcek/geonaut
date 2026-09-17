@@ -8,11 +8,13 @@ struct ProfileView: View {
     let points: Int
     let streak: Int
     let avatarColorHex: UInt32
+    let character: AvatarCharacter
     let progress: GameProgress
-    var onSaveSettings: (_ displayName: String, _ avatarColorHex: UInt32) -> Void
+    var onSaveSettings: (_ displayName: String) -> Void
+    var onSaveAvatar: (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void
     var onSeeAllBadges: () -> Void
 
-    private enum Route: Hashable { case settings }
+    private enum Route: Hashable { case settings, avatarBuilder }
     @State private var path = NavigationPath()
 
     private var avatarColor: Color { Color(hex: avatarColorHex) }
@@ -66,16 +68,31 @@ struct ProfileView: View {
             // burada, en dıştaki container'da yapılmalı (NavBar'ın alt bleed'iyle aynı mantık).
             .ignoresSafeArea(edges: [.top, .bottom])
             .navigationBarHidden(true)
-            .navigationDestination(for: Route.self) { _ in
-                SettingsView(
-                    displayName: displayName, email: email, avatarColorHex: avatarColorHex,
-                    onBack: { path.removeLast() },
-                    onSave: { newName, newColorHex in
-                        onSaveSettings(newName, newColorHex)
-                        path.removeLast()
-                    }
-                )
-                .navigationBarHidden(true)
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .settings:
+                    SettingsView(
+                        displayName: displayName, email: email, avatarColorHex: avatarColorHex, character: character,
+                        onBack: { path.removeLast() },
+                        onEditAvatar: { path.append(Route.avatarBuilder) },
+                        onSave: { newName in
+                            onSaveSettings(newName)
+                            path.removeLast()
+                        }
+                    )
+                    .navigationBarHidden(true)
+
+                case .avatarBuilder:
+                    AvatarBuilderView(
+                        avatarColorHex: avatarColorHex, character: character,
+                        onBack: { path.removeLast() },
+                        onSave: { newColorHex, newCharacter in
+                            onSaveAvatar(newColorHex, newCharacter)
+                            path.removeLast()
+                        }
+                    )
+                    .navigationBarHidden(true)
+                }
             }
         }
     }
@@ -96,9 +113,28 @@ struct ProfileView: View {
 
     private var avatarSection: some View {
         VStack(spacing: KasifSpacing.sm) {
-            Button { path.append(Route.settings) } label: {
-                KasifAvatar(backgroundColor: avatarColor, showSettingsBadge: true)
+            ZStack(alignment: .bottomTrailing) {
+                // Avatara dokunma → Avatarını Oluştur (ten/saç/aksesuar). Dişli rozetine
+                // dokunma → Ayarlar (ad/e-posta). Kullanıcı isteği: bu ikisi ayrı yerlere gitsin.
+                Button { path.append(Route.avatarBuilder) } label: {
+                    KasifAvatar(backgroundColor: avatarColor, character: character)
+                }
+                .buttonStyle(.plain)
+
+                Button { path.append(Route.settings) } label: {
+                    Circle()
+                        .fill(KasifColor.bgSurface)
+                        .frame(width: 30, height: 30)
+                        .overlay {
+                            Image(systemName: "gearshape.fill")
+                                .font(.system(size: 14))
+                                .foregroundStyle(KasifColor.textSecondary)
+                        }
+                }
+                .buttonStyle(.plain)
             }
+            .frame(width: 106, height: 106, alignment: .topLeading)
+
             VStack(spacing: KasifSpacing.xs) {
                 Text(displayName)
                     .font(KasifTypography.headingL)
@@ -140,7 +176,7 @@ struct ProfileView: View {
     ProfileView(
         selectedTab: .constant(.profile),
         displayName: "Aslı", email: "asli.karabulut@gmail.com", points: 340, streak: 4,
-        avatarColorHex: 0xFF987E, progress: GameProgress(),
-        onSaveSettings: { _, _ in }, onSeeAllBadges: {}
+        avatarColorHex: 0xFF987E, character: AvatarCharacter(), progress: GameProgress(),
+        onSaveSettings: { _ in }, onSaveAvatar: { _, _ in }, onSeeAllBadges: {}
     )
 }

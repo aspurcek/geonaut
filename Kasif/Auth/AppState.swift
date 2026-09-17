@@ -115,14 +115,23 @@ final class AppState {
         }
     }
 
-    /// "Ayarlar" ekranından ad/avatar rengi güncellemesi — önce yerel durumu (ve
-    /// dolayısıyla UI'ı) hemen günceller, sonra CloudKit'e arka planda yazar.
-    /// Kaydetme başarısız olsa bile (ağ yok vb.) oturum içi değişiklik kalıcı görünür;
-    /// bir sonraki başarılı senkronizasyonda gerçekten kalıcı hâle gelir.
-    func updateProfile(displayName: String, avatarColorHex: UInt32) {
+    /// "Ayarlar" ekranından ad güncellemesi — önce yerel durumu (ve dolayısıyla UI'ı)
+    /// hemen günceller, sonra CloudKit'e arka planda yazar. Kaydetme başarısız olsa
+    /// bile (ağ yok vb.) oturum içi değişiklik kalıcı görünür; bir sonraki başarılı
+    /// senkronizasyonda gerçekten kalıcı hâle gelir.
+    func updateProfile(displayName: String) {
         guard case .signedIn(var profile) = phase else { return }
         profile.displayName = displayName
+        phase = .signedIn(profile)
+        Task { try? await PlayerCloudKitService.save(profile) }
+    }
+
+    /// "Avatarını Oluştur" ekranından zemin rengi + karakter (ten/saç/aksesuar/yüz
+    /// detayı) güncellemesi — bkz. updateProfile'daki aynı fire-and-forget gerekçesi.
+    func updateAvatar(avatarColorHex: UInt32, character: AvatarCharacter) {
+        guard case .signedIn(var profile) = phase else { return }
         profile.avatarColorHex = avatarColorHex
+        profile.avatarCharacter = character
         phase = .signedIn(profile)
         Task { try? await PlayerCloudKitService.save(profile) }
     }

@@ -48,6 +48,11 @@ enum PlayerCloudKitService {
         record["points"] = profile.points
         record["streakDays"] = profile.streakDays
         record["avatarColorHex"] = Int64(profile.avatarColorHex)
+        record["skinTone"] = profile.skinTone.rawValue
+        record["hairStyle"] = profile.hairStyle.rawValue
+        record["hairColorHex"] = Int64(profile.hairColorHex)
+        record["accessory"] = profile.accessory?.rawValue
+        record["facialFeature"] = profile.facialFeature?.rawValue
         record["lastActiveDate"] = profile.lastActiveDate
         record["completedStageKeys"] = Array(profile.completedStageKeys)
         record["learnedCountryCodes"] = Array(profile.learnedCountryCodes)
@@ -63,6 +68,11 @@ enum PlayerCloudKitService {
             points: record["points"] as? Int ?? GameRules.newPlayerStartingPoints,
             streakDays: record["streakDays"] as? Int ?? 0,
             avatarColorHex: UInt32((record["avatarColorHex"] as? Int64) ?? 0xFF987E),
+            skinTone: (record["skinTone"] as? String).flatMap(SkinTone.init) ?? .acik,
+            hairStyle: (record["hairStyle"] as? String).flatMap(HairStyle.init) ?? .kisa,
+            hairColorHex: UInt32((record["hairColorHex"] as? Int64) ?? 0x222938),
+            accessory: (record["accessory"] as? String).flatMap(AvatarAccessory.init),
+            facialFeature: (record["facialFeature"] as? String).flatMap(AvatarFacialFeature.init),
             lastActiveDate: record["lastActiveDate"] as? Date ?? .now,
             completedStageKeys: Set(record["completedStageKeys"] as? [String] ?? []),
             learnedCountryCodes: Set(record["learnedCountryCodes"] as? [String] ?? []),

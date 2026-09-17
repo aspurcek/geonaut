@@ -1,39 +1,40 @@
 import SwiftUI
 
-/// Figma "Profil-Ayarlar" (node 475:11482). Avatar rengi ve ad değiştirme — kayıtlı
-/// e-posta Apple ID'ye bağlı olduğu için salt okunur gösterilir (bkz. PlayerProfile.email).
+/// Figma "Profil-Ayarlar" (node 475:11482). Yalnızca ad değiştirme — kayıtlı e-posta
+/// Apple ID'ye bağlı olduğu için salt okunur gösterilir (bkz. PlayerProfile.email).
+/// Avatar karakteri (ten/saç/aksesuar) ve zemin rengi artık ayrı bir ekranda
+/// düzenleniyor (bkz. AvatarBuilderView) — resme dokununca oraya gidilir.
 struct SettingsView: View {
     let displayName: String
     let email: String?
     let avatarColorHex: UInt32
+    let character: AvatarCharacter
     var onBack: () -> Void
-    var onSave: (_ displayName: String, _ avatarColorHex: UInt32) -> Void
+    var onEditAvatar: () -> Void
+    var onSave: (_ displayName: String) -> Void
 
     @State private var draftName: String
-    @State private var draftColorHex: UInt32
 
-    init(displayName: String, email: String?, avatarColorHex: UInt32, onBack: @escaping () -> Void, onSave: @escaping (String, UInt32) -> Void) {
+    init(
+        displayName: String, email: String?, avatarColorHex: UInt32, character: AvatarCharacter,
+        onBack: @escaping () -> Void, onEditAvatar: @escaping () -> Void, onSave: @escaping (String) -> Void
+    ) {
         self.displayName = displayName
         self.email = email
         self.avatarColorHex = avatarColorHex
+        self.character = character
         self.onBack = onBack
+        self.onEditAvatar = onEditAvatar
         self.onSave = onSave
         _draftName = State(initialValue: displayName)
-        _draftColorHex = State(initialValue: avatarColorHex)
-    }
-
-    private var draftColor: Color {
-        KasifColor.avatarSwatches.first { $0.hex == draftColorHex }?.color ?? Color(hex: draftColorHex)
     }
 
     private var trimmedDraftName: String {
         draftName.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    /// Figma'da "Kaydet" iki durumlu: değişiklik yokken pasif (%40 opak), bir şey
-    /// değiştirildiğinde aktif — bkz. KasifButtonStyle'ın zaten desteklediği disabled.
     private var hasChanges: Bool {
-        (!trimmedDraftName.isEmpty && trimmedDraftName != displayName) || draftColorHex != avatarColorHex
+        !trimmedDraftName.isEmpty && trimmedDraftName != displayName
     }
 
     var body: some View {
@@ -54,30 +55,14 @@ struct SettingsView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: KasifSpacing.xxl) {
                     VStack(spacing: KasifSpacing.md) {
-                        KasifAvatar(backgroundColor: draftColor, showSettingsBadge: true)
+                        Button(action: onEditAvatar) {
+                            KasifAvatar(backgroundColor: Color(hex: avatarColorHex), character: character)
+                        }
+                        .buttonStyle(.plain)
 
-                        Text("Profil rengini seç")
+                        Text("Avatarını düzenlemek için resme dokun")
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(KasifColor.textMuted)
-
-                        HStack(spacing: 14) {
-                            ForEach(KasifColor.avatarSwatches, id: \.hex) { swatch in
-                                Button {
-                                    draftColorHex = swatch.hex
-                                } label: {
-                                    Circle()
-                                        .fill(swatch.color)
-                                        .frame(width: 28, height: 28)
-                                        .padding(4)
-                                        .overlay {
-                                            if draftColorHex == swatch.hex {
-                                                Circle().strokeBorder(KasifColor.textPrimary, lineWidth: 2.5)
-                                            }
-                                        }
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
                     }
                     .frame(maxWidth: .infinity)
 
@@ -96,7 +81,7 @@ struct SettingsView: View {
                         .disabled(true)
 
                         Button("Kaydet") {
-                            onSave(trimmedDraftName, draftColorHex)
+                            onSave(trimmedDraftName)
                         }
                         .buttonStyle(.kasifPrimary)
                         .frame(maxWidth: .infinity)
@@ -113,5 +98,8 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(displayName: "Aslı", email: "asli.karabulut@gmail.com", avatarColorHex: 0xFF987E, onBack: {}, onSave: { _, _ in })
+    SettingsView(
+        displayName: "Aslı", email: "asli.karabulut@gmail.com", avatarColorHex: 0xFF987E, character: AvatarCharacter(),
+        onBack: {}, onEditAvatar: {}, onSave: { _ in }
+    )
 }

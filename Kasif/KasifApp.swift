@@ -75,8 +75,11 @@ private struct RootView: View {
             } else {
                 RootTabView(
                     profile: profile,
-                    onSaveSettings: { displayName, avatarColorHex in
-                        appState.updateProfile(displayName: displayName, avatarColorHex: avatarColorHex)
+                    onSaveSettings: { displayName in
+                        appState.updateProfile(displayName: displayName)
+                    },
+                    onSaveAvatar: { avatarColorHex, character in
+                        appState.updateAvatar(avatarColorHex: avatarColorHex, character: character)
                     },
                     onStageCompleted: { points, completedStageKeys, learnedCountryCodes, bestPointsByStage in
                         appState.recordStageCompletion(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)

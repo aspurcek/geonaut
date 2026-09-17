@@ -11,6 +11,14 @@ struct PlayerProfile {
     var points: Int = GameRules.newPlayerStartingPoints
     var streakDays: Int = 0
     var avatarColorHex: UInt32 = 0xFF987E // accentPrimarySoft
+    /// Avatar karakter sistemi — bkz. AvatarCharacter/KasifAvatarCharacterView ve
+    /// "Avatarını Oluştur" ekranı (Figma node 566:12128).
+    var skinTone: SkinTone = .acik
+    var hairStyle: HairStyle = .kisa
+    var hairColorHex: UInt32 = 0x222938
+    /// Kullanıcı kararı: aynı anda yalnızca BİR aksesuar / BİR yüz detayı.
+    var accessory: AvatarAccessory? = nil
+    var facialFeature: AvatarFacialFeature? = nil
     var lastActiveDate: Date = .now
     /// GameProgress'in ham hâli — "kıta|etapIndex" biçiminde (bkz. GameProgress.swift).
     /// Etap Haritası'nın hangi etabın aktif/kilitli/tamamlanmış olduğunu doğru
@@ -27,5 +35,23 @@ struct PlayerProfile {
 
     static func newPlayer(appleUserIdentifier: String, displayName: String, email: String? = nil) -> PlayerProfile {
         PlayerProfile(appleUserIdentifier: appleUserIdentifier, displayName: displayName, email: email)
+    }
+
+    /// AvatarBuilderView'ın taslak (draft) düzenlemesi için tek bir değer olarak
+    /// okuma/yazma — profildeki 10 ayrı alanı tek tek taşımak yerine.
+    var avatarCharacter: AvatarCharacter {
+        get {
+            AvatarCharacter(
+                skinTone: skinTone, hairStyle: hairStyle, hairColorHex: hairColorHex,
+                accessory: accessory, facialFeature: facialFeature
+            )
+        }
+        set {
+            skinTone = newValue.skinTone
+            hairStyle = newValue.hairStyle
+            hairColorHex = newValue.hairColorHex
+            accessory = newValue.accessory
+            facialFeature = newValue.facialFeature
+        }
     }
 }

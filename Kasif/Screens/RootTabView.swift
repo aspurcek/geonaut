@@ -17,8 +17,10 @@ struct RootTabView: View {
     /// oynanabilir, Kupalar/Profil kilitli görünür (bkz. GuestLockedView).
     var isGuest: Bool = false
     var onRequireSignIn: () -> Void = {}
-    /// Ayarlar ekranında "Kaydet" — AppState.updateProfile'a kadar iletilir.
-    var onSaveSettings: (_ displayName: String, _ avatarColorHex: UInt32) -> Void = { _, _ in }
+    /// Ayarlar ekranında "Kaydet" (yalnızca ad) — AppState.updateProfile'a kadar iletilir.
+    var onSaveSettings: (_ displayName: String) -> Void = { _ in }
+    /// "Avatarını Oluştur" ekranında "Kaydet" — AppState.updateAvatar'a kadar iletilir.
+    var onSaveAvatar: (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void = { _, _ in }
     /// Bir etap bitince çağrılır — AppState.recordStageCompletion'a kadar iletilir; hem
     /// günlük seriyi günceller hem ilerlemeyi CloudKit'e kalıcı yazar. Bilerek TEK bir
     /// closure: seri güncellemesi ve ilerleme senkronizasyonu ayrı ayrı çağrılıp her biri
@@ -33,13 +35,15 @@ struct RootTabView: View {
     init(
         profile: PlayerProfile, isGuest: Bool = false,
         onRequireSignIn: @escaping () -> Void = {},
-        onSaveSettings: @escaping (_ displayName: String, _ avatarColorHex: UInt32) -> Void = { _, _ in },
+        onSaveSettings: @escaping (_ displayName: String) -> Void = { _ in },
+        onSaveAvatar: @escaping (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void = { _, _ in },
         onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
     ) {
         self.profile = profile
         self.isGuest = isGuest
         self.onRequireSignIn = onRequireSignIn
         self.onSaveSettings = onSaveSettings
+        self.onSaveAvatar = onSaveAvatar
         self.onStageCompleted = onStageCompleted
         _progress = State(initialValue: GameProgress(
             completedStageKeys: profile.completedStageKeys,
@@ -77,9 +81,9 @@ struct RootTabView: View {
                 ProfileView(
                     selectedTab: $selectedTab,
                     displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays,
-                    avatarColorHex: profile.avatarColorHex,
+                    avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
                     progress: progress,
-                    onSaveSettings: onSaveSettings, onSeeAllBadges: { selectedTab = .cups }
+                    onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { selectedTab = .cups }
                 )
             }
         }
