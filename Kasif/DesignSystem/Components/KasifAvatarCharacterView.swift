@@ -13,12 +13,16 @@ struct KasifAvatarCharacterView: View {
     /// AvatarAccessory/AvatarFacialFeature.
     var accessory: AvatarAccessory? = nil
     var facialFeature: AvatarFacialFeature? = nil
+    /// Aksesuar/yüz detayı seçici önizlemelerinde saç gizlenir — Figma'daki güncel
+    /// "Avatar Oluştur" tasarımıyla aynı: o seçiciler saçsız kafada gösterilir, böylece
+    /// küçük daire içinde asıl seçilen öğe (aksesuar/detay) daha net görünür.
+    var showHair: Bool = true
 
     private let darkLine = Color(hex: 0x222938)
 
     var body: some View {
         ZStack {
-            hairLayer
+            if showHair { hairLayer }
             head
             face
             if facialFeature == .sakal { beard }

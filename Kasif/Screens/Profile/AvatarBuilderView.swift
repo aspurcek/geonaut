@@ -68,7 +68,7 @@ struct AvatarBuilderView: View {
                                 draft.hairStyle = style
                             } content: {
                                 KasifAvatarCharacterView(skinTone: draft.skinTone, hairStyle: style, hairColor: draft.hairColor)
-                                    .scaleEffect(0.34)
+                                    .scaleEffect(0.28)
                             }
                         }
                     }
@@ -89,7 +89,7 @@ struct AvatarBuilderView: View {
                             thumbnailSwatch(isSelected: draft.accessory == option) {
                                 draft.accessory = option
                             } content: {
-                                KasifAvatarCharacterView(skinTone: draft.skinTone, hairStyle: draft.hairStyle, hairColor: draft.hairColor, accessory: option)
+                                KasifAvatarCharacterView(skinTone: draft.skinTone, hairStyle: draft.hairStyle, hairColor: draft.hairColor, accessory: option, showHair: false)
                                     .scaleEffect(0.34)
                             }
                         }
@@ -102,7 +102,7 @@ struct AvatarBuilderView: View {
                             thumbnailSwatch(isSelected: draft.facialFeature == option) {
                                 draft.facialFeature = option
                             } content: {
-                                KasifAvatarCharacterView(skinTone: draft.skinTone, hairStyle: draft.hairStyle, hairColor: draft.hairColor, facialFeature: option)
+                                KasifAvatarCharacterView(skinTone: draft.skinTone, hairStyle: draft.hairStyle, hairColor: draft.hairColor, facialFeature: option, showHair: false)
                                     .scaleEffect(0.34)
                             }
                         }
