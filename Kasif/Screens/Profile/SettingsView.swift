@@ -60,7 +60,7 @@ struct SettingsView: View {
                         }
                         .buttonStyle(.plain)
 
-                        Text("Avatarını düzenlemek için resme dokun")
+                        Text("Avatarını düzenle")
                             .font(.system(size: 13, weight: .semibold))
                             .foregroundStyle(KasifColor.textMuted)
                     }
