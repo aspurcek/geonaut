@@ -65,11 +65,11 @@ struct KasifAvatarCharacterView: View {
             roundedRect(80, 72.5, 16, 45, radius: 8)
         case .kivircik:
             ellipse(50, 39, 70, 42)
-            ellipse(20, 22, 20, 20)
-            ellipse(36, 15, 20, 20)
-            ellipse(50, 12, 20, 20)
-            ellipse(64, 15, 20, 20)
-            ellipse(80, 22, 20, 20)
+            ellipse(27, 27, 18, 18)
+            ellipse(38, 17, 18, 18)
+            ellipse(50, 12, 18, 18)
+            ellipse(62, 17, 18, 18)
+            ellipse(73, 27, 18, 18)
         case .atKuyrugu:
             ellipse(50, 35, 78, 50)
             ellipse(82, 58, 16, 30, rotation: -20)
@@ -97,7 +97,7 @@ struct KasifAvatarCharacterView: View {
     // MARK: - Yüz detayları
 
     private var beard: some View {
-        Ellipse().fill(hairColor).frame(width: 50, height: 24).position(x: 50, y: 92)
+        Ellipse().fill(hairColor).frame(width: 46, height: 18).position(x: 50, y: 85)
     }
 
     private var mustache: some View {
@@ -124,11 +124,11 @@ struct KasifAvatarCharacterView: View {
 
     private var hat: some View {
         // Kanvasın (0-100) dışına taşmaması için tam dairesel bir yuvaya sığacak şekilde
-        // aşağı çekildi (bkz. KasifAvatar/AvatarBuilderView'daki clipShape(Circle())).
+        // daraltıldı (bkz. KasifAvatar/AvatarBuilderView'daki clipShape(Circle())).
         ZStack {
-            Ellipse().fill(Color(hex: 0xBF9452)).frame(width: 88, height: 20).position(x: 50, y: 27)
-            Ellipse().fill(Color(hex: 0xBF9452)).frame(width: 46, height: 24).position(x: 50, y: 15)
-            Rectangle().fill(Color(hex: 0x8F662E)).frame(width: 46, height: 6).position(x: 50, y: 23)
+            Ellipse().fill(Color(hex: 0xBF9452)).frame(width: 68, height: 18).position(x: 50, y: 29)
+            Ellipse().fill(Color(hex: 0xBF9452)).frame(width: 44, height: 24).position(x: 50, y: 16)
+            Rectangle().fill(Color(hex: 0x8F662E)).frame(width: 44, height: 5).position(x: 50, y: 26.5)
         }
     }
 
