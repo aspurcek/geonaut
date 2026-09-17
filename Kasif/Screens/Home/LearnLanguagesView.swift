@@ -59,7 +59,7 @@ struct LearnLanguagesView: View {
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.md)
         .background(KasifColor.bgSurface)
-        .countryInfoOverlay(selected: $selectedCountry)
+        .countryInfoSheet(selected: $selectedCountry)
     }
 
     private func cardInfo(for country: Country) -> CountryCardInfo {

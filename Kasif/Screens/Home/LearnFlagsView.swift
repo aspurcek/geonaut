@@ -58,7 +58,7 @@ struct LearnFlagsView: View {
         // bgSurface (#FDFCF8) — satır kartlarıyla (Color.white) aynı aileden,
         // krem zemin diğer ekranlardan farklı olarak burada kullanılmıyor.
         .background(KasifColor.bgSurface)
-        .countryInfoOverlay(selected: $selectedCountry)
+        .countryInfoSheet(selected: $selectedCountry)
     }
 
     private func cardInfo(for country: Country) -> CountryCardInfo {
