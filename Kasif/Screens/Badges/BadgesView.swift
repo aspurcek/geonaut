@@ -10,12 +10,13 @@ struct BadgesView: View {
 
     private var flagBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.bayrakTahminBadges(progress: progress) }
     private var mapBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.haritaBilmeceBadges(progress: progress) }
+    private var languageBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.anaDillerBadges(progress: progress) }
 
     private var totalUnlocked: Int {
-        (flagBadges + mapBadges).filter(\.unlocked).count
+        (flagBadges + mapBadges + languageBadges).filter(\.unlocked).count
     }
     private var totalTrophiesUnlocked: Int {
-        (flagBadges + mapBadges).filter { $0.unlocked && $0.title.hasSuffix("Kupası") }.count
+        (flagBadges + mapBadges + languageBadges).filter { $0.unlocked && $0.title.hasSuffix("Kupası") }.count
     }
 
     var body: some View {
@@ -42,9 +43,8 @@ struct BadgesView: View {
                     )
 
                     badgeSection(
-                        title: "Ana Diller",
-                        subtitle: "yakında",
-                        badges: [(title: "Yakında", icon: "📚", color: KasifColor.accentTertiary, unlocked: false)]
+                        title: "Ana Diller", subtitle: "9 rozet + kategori kupası",
+                        badges: languageBadges.map { (title: Self.shortContinentName($0.title), icon: $0.icon, color: $0.accentColor, unlocked: $0.unlocked) }
                     )
                 }
                 .padding(.horizontal, KasifSpacing.xl)

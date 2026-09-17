@@ -50,6 +50,32 @@ enum FlagGuessStructure {
     static func isRecallStage(_ stageIndex: Int) -> Bool { stageIndex >= 6 }
 }
 
+/// Ana Diller — Bayrak Tahmin ile birebir aynı 7 kıta + Karışık / 8 etap / 10 soru
+/// iskeleti (bkz. FlagGuessStructure), kullanıcı kararıyla üç farklı etap üslubu:
+/// etap 1-4 standart (bayrak → dil), 5-6 "zor ana diller" (bkz. CountryFacts.isTrickyLanguage),
+/// 7-8 karışık (bayrak VEYA harita uyarımı, soru başına rastgele).
+enum MainLanguageStructure {
+    static let continents = FlagGuessStructure.continents
+    static let sectionCount = FlagGuessStructure.sectionCount
+    static let stagesPerSection = FlagGuessStructure.stagesPerSection
+    static let questionsPerStage = GameRules.questionsPerStage
+
+    enum StageStyle { case standard, tricky, mixed }
+
+    static func style(forStage stageIndex: Int) -> StageStyle {
+        switch stageIndex {
+        case 0...3: return .standard
+        case 4, 5: return .tricky
+        default: return .mixed
+        }
+    }
+
+    /// Bayrak Tahmin'in kıta adlarıyla aynı `GameProgress.completedStages` sözlüğünü
+    /// paylaşmamak için ad alanı öneki — aksi hâlde "Avrupa" anahtarı iki kategori
+    /// arasında çakışıp ilerlemeyi birbirine karıştırırdı.
+    static func progressKey(for continent: String) -> String { "AnaDiller-\(continent)" }
+}
+
 /// Harita Bilmece — bkz. Harita Bilmece Kural Kitabı böl. 01, 04, 05.
 ///
 /// Kaynak notu: Harita Bilmece kural kitabı PDF'i "Bölüm: 1 (yalnız Kıtalar)" diyor,

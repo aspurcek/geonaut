@@ -5,6 +5,7 @@ import SwiftUI
 struct LearnFlagsView: View {
     var onBack: () -> Void
     @State private var query = ""
+    @State private var selectedCountry: CountryCardInfo?
 
     private var allCountries: [Country] { Countries.all }
 
@@ -26,10 +27,9 @@ struct LearnFlagsView: View {
                 Text("Bayrakları Öğren")
                     .font(.custom(KasifFontName.balooExtraBold, size: 24))
                     .foregroundStyle(KasifColor.textPrimary)
-                // "Keşfet" gibi eylem çağrısı yerine bilgilendirici bir ifade
-                // kullanılıyor — satırlar dokunulabilir değil, bu yüzden metin
-                // bir detay sayfasına gideceği beklentisi yaratmamalı.
-                Text("Bayraklar ve isimleri aşağıda listeleniyor")
+                // Kullanıcı kararı: satırlar artık dokunulabilir — dokununca ülke
+                // bilgi kartı (bayrak/ad/dil/kıta) açılır, bkz. KasifCountryInfoCard.
+                Text("\(allCountries.count) ülkenin bayrağını keşfet")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(KasifColor.textSecondary)
             }
@@ -42,7 +42,12 @@ struct LearnFlagsView: View {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(filtered, id: \.code) { country in
-                        KasifFlagListRow(countryCode: country.code, countryName: country.name)
+                        Button {
+                            selectedCountry = cardInfo(for: country)
+                        } label: {
+                            KasifFlagListRow(countryCode: country.code, countryName: country.name)
+                        }
+                        .buttonStyle(.plain)
                     }
                 }
             }
@@ -53,6 +58,16 @@ struct LearnFlagsView: View {
         // bgSurface (#FDFCF8) — satır kartlarıyla (Color.white) aynı aileden,
         // krem zemin diğer ekranlardan farklı olarak burada kullanılmıyor.
         .background(KasifColor.bgSurface)
+        .countryInfoOverlay(selected: $selectedCountry)
+    }
+
+    private func cardInfo(for country: Country) -> CountryCardInfo {
+        let facts = CountryData.facts(for: country.code)
+        return CountryCardInfo(
+            code: country.code, name: country.name,
+            language: facts?.mainLanguage ?? "Bilinmiyor",
+            continent: facts?.continent ?? "Bilinmiyor"
+        )
     }
 }
 

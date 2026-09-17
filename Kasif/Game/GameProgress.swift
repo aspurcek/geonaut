@@ -127,4 +127,12 @@ final class GameProgress {
     func isMapPuzzleCategoryCompleted() -> Bool {
         isMapPuzzleContinentsCompleted() && isMapPuzzleCountriesCompleted()
     }
+
+    /// Ana Diller kategorisinin tamamı (7 kıta + Karışık) bitti mi — bkz.
+    /// MainLanguageStructure.progressKey (Bayrak Tahmin'inkiyle çakışmayan ad alanı).
+    func isMainLanguageCategoryCompleted() -> Bool {
+        ContinentPathNode.order.allSatisfy {
+            isContinentCompleted(MainLanguageStructure.progressKey(for: $0.name), stageCount: MainLanguageStructure.stagesPerSection)
+        }
+    }
 }

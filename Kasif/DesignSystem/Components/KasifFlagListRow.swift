@@ -30,11 +30,18 @@ struct KasifFlagListRow: View {
             } else {
                 Spacer(minLength: 0)
             }
+
+            // Satırların dokunulabilir olduğunu belirten ok — kullanıcı kararı:
+            // dokununca ülke bilgi kartı açılır (bkz. KasifCountryInfoCard).
+            Image(systemName: "chevron.right")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(KasifColor.textMuted)
         }
         .padding(.horizontal, KasifSpacing.xs)
         .padding(.vertical, 10)
         .frame(height: 56)
         .background(Color.white)
+        .contentShape(Rectangle())
     }
 }
 

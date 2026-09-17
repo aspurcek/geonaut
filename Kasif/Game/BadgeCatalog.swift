@@ -7,26 +7,29 @@ import SwiftUI
 /// Ekranda iki ayrı sayaç var: "rozet" (tüm kazanımlar) ve "kupa" (yalnız kategori
 /// kupaları — rozetlerin bir alt kümesi/özel olarak öne çıkarılan hali).
 enum BadgeCatalog {
-    static let totalRozet = 11
-    static let totalKupa = 2
+    static let totalRozet = 20
+    static let totalKupa = 3
 
     enum Category {
         /// "9 rozet + kategori kupası": 7 kıta + Karışık + Bayrak Bilmece Kupası.
         case bayrakTahmin
         /// "2 rozet + kategori kupası": Kıtalar Rozeti, Ülkeler Rozeti + Harita Bilmece Kupası.
         case haritaBilmece
-        /// Tek "yakında" placeholder — MVP1 kapsamı dışında, rozet/kupa sayaçlarına dahil değil.
+        /// "9 rozet + kategori kupası": bayrakTahmin ile birebir aynı yapı (7 kıta +
+        /// Karışık + Ana Diller Kupası) — bkz. MainLanguageStructure.
         case anaDiller
     }
 
     static let rozetCount: [Category: Int] = [
         .bayrakTahmin: 9,
-        .haritaBilmece: 2
+        .haritaBilmece: 2,
+        .anaDiller: 9
     ]
 
     static let categoryTrophyName: [Category: String] = [
         .bayrakTahmin: "Bayrak Bilmece Kupası",
-        .haritaBilmece: "Harita Bilmece Kupası"
+        .haritaBilmece: "Harita Bilmece Kupası",
+        .anaDiller: "Ana Diller Kupası"
     ]
 
     /// Rozet simgesi (emoji) ve kilit açıkken gösterilen daire rengi — Figma'nın
@@ -85,7 +88,25 @@ enum BadgeCatalog {
         ]
     }
 
+    /// bayrakTahminBadges ile aynı desen — kıta ikon/renkleri paylaşılır (bkz.
+    /// continentIcon), yalnızca ilerleme MainLanguageStructure'ın ad-alanlı
+    /// anahtarlarından okunur.
+    static func anaDillerBadges(progress: GameProgress) -> [BadgeInfo] {
+        zip(MainLanguageStructure.continents, continentIcons).map { continent, iconInfo in
+            BadgeInfo(
+                title: continent, icon: iconInfo.icon, accentColor: iconInfo.color,
+                unlocked: progress.isContinentCompleted(MainLanguageStructure.progressKey(for: continent), stageCount: MainLanguageStructure.stagesPerSection)
+            )
+        } + [
+            BadgeInfo(
+                title: "Karışık", icon: "🔀", accentColor: KasifColor.textSecondary,
+                unlocked: progress.isContinentCompleted(MainLanguageStructure.progressKey(for: "Karışık"), stageCount: MainLanguageStructure.stagesPerSection)
+            ),
+            BadgeInfo(title: "Ana Diller Kupası", icon: "🏆", accentColor: KasifColor.accentHighlightStrong, unlocked: progress.isMainLanguageCategoryCompleted())
+        ]
+    }
+
     static func allBadges(progress: GameProgress) -> [BadgeInfo] {
-        bayrakTahminBadges(progress: progress) + haritaBilmeceBadges(progress: progress)
+        bayrakTahminBadges(progress: progress) + haritaBilmeceBadges(progress: progress) + anaDillerBadges(progress: progress)
     }
 }

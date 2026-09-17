@@ -42,4 +42,28 @@ struct ContinentPathNode: Identifiable {
     static func icon(for continentName: String) -> String {
         order.first { $0.name == continentName }?.systemImage ?? "globe"
     }
+
+    /// Ana Diller'in kıta yolu — flagGuessPath ile birebir aynı mantık, yalnızca
+    /// ilerleme MainLanguageStructure'ın ad-alanlı anahtarlarından okunuyor (bkz.
+    /// MainLanguageStructure.progressKey — "Avrupa" gibi düz kıta adları Bayrak
+    /// Tahmin'in kendi ilerlemesiyle çakışır).
+    static func mainLanguagePath(progress: GameProgress) -> [ContinentPathNode] {
+        var activeAssigned = false
+        return order.map { entry in
+            let isCompleted = progress.isContinentCompleted(
+                MainLanguageStructure.progressKey(for: entry.name),
+                stageCount: MainLanguageStructure.stagesPerSection
+            )
+            let state: KasifContinentNode.State
+            if isCompleted {
+                state = .completed
+            } else if !activeAssigned {
+                state = .active
+                activeAssigned = true
+            } else {
+                state = .locked
+            }
+            return ContinentPathNode(name: entry.name, systemImage: entry.systemImage, state: state)
+        }
+    }
 }

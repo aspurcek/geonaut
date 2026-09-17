@@ -5,6 +5,9 @@ import SwiftUI
 /// o kıtanın kupası kazanılır."
 struct ContinentCompleteView: View {
     let continentName: String
+    /// Bayrak Tahmin dışındaki kategoriler (ör. Ana Diller) kendi başarı metnini
+    /// geçebilir — varsayılan, bu ekranın ilk sahibi olan Bayrak Tahmin'in metni.
+    var achievementText: String? = nil
     var onContinue: () -> Void
 
     private var icon: (icon: String, color: Color) {
@@ -23,7 +26,7 @@ struct ContinentCompleteView: View {
                 .foregroundStyle(KasifColor.textPrimary)
                 .multilineTextAlignment(.center)
 
-            Text("\(continentName)'daki tüm bayrakları öğrendin. \(continentName) Kupasını kazandın!")
+            Text(achievementText ?? "\(continentName)'daki tüm bayrakları öğrendin. \(continentName) Kupasını kazandın!")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(KasifColor.textSecondary)
                 .multilineTextAlignment(.center)

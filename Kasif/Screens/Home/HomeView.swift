@@ -34,6 +34,12 @@ struct HomeView: View {
         case countryPuzzleEtapMap
         case countryPuzzleQuiz(stageIndex: Int)
         case mapCategoryComplete
+        case anaDillerHome
+        case anaDillerEtapMap(continent: String)
+        case anaDillerQuiz(continent: String, stageIndex: Int)
+        case anaDillerContinentComplete(continent: String)
+        case anaDillerCategoryComplete
+        case learnLanguages
     }
 
     var body: some View {
@@ -232,6 +238,80 @@ struct HomeView: View {
                 case .mapCategoryComplete:
                     MapCategoryCompleteView(onContinue: { path.removeLast(path.count) })
                         .navigationBarHidden(true)
+
+                case .anaDillerHome:
+                    AnaDillerHomeView(
+                        progress: progress,
+                        onBack: { path.removeLast() },
+                        onSelectContinent: { continent in path.append(Route.anaDillerEtapMap(continent: continent)) },
+                        onSelectLearn: { path.append(Route.learnLanguages) }
+                    )
+                    .navigationBarHidden(true)
+
+                case .anaDillerEtapMap(let continent):
+                    EtapMapView(
+                        sectionName: continent,
+                        categoryName: "Ana Diller",
+                        etapStates: progress.etapStates(
+                            continent: MainLanguageStructure.progressKey(for: continent),
+                            stageCount: MainLanguageStructure.stagesPerSection
+                        ),
+                        onSelectEtap: { stageIndex in path.append(Route.anaDillerQuiz(continent: continent, stageIndex: stageIndex)) },
+                        onBack: { path.removeLast() }
+                    )
+                    .navigationBarHidden(true)
+
+                case .anaDillerQuiz(let continent, let stageIndex):
+                    let progressKey = MainLanguageStructure.progressKey(for: continent)
+                    let languageSession = LanguageQuizSession(
+                        stageIndex: stageIndex,
+                        questions: Languages.makeQuestions(forContinent: continent, stageIndex: stageIndex)
+                    )
+                    LanguageQuizSessionView(
+                        session: languageSession,
+                        points: $points,
+                        onFinished: { earnedPoints in
+                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
+                            progress.markCountriesSeen(languageSession.questions.map(\.countryCode))
+                            onStageCompleted()
+
+                            let continentJustFinished = progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
+                            if continentJustFinished && continent != "Karışık" {
+                                path.append(Route.anaDillerContinentComplete(continent: continent))
+                            } else if progress.isMainLanguageCategoryCompleted() {
+                                path.append(Route.anaDillerCategoryComplete)
+                            } else {
+                                // Bayrak Tahmin/Harita Bilmece ile aynı kural: her etap
+                                // sonunda köke (Ana Sayfa) dönülür, Ana Diller Giriş'ine değil.
+                                path.removeLast(path.count)
+                            }
+                        },
+                        onExit: { path.removeLast() }
+                    )
+                    .navigationBarHidden(true)
+
+                case .anaDillerContinentComplete(let continent):
+                    ContinentCompleteView(
+                        continentName: continent,
+                        achievementText: "\(continent)'daki ülkelerin ana dillerini öğrendin. \(continent) Kupasını kazandın!",
+                        onContinue: {
+                            if progress.isMainLanguageCategoryCompleted() {
+                                path.append(Route.anaDillerCategoryComplete)
+                            } else {
+                                path.removeLast(path.count)
+                            }
+                        }
+                    )
+                    .navigationBarHidden(true)
+
+                case .anaDillerCategoryComplete:
+                    AnaDillerCategoryCompleteView(onContinue: { path.removeLast(path.count) })
+                        .navigationBarHidden(true)
+
+                case .learnLanguages:
+                    LearnLanguagesView(onBack: { path.removeLast() })
+                        .navigationBarHidden(true)
                 }
             }
         }
@@ -305,8 +385,21 @@ struct HomeView: View {
                 }
                 .buttonStyle(.kasifCategoryCard)
 
-                Button {} label: {
-                    KasifCategoryCard(title: "Ana Diller", icon: .system("character.book.closed.fill"), state: .locked)
+                let languagesUnlocked = progress.isMapPuzzleCategoryCompleted()
+                Button {
+                    if !languagesUnlocked {
+                        return
+                    } else if isGuest {
+                        onRequireSignIn()
+                    } else {
+                        path.append(Route.anaDillerHome)
+                    }
+                } label: {
+                    KasifCategoryCard(
+                        title: "Ana Diller", icon: .system("character.book.closed.fill"),
+                        state: languagesUnlocked ? .unlocked : .locked,
+                        iconCircleColor: KasifColor.accentTertiary, iconTintColor: KasifColor.accentTertiaryStrong
+                    )
                 }
                 .buttonStyle(.kasifCategoryCard)
             }
