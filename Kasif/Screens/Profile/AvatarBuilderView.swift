@@ -46,7 +46,7 @@ struct AvatarBuilderView: View {
                     KasifAvatar(backgroundColor: Color(hex: draftColorHex), character: draft)
                         .frame(maxWidth: .infinity)
 
-                    pickerSection(title: "Zemin rengini seç") {
+                    pickerSection(title: "Profil rengini seç") {
                         ForEach(KasifColor.avatarSwatches, id: \.hex) { swatch in
                             colorSwatch(swatch.color, isSelected: draftColorHex == swatch.hex) {
                                 draftColorHex = swatch.hex

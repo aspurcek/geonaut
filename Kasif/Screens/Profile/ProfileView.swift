@@ -123,13 +123,9 @@ struct ProfileView: View {
 
                 Button { path.append(Route.settings) } label: {
                     Circle()
-                        .fill(KasifColor.bgSurface)
+                        .fill(KasifColor.accentPrimary)
                         .frame(width: 30, height: 30)
-                        .overlay {
-                            Image(systemName: "gearshape.fill")
-                                .font(.system(size: 14))
-                                .foregroundStyle(KasifColor.textSecondary)
-                        }
+                        .overlay { settingsIcon.foregroundStyle(.white) }
                 }
                 .buttonStyle(.plain)
             }
@@ -142,6 +138,19 @@ struct ProfileView: View {
                 KasifBadge(text: levelTitle, tone: level.badgeTone)
             }
         }
+    }
+
+    /// Dişli yerine Figma "Icon/Settings" (node 347:55504) ile birebir aynı iki-kaydırıcı
+    /// glifi — 24x24 doğal kanvasta çizilip rozet boyutuna ölçekleniyor.
+    private var settingsIcon: some View {
+        ZStack {
+            Capsule().frame(width: 12.13, height: 2).position(x: 8.06, y: 8)
+            Circle().frame(width: 4, height: 4).position(x: 18, y: 8)
+            Capsule().frame(width: 12.13, height: 2).position(x: 15.94, y: 16)
+            Circle().frame(width: 4, height: 4).position(x: 6, y: 16)
+        }
+        .frame(width: 24, height: 24)
+        .scaleEffect(14.0 / 24.0)
     }
 
     private var statCards: some View {
