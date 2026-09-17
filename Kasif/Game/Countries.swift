@@ -416,7 +416,9 @@ enum Countries {
         var result: [FlagQuestion] = []
         for _ in 0..<count {
             let shuffled = pool.shuffled()
-            let correct = shuffled[0]
+            // Havuz hiç boş olmamalı ama `Languages.makeQuestions`'daki "boşsa
+            // sessizce daha az soru üret" kuralıyla tutarlı olsun diye çökme yok.
+            guard let correct = shuffled.first else { continue }
             let distractors = Array(shuffled.dropFirst().prefix(3))
             let direction: FlagQuestion.Direction = isRecall && Bool.random() ? .nameToFlag : .flagToName
             if direction == .nameToFlag {

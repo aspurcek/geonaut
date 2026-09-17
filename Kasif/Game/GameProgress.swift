@@ -9,7 +9,7 @@ import Foundation
 final class GameProgress {
     private(set) var completedStages: [String: Set<Int>] = [:]
     /// "Öğrenilen Ülke" istatistiği (bkz. Kaşif Uygulama Kural Kitabı böl. 08) — bir
-    /// ülke, bir soruda (Bayrak Tahmin ya da Harita Bilmece, doğru/yanlış fark etmez)
+    /// ülke, bir soruda (Bayrak Tahmin, Harita Bilmece ya da Ana Diller — doğru/yanlış fark etmez)
     /// gösterilip cevaplandığında bu kümeye eklenir. Kullanıcı kararı: "görüp cevap
     /// verdiği ülkeler" = öğrenilen ülkeler.
     private(set) var learnedCountryCodes: Set<String> = []

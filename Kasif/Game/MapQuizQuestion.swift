@@ -30,10 +30,14 @@ enum MapQuizGenerator {
         // stageIndex 0 tabanlı (Etap 1 = 0); questionTypes(forStage:) Kural Kitabı'ndaki
         // 1 tabanlı etap numaralarını (Etap 1-2, 3, 4, 5, 6-8) bekliyor.
         let types = MapPuzzleStructure.questionTypes(forStage: stageIndex + 1)
-        return (0..<count).map { _ in
+        // `MapCountries.all` sabit bir literal ve bugün asla boş değil, ama
+        // `Languages.makeQuestions`'daki "havuz boşsa sessizce daha az soru üret"
+        // kuralıyla tutarlı olsun diye burada da çökme yerine erken çıkış tercih edildi.
+        guard !MapCountries.all.isEmpty else { return [] }
+        return (0..<count).compactMap { _ -> MapQuizQuestion? in
             let kind = types.randomElement() ?? .highlightMapSelectName
-            let country = MapCountries.all.randomElement()!
-            let correctContinent = country.acceptedContinents.randomElement()!
+            guard let country = MapCountries.all.randomElement(),
+                  let correctContinent = country.acceptedContinents.randomElement() else { return nil }
 
             var options: [String] = []
             if kind != .flagTapMap {

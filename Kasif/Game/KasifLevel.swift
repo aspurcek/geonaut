@@ -7,12 +7,17 @@ import Foundation
 /// kendi niyetini (içerik tavanlarına orantılı, her kademe "ne kadarını
 /// tamamladığını hissettirir") somut sayılara döken karar bu.
 ///
-/// Puan tavanları: Bayrak Tahmin 640 soru × 10 puan = 6400 (bkz. Bayrak Tahmin
-/// Kural Kitabı böl. 01), Harita Bilmece 160 soru × 10 puan = 1600 (Kıtalar +
-/// Ülkeler, böl. 05) — toplam MVP tavanı ~8000 + 100 başlangıç puanı.
+/// Puan tavanları — üç kategori de aynı 7 kıta + Karışık / 8 etap / 10 soru
+/// iskeletini paylaşıyor (bkz. FlagGuessStructure/MainLanguageStructure):
+/// Bayrak Tahmin 640 soru × 10 puan = 6400, Ana Diller aynı şekilde 6400
+/// (bkz. Ana Diller Kural Kitabı), Harita Bilmece 160 soru × 10 puan = 1600
+/// (Kıtalar + Ülkeler) — toplam tavan 6400+6400+1600 = 14400 + 100 başlangıç
+/// puanı ≈ 14500. (Önceki sürüm yalnızca ilk iki kategoriyi, ~8000 tavanı esas
+/// alıyordu — Ana Diller eklenince üst kademeler buna göre yeniden ölçeklendi.)
 /// Eşikler bu tavana göre: ilk kıtayı bitirmek (≈900p) hâlâ "Gezgin"de kalır,
-/// Bayrak Tahmin'in tamamını bitirmek (≈6500p) "Dünya Gezgini"ne taşır, Harita
-/// Bilmece'yi de bitirmek (≈8000+) "Efsanevi Kaşif"e ulaştırır.
+/// Bayrak Tahmin'in tamamını bitirmek (≈6500p) "Dünya Gezgini"ne taşır, ama
+/// Harita Bilmece'yi de bitirmek (≈8100p) artık "Efsanevi Kaşif" için yetmez —
+/// oraya ulaşmak Ana Diller'e de gerçek anlamda ilerlemeyi gerektirir.
 enum KasifLevel: CaseIterable {
     case caylak, gezgin, maceraci, yolUstasi, dunyaGezgini, efsanevi
 
@@ -21,8 +26,8 @@ enum KasifLevel: CaseIterable {
         case ..<300: .caylak
         case 300..<1000: .gezgin
         case 1000..<2500: .maceraci
-        case 2500..<4500: .yolUstasi
-        case 4500..<7000: .dunyaGezgini
+        case 2500..<5500: .yolUstasi
+        case 5500..<9000: .dunyaGezgini
         default: .efsanevi
         }
     }

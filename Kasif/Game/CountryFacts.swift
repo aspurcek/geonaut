@@ -1,9 +1,9 @@
 import Foundation
 
 /// Bir ülke hakkında Bayrak Tahmin ve Ana Diller'in ORTAK kullandığı ek gerçekler —
-/// kıtası ve ana/resmi dili. `Countries.swift`'teki 7 kıta havuzuyla aynı ~92 ülkeyi
-/// kapsar (bkz. o dosyanın "geçici veri seti" notu — bu da aynı ölçekte bir ara veri).
-/// İki kullanım yeri: (1) Ana Diller'in soru havuzları (bkz. Languages.swift),
+/// kıtası ve ana/resmi dili. `Countries.all`'daki 249 ülkenin tamamını kapsar (yalnızca
+/// quiz'lerin kullandığı 7 kıta havuzu hâlâ küçük bir alt küme — bkz. Countries.swift'in
+/// "geçici veri seti" notu). İki kullanım yeri: (1) Ana Diller'in soru havuzları (bkz. Languages.swift),
 /// (2) "Bayrakları/Ana Dilleri Öğren" listelerindeki ülke bilgi kartı (bkz.
 /// KasifCountryInfoCard) — kullanıcı kararı: satırlara dokunca ülke adı, bayrağı,
 /// dili ve kıtası gösterilsin.

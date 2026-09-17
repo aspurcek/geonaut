@@ -155,7 +155,7 @@ final class AppState {
         Task { try? await PlayerCloudKitService.save(profile) }
     }
 
-    /// Bir etap tamamlandığında (Bayrak Tahmin ya da Harita Bilmece) çağrılır — hem günlük
+    /// Bir etap tamamlandığında (Bayrak Tahmin, Harita Bilmece ya da Ana Diller) çağrılır — hem günlük
     /// seriyi hem de kazanılan puan/GameProgress'in ham hâlini TEK bir profil mutasyonunda
     /// birleştirip TEK bir CloudKit save() çağrısıyla kaydeder.
     ///

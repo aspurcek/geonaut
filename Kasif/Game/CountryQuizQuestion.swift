@@ -13,9 +13,10 @@ enum CountryQuizGenerator {
     static func makeQuestions(stageIndex: Int, count: Int = GameRules.questionsPerStage) -> [CountryQuizQuestion] {
         // stageIndex 0 tabanlı (Etap 1 = 0); questionTypes(forStage:) 1 tabanlı bekliyor.
         let types = CountryPuzzleStructure.questionTypes(forStage: stageIndex + 1)
-        return (0..<count).map { _ in
+        guard !MapCountries.all.isEmpty else { return [] }
+        return (0..<count).compactMap { _ -> CountryQuizQuestion? in
             let kind = types.randomElement() ?? .highlightMapSelectName
-            let country = MapCountries.all.randomElement()!
+            guard let country = MapCountries.all.randomElement() else { return nil }
             let distractors = MapCountries.all
                 .filter { $0.code != country.code }
                 .shuffled()
