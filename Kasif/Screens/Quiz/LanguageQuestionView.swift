@@ -13,10 +13,6 @@ struct LanguageQuestionView: View {
     @State private var selectedOption: String?
     @State private var isAnswered = false
 
-    private var mapCountry: MapCountry? {
-        MapCountries.all.first { $0.code == question.countryCode }
-    }
-
     var body: some View {
         VStack(spacing: KasifSpacing.xxl) {
             HStack(spacing: KasifSpacing.md) {
@@ -59,8 +55,10 @@ struct LanguageQuestionView: View {
         .background(KasifColor.bgCanvas)
     }
 
-    /// CountryQuestionView.mapCard ile aynı öncelik: gerçek `CountryMap-<kod>` varsa
-    /// onu, yoksa paylaşılan dünya haritasını ülkenin merkezine yakınlaştırıp gösterir.
+    /// Önce elle hazırlanmış `CountryMap-<kod>` varsa onu gösterir (17 ülke, oyunun
+    /// çizgi-illüstrasyon diliyle uyumlu); yoksa CountryCoordinates'teki gerçek
+    /// enlem/boylamla canlı bir MapKit haritası gösterir (bkz. KasifLiveCountryMap) —
+    /// bu, tüm 249 ülkeyi kapsadığı için ikinci dal pratikte hep bir sonuç bulur.
     @ViewBuilder
     private var mapCard: some View {
         Group {
@@ -68,19 +66,8 @@ struct LanguageQuestionView: View {
                 Image("CountryMap-\(question.countryCode)")
                     .resizable()
                     .scaledToFill()
-            } else if let mapCountry {
-                GeometryReader { geo in
-                    ZStack {
-                        Image("ContinentMap-neutral")
-                            .resizable()
-                            .frame(width: geo.size.width, height: geo.size.height)
-                            .scaleEffect(5, anchor: UnitPoint(x: mapCountry.mapCenter.x, y: mapCountry.mapCenter.y))
-                        Circle()
-                            .fill(KasifColor.accentInfoStrong.opacity(0.55))
-                            .frame(width: 26, height: 26)
-                            .position(x: mapCountry.mapCenter.x * geo.size.width, y: mapCountry.mapCenter.y * geo.size.height)
-                    }
-                }
+            } else if let coordinate = CountryCoordinates.coordinate(for: question.countryCode) {
+                KasifLiveCountryMap(latitude: coordinate.lat, longitude: coordinate.lon)
             } else {
                 Image(systemName: "map.fill")
                     .font(.system(size: 60))

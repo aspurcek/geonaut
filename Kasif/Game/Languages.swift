@@ -22,9 +22,12 @@ enum Languages {
         return tricky.isEmpty ? base : tricky
     }
 
-    /// Yalnızca gerçek `CountryMap-<kod>` görseli olan ülkeler (bkz. MapCountries) —
-    /// harita uyarımlı sorularda YALNIZCA bunlar doğru cevap/gösterilen ülke olabilir.
-    private static let mapEligibleCodes: Set<String> = Set(MapCountries.all.map(\.code))
+    /// Harita uyarımlı sorularda gösterilen ülke — artık `CountryMap-<kod>` PNG'si
+    /// olan 17 ülkeyle sınırlı değil: CountryCoordinates'teki gerçek enlem/boylam
+    /// verisi sayesinde HERHANGİ bir ülke KasifLiveCountryMap ile canlı gösterilebiliyor
+    /// (bkz. LanguageQuestionView.mapCard'daki öncelik sırası: önce PNG varsa o, yoksa
+    /// canlı harita).
+    private static let mapEligibleCodes: Set<String> = Set(CountryCoordinates.coordinates.keys)
 
     static func language(for code: String) -> String {
         CountryData.facts[code]?.mainLanguage ?? "Bilinmiyor"

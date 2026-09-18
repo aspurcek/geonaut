@@ -50,7 +50,7 @@ struct CountryQuestionView: View {
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: KasifSpacing.md) {
                     ForEach(question.options, id: \.code) { option in
                         KasifCountryMapOption(
-                            countryCode: option.code, countryName: option.name, mapCenter: option.mapCenter,
+                            countryCode: option.code, countryName: option.name,
                             action: { select(option) }
                         )
                         .opacity(optionOpacity(for: option))
@@ -73,9 +73,10 @@ struct CountryQuestionView: View {
         }
     }
 
-    /// Figma'nın gerçek "Country Map Crop" export'u varsa onu kullanır (bkz.
-    /// KasifCountryMapOption'daki aynı öncelik sırası); yoksa paylaşılan dünya
-    /// haritasını ülkenin mapCenter'ı etrafında yakınlaştırıp vurgu noktası ekler.
+    /// Önce elle hazırlanmış `CountryMap-<kod>` varsa onu kullanır (17 ülke, oyunun
+    /// çizgi-illüstrasyon diliyle uyumlu); yoksa CountryCoordinates'teki gerçek
+    /// enlem/boylamla canlı bir MapKit haritası gösterir (bkz. KasifLiveCountryMap) —
+    /// `.extended` havuzundaki 249 ülkenin tamamı için çalışır.
     @ViewBuilder
     private func mapCard(for country: MapCountry) -> some View {
         Group {
@@ -83,19 +84,12 @@ struct CountryQuestionView: View {
                 Image("CountryMap-\(country.code)")
                     .resizable()
                     .scaledToFill()
+            } else if let coordinate = CountryCoordinates.coordinate(for: country.code) {
+                KasifLiveCountryMap(latitude: coordinate.lat, longitude: coordinate.lon)
             } else {
-                GeometryReader { geo in
-                    ZStack {
-                        Image("ContinentMap-neutral")
-                            .resizable()
-                            .frame(width: geo.size.width, height: geo.size.height)
-                            .scaleEffect(5, anchor: UnitPoint(x: country.mapCenter.x, y: country.mapCenter.y))
-                        Circle()
-                            .fill(KasifColor.accentInfoStrong.opacity(0.55))
-                            .frame(width: 26, height: 26)
-                            .position(x: country.mapCenter.x * geo.size.width, y: country.mapCenter.y * geo.size.height)
-                    }
-                }
+                Image(systemName: "map.fill")
+                    .font(.system(size: 60))
+                    .foregroundStyle(KasifColor.iconInactive)
             }
         }
         .frame(maxWidth: .infinity)

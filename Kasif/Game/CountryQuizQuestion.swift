@@ -13,11 +13,13 @@ enum CountryQuizGenerator {
     static func makeQuestions(stageIndex: Int, count: Int = GameRules.questionsPerStage) -> [CountryQuizQuestion] {
         // stageIndex 0 tabanlı (Etap 1 = 0); questionTypes(forStage:) 1 tabanlı bekliyor.
         let types = CountryPuzzleStructure.questionTypes(forStage: stageIndex + 1)
-        guard !MapCountries.all.isEmpty else { return [] }
+        // `.extended` (249 ülke) kullanılıyor, `.all` (17, Tip C'nin hassas dokunma
+        // kutusuna ihtiyaç duyduğu havuz) değil — bkz. MapCountries.extended'daki not.
+        guard !MapCountries.extended.isEmpty else { return [] }
         return (0..<count).compactMap { _ -> CountryQuizQuestion? in
             let kind = types.randomElement() ?? .highlightMapSelectName
-            guard let country = MapCountries.all.randomElement() else { return nil }
-            let distractors = MapCountries.all
+            guard let country = MapCountries.extended.randomElement() else { return nil }
+            let distractors = MapCountries.extended
                 .filter { $0.code != country.code }
                 .shuffled()
                 .prefix(3)
