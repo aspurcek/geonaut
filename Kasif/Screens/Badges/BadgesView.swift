@@ -7,16 +7,20 @@ import SwiftUI
 struct BadgesView: View {
     @Binding var selectedTab: KasifTab
     let progress: GameProgress
+    /// Kullanıcı kararı: rozete dokununca nasıl kazanılacağını (ve kazanıldıysa
+    /// kazanıldığını) anlatan bir bottom sheet açılsın — bkz. badgeInfoSheet.
+    @State private var selectedBadge: BadgeCardInfo?
 
     private var flagBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.bayrakTahminBadges(progress: progress) }
     private var mapBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.haritaBilmeceBadges(progress: progress) }
     private var languageBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.anaDillerBadges(progress: progress) }
+    private var foodBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.dunyaYemekleriBadges(progress: progress) }
 
     private var totalUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges).filter(\.unlocked).count
+        (flagBadges + mapBadges + languageBadges + foodBadges).filter(\.unlocked).count
     }
     private var totalTrophiesUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges).filter { $0.unlocked && $0.title.hasSuffix("Kupası") }.count
+        (flagBadges + mapBadges + languageBadges + foodBadges).filter { $0.unlocked && BadgeCatalog.categoryTrophyName.values.contains($0.title) }.count
     }
 
     var body: some View {
@@ -33,18 +37,23 @@ struct BadgesView: View {
                     }
 
                     badgeSection(
-                        title: "Bayrak Tahmin", subtitle: "9 rozet + kategori kupası",
-                        badges: flagBadges.map { (title: Self.shortContinentName($0.title), icon: $0.icon, color: $0.accentColor, unlocked: $0.unlocked) }
+                        title: "Bayraklar", subtitle: "9 rozet + kategori kupası",
+                        badges: flagBadges, displayTitle: Self.shortContinentName
                     )
 
                     badgeSection(
-                        title: "Harita Bilmece", subtitle: "2 rozet + kategori kupası",
-                        badges: mapBadges.map { (title: $0.title, icon: $0.icon, color: $0.accentColor, unlocked: $0.unlocked) }
+                        title: "Haritalar", subtitle: "2 rozet + kategori kupası",
+                        badges: mapBadges
                     )
 
                     badgeSection(
-                        title: "Ana Diller", subtitle: "9 rozet + kategori kupası",
-                        badges: languageBadges.map { (title: Self.shortContinentName($0.title), icon: $0.icon, color: $0.accentColor, unlocked: $0.unlocked) }
+                        title: "Diller", subtitle: "9 rozet + kategori kupası",
+                        badges: languageBadges, displayTitle: Self.shortContinentName
+                    )
+
+                    badgeSection(
+                        title: "Lezzetler", subtitle: "5 rozet + kategori kupası",
+                        badges: foodBadges, displayTitle: Self.shortContinentName
                     )
                 }
                 .padding(.horizontal, KasifSpacing.xl)
@@ -55,22 +64,31 @@ struct BadgesView: View {
         }
         .background(KasifColor.bgCanvas)
         .ignoresSafeArea(edges: .bottom)
+        .badgeInfoSheet(selected: $selectedBadge)
     }
 
-    private func badgeSection(title: String, subtitle: String, badges: [(title: String, icon: String, color: Color, unlocked: Bool)]) -> some View {
+    private func badgeSection(title: String, subtitle: String, badges: [BadgeCatalog.BadgeInfo], displayTitle: @escaping (String) -> String = { $0 }) -> some View {
         VStack(alignment: .leading, spacing: KasifSpacing.lg) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.custom(KasifFontName.balooBold, size: 20))
                     .foregroundStyle(KasifColor.textPrimary)
-                Text(subtitle)
+                Text(LocalizedStringKey(subtitle))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(KasifColor.textMuted)
             }
 
             KasifFlowLayout {
                 ForEach(badges, id: \.title) { badge in
-                    KasifAchievementBadge(title: badge.title, icon: badge.icon, accentColor: badge.color, state: badge.unlocked ? .unlocked : .locked)
+                    Button {
+                        selectedBadge = BadgeCardInfo(
+                            title: badge.title, icon: badge.icon, accentColor: badge.accentColor,
+                            unlocked: badge.unlocked, description: badge.description
+                        )
+                    } label: {
+                        KasifAchievementBadge(title: displayTitle(badge.title), icon: badge.icon, accentColor: badge.accentColor, state: badge.unlocked ? .unlocked : .locked)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
@@ -80,7 +98,7 @@ struct BadgesView: View {
     /// "K. Amerika"/"G. Amerika" olarak kısaltılmış (bkz. node 355:13868). Model
     /// tarafındaki tam isimler (FlagGuessStructure, ilerleme takibi) değişmiyor —
     /// bu yalnızca görüntü metni.
-    private static func shortContinentName(_ continent: String) -> String {
+    nonisolated private static func shortContinentName(_ continent: String) -> String {
         switch continent {
         case "Kuzey Amerika": return "K. Amerika"
         case "Güney Amerika": return "G. Amerika"

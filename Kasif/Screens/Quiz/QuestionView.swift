@@ -35,6 +35,7 @@ struct QuestionView: View {
             HStack(spacing: KasifSpacing.md) {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
+                        .accessibilityLabel("Geri")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(KasifColor.textPrimary)
                 }
@@ -42,7 +43,7 @@ struct QuestionView: View {
                 KasifStatPill(icon: .hearts, value: "\(hearts)")
             }
 
-            Text(question.direction == .flagToName ? "Bu hangi ülkenin bayrağı?" : "\"\(question.countryName)\" bayrağı hangisi?")
+            Text(question.direction == .flagToName ? LocalizedStringKey("Bu hangi ülkenin bayrağı?") : LocalizedStringKey("\"\(question.countryName)\" bayrağı hangisi?"))
                 .font(.custom(KasifFontName.balooBold, size: 20))
                 .foregroundStyle(KasifColor.textPrimary)
                 .multilineTextAlignment(.center)
@@ -66,13 +67,17 @@ struct QuestionView: View {
                         KasifFlagAnswerOption(countryCode: code, state: flagState(for: code), action: { select(code) })
                     }
                 }
-                Spacer()
             }
+
+            // .flagToName şıkları az yer kapladığı için bu Spacer olmadan ekranın
+            // altında boş alan kalıyordu (bkz. kullanıcı geri bildirimi "FULL PAGE
+            // OLMALI") — .nameToFlag zaten kendi Spacer'ını burada paylaşıyor.
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.lg)
         .padding(.bottom, KasifSpacing.xxxl)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 
     private func select(_ option: String) {

@@ -16,8 +16,9 @@ struct StageCompleteView: View {
             Spacer()
 
             KasifAuthIllustration(type: .trophy)
+                .kasifWinGlow()
 
-            Text("Etap \(stageIndex + 1) Tamamlandı!")
+            Text("Seviye \(stageIndex + 1) Tamamlandı!")
                 .font(.custom(KasifFontName.balooBold, size: 26))
                 .foregroundStyle(KasifColor.textPrimary)
                 .multilineTextAlignment(.center)
@@ -54,7 +55,7 @@ struct StageCompleteView: View {
         }
         .padding(.horizontal, KasifSpacing.xxl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 

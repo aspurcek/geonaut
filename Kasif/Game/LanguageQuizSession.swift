@@ -14,14 +14,17 @@ final class LanguageQuizSession {
     enum Phase { case playing, outOfHearts, completed }
     private(set) var phase: Phase = .playing
 
-    var currentQuestion: LanguageQuestion { questions[currentIndex] }
+    var currentQuestion: LanguageQuestion { questions[min(currentIndex, questions.count - 1)] }
 
     init(stageIndex: Int, questions: [LanguageQuestion]) {
         self.stageIndex = stageIndex
         self.questions = questions
+        // Boş soru dizisinde currentQuestion çökmesin diye oturum baştan biter.
+        if questions.isEmpty { phase = .completed }
     }
 
     func answer(isCorrect: Bool) {
+        AnswerFeedback.play(isCorrect: isCorrect)
         if isCorrect {
             correctCount += 1
             pointsEarnedThisSession += GameRules.pointsPerCorrectAnswer

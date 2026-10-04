@@ -5,6 +5,8 @@ import SwiftUI
 struct EtapMapView: View {
     let sectionName: String
     let categoryName: String
+    /// 0 = Tur 1 — bkz. TourStructure.
+    var tour: Int = 0
     let etapStates: [KasifEtapNode.State] // her zaman GameRules.questionsPerStage/etap yapısına göre 8 eleman
     var onSelectEtap: (Int) -> Void
     var onBack: () -> Void
@@ -14,16 +16,17 @@ struct EtapMapView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
+                        .accessibilityLabel("Geri")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(KasifColor.textPrimary)
                         .padding(KasifSpacing.sm)
                 }
 
                 VStack(alignment: .leading, spacing: KasifSpacing.xs) {
-                    Text(sectionName)
+                    Text(LocalizedStringKey(sectionName))
                         .font(.custom(KasifFontName.balooBold, size: 28))
                         .foregroundStyle(KasifColor.textPrimary)
-                    Text("\(categoryName) · \(etapStates.count) etap · \(GameRules.questionsPerStage) soru")
+                    Text("\(L(categoryName)) · Tur \(tour + 1) · \(etapStates.count) seviye · \(GameRules.questionsPerStage) soru")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(KasifColor.textSecondary)
                 }
@@ -37,7 +40,7 @@ struct EtapMapView: View {
                     } label: {
                         VStack(spacing: KasifSpacing.sm) {
                             KasifEtapNode(state: state)
-                            Text("Etap \(index + 1)")
+                            Text("Seviye \(index + 1)")
                                 .font(.custom(KasifFontName.balooBold, size: 12))
                                 .foregroundStyle(state == .locked ? KasifColor.textMuted : KasifColor.textPrimary)
                         }
@@ -49,14 +52,14 @@ struct EtapMapView: View {
             .padding(.horizontal, KasifSpacing.xl)
             .padding(.top, KasifSpacing.md)
         }
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 
 #Preview {
     EtapMapView(
         sectionName: "Avrupa",
-        categoryName: "Bayrak Tahmin",
+        categoryName: "Bayraklar",
         etapStates: [.completed, .active, .locked, .locked, .locked, .locked, .locked, .locked],
         onSelectEtap: { _ in },
         onBack: {}

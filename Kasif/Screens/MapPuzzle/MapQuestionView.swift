@@ -25,6 +25,7 @@ struct MapQuestionView: View {
             HStack(spacing: KasifSpacing.md) {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
+                        .accessibilityLabel("Geri")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(KasifColor.textPrimary)
                 }
@@ -32,7 +33,7 @@ struct MapQuestionView: View {
                 KasifStatPill(icon: .hearts, value: "\(hearts)")
             }
 
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.custom(KasifFontName.balooBold, size: 20))
                 .foregroundStyle(KasifColor.textPrimary)
                 .multilineTextAlignment(.center)
@@ -49,10 +50,9 @@ struct MapQuestionView: View {
             mapCard
 
             if question.kind == .flagTapMap {
-                Text(tapHintText)
+                Text(LocalizedStringKey(tapHintText))
                     .font(.system(size: 13, weight: .semibold))
                     .foregroundStyle(KasifColor.textMuted)
-                Spacer()
             } else {
                 VStack(spacing: KasifSpacing.md) {
                     ForEach(question.continentOptions, id: \.self) { option in
@@ -60,11 +60,16 @@ struct MapQuestionView: View {
                     }
                 }
             }
+
+            // .flagTapMap kendi Spacer'ını burada paylaşıyordu; diğer iki tip (metin
+            // şıklı) olmadan ekranın altında boş alan kalıyordu (bkz. kullanıcı geri
+            // bildirimi "FULL PAGE OLMALI").
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.lg)
         .padding(.bottom, KasifSpacing.xxxl)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 
     private var title: String {

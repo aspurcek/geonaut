@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Ana Diller kategorisinin tamamı (7 kıta + Karışık) bitince gösterilir — bkz.
-/// GameProgress.isMainLanguageCategoryCompleted. Kaşif'in üçüncü ve son kategorisi
-/// olduğu için (bkz. MapCategoryCompleteView'daki zincir notu) başka bir kategoriyi
-/// açtığını söylemez, genel bir "hepsini bitirdin" kutlaması yapar.
+/// GameProgress.isMainLanguageCategoryCompleted. MapCategoryCompleteView'daki zincir
+/// deseniyle aynı: Dünya Yemekleri kategorisinin kilidini açar (bkz.
+/// WorldFoodsCategoryCompleteView — Kaşif'in artık son kategorisi orası).
 struct AnaDillerCategoryCompleteView: View {
     var onContinue: () -> Void
 
@@ -11,13 +11,14 @@ struct AnaDillerCategoryCompleteView: View {
         ScrollView {
             VStack(spacing: KasifSpacing.lg) {
                 KasifAuthIllustration(type: .trophy)
+                    .kasifWinGlow()
 
-                Text("Ana Diller Kupası!")
+                Text("Dil Ustası!")
                     .font(.custom(KasifFontName.balooBold, size: 26))
                     .foregroundStyle(KasifColor.textPrimary)
                     .multilineTextAlignment(.center)
 
-                Text("Dünyanın 7 kıtasındaki ülkelerin ana dillerini öğrendin! Kaşif'in tüm kategorilerini tamamladın.")
+                Text("Diller kategorisinin 3 turunu da bitirdin! Dünyanın ülkelerinin ana dillerini öğrendin.")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(KasifColor.textSecondary)
                     .multilineTextAlignment(.center)
@@ -33,7 +34,7 @@ struct AnaDillerCategoryCompleteView: View {
                                         .font(.system(size: 16))
                                         .foregroundStyle(.white)
                                 }
-                            Text(continent)
+                            Text(LocalizedStringKey(continent))
                                 .font(.custom(KasifFontName.balooBold, size: 10))
                                 .foregroundStyle(KasifColor.textPrimary)
                                 .multilineTextAlignment(.center)
@@ -52,7 +53,7 @@ struct AnaDillerCategoryCompleteView: View {
             .padding(.top, KasifSpacing.xxxxl)
             .padding(.bottom, KasifSpacing.xxxl)
         }
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 

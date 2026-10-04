@@ -50,6 +50,7 @@ struct KasifCountryMapOption: View {
         }
         .buttonStyle(.plain)
         .disabled(action == nil)
+        .accessibilityLabel(countryName)
     }
 }
 

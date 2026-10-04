@@ -41,7 +41,7 @@ struct KasifStatCard: View {
             Text(value)
                 .font(KasifTypography.title)
                 .foregroundStyle(KasifColor.textPrimary)
-            Text(type.label)
+            Text(LocalizedStringKey(type.label))
                 .font(KasifTypography.caption)
                 .foregroundStyle(KasifColor.textSecondary)
                 .lineLimit(1)

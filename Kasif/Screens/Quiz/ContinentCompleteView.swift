@@ -20,13 +20,14 @@ struct ContinentCompleteView: View {
 
             KasifAchievementBadge(title: continentName, icon: icon.icon, accentColor: icon.color, state: .unlocked)
                 .scaleEffect(1.1)
+                .kasifWinGlow(color: icon.color)
 
-            Text("\(continentName) Kıtası Tamamlandı!")
+            Text("\(L(continentName)) Kıtası Tamamlandı!")
                 .font(.custom(KasifFontName.balooBold, size: 24))
                 .foregroundStyle(KasifColor.textPrimary)
                 .multilineTextAlignment(.center)
 
-            Text(achievementText ?? "\(continentName)'daki tüm bayrakları öğrendin. \(continentName) Kupasını kazandın!")
+            Text(achievementText.map { LocalizedStringKey($0) } ?? LocalizedStringKey("\(L(continentName))'daki tüm bayrakları öğrendin. \(L(continentName)) Kupasını kazandın!"))
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(KasifColor.textSecondary)
                 .multilineTextAlignment(.center)
@@ -40,7 +41,7 @@ struct ContinentCompleteView: View {
         }
         .padding(.horizontal, KasifSpacing.xxl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 

@@ -27,7 +27,7 @@ struct KasifBadge: View {
     }
 
     var body: some View {
-        Text(text)
+        Text(LocalizedStringKey(text))
             .font(KasifTypography.caption)
             .foregroundStyle(foreground)
             .padding(.horizontal, KasifSpacing.md)

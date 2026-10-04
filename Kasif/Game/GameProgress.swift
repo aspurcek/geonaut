@@ -104,35 +104,59 @@ final class GameProgress {
         (completedStages[continent]?.count ?? 0) >= stageCount
     }
 
-    /// Bayrak Tahmin kategorisinin tamamı (7 kıta + Karışık) bitti mi — bkz. Bayrak
-    /// Tahmin Kural Kitabı böl. 07: "8 bölümün hepsi bitince kategori kupası verilir."
-    func isFlagGuessCategoryCompleted() -> Bool {
-        ContinentPathNode.order.allSatisfy { isContinentCompleted($0.name, stageCount: FlagGuessStructure.stagesPerSection) }
+    // MARK: - Tur sistemi (Tur 1 / Tur 2 / Tur 3)
+    //
+    // Kullanıcı kararı: her kategorinin 3 turu var. Tur 1 bitince hem Tur 2 hem DİĞER
+    // kategoriler açılır; kategori kupası ancak 3 turun HEPSİ bitince verilir. Kıta/bölüm
+    // rozetleri Tur 1'e bağlı kalır (bkz. BadgeCatalog).
+
+    /// Bir kategorinin verilen turdaki (0 = Tur 1) tüm bölümleri bitti mi.
+    func isCategoryCompleted(_ category: TourCategory, tour: Int) -> Bool {
+        func done(_ key: String, _ count: Int) -> Bool {
+            isContinentCompleted(TourStructure.progressKey(key, tour: tour), stageCount: count)
+        }
+        switch category {
+        case .flags:
+            return ContinentPathNode.order.allSatisfy { done($0.name, FlagGuessStructure.stagesPerSection) }
+        case .maps:
+            return done(MapPuzzleStructure.progressKey, MapPuzzleStructure.stageCount)
+                && done(CountryPuzzleStructure.progressKey, CountryPuzzleStructure.stageCount)
+        case .languages:
+            return ContinentPathNode.order.allSatisfy { done(MainLanguageStructure.progressKey(for: $0.name), MainLanguageStructure.stagesPerSection) }
+        case .foods:
+            return WorldFoodStructure.sections.allSatisfy { done(WorldFoodStructure.progressKey(for: $0), WorldFoodStructure.stagesPerSection) }
+        }
     }
 
-    /// Harita Bilmece'nin Kıtalar bölümü bitti mi (bkz. MapPuzzleStructure).
+    /// Tur 2/3, bir önceki tur bitince açılır; Tur 1 hep açık.
+    func isTourUnlocked(_ category: TourCategory, tour: Int) -> Bool {
+        tour <= 0 || isCategoryCompleted(category, tour: tour - 1)
+    }
+
+    /// Kategori kupası — 3 turun HEPSİ bitince.
+    func isCategoryTrophyEarned(_ category: TourCategory) -> Bool {
+        (0..<TourStructure.count).allSatisfy { isCategoryCompleted(category, tour: $0) }
+    }
+
+    /// Bayrak Tahmin Tur 1 (7 kıta + Karışık) bitti mi — sonraki kategorinin kilidini açar.
+    func isFlagGuessCategoryCompleted() -> Bool { isCategoryCompleted(.flags, tour: 0) }
+
+    /// Harita Bilmece'nin Kıtalar bölümü bitti mi (bkz. MapPuzzleStructure) — Tur 1.
     func isMapPuzzleContinentsCompleted() -> Bool {
         isContinentCompleted(MapPuzzleStructure.progressKey, stageCount: MapPuzzleStructure.stageCount)
     }
 
-    /// Harita Bilmece'nin Ülkeler bölümü bitti mi (bkz. CountryPuzzleStructure).
+    /// Harita Bilmece'nin Ülkeler bölümü bitti mi (bkz. CountryPuzzleStructure) — Tur 1.
     func isMapPuzzleCountriesCompleted() -> Bool {
         isContinentCompleted(CountryPuzzleStructure.progressKey, stageCount: CountryPuzzleStructure.stageCount)
     }
 
-    /// Harita Bilmece Kupası — Figma'nın "Rozetler & Kupalar" ekranı (bkz. BadgeCatalog)
-    /// bu kategori için 2 ayrı rozet (Kıtalar + Ülkeler) gösteriyor; Bayrak Tahmin'de
-    /// kupa nasıl tüm kıta rozetlerini gerektiriyorsa, burada da kupa ikisinin de
-    /// bitirilmesini gerektirir — tek bölüm bitince kupa vermek rozet ayrımını anlamsızlaştırırdı.
-    func isMapPuzzleCategoryCompleted() -> Bool {
-        isMapPuzzleContinentsCompleted() && isMapPuzzleCountriesCompleted()
-    }
+    /// Haritalar Tur 1 (Kıtalar + Ülkeler) bitti mi.
+    func isMapPuzzleCategoryCompleted() -> Bool { isCategoryCompleted(.maps, tour: 0) }
 
-    /// Ana Diller kategorisinin tamamı (7 kıta + Karışık) bitti mi — bkz.
-    /// MainLanguageStructure.progressKey (Bayrak Tahmin'inkiyle çakışmayan ad alanı).
-    func isMainLanguageCategoryCompleted() -> Bool {
-        ContinentPathNode.order.allSatisfy {
-            isContinentCompleted(MainLanguageStructure.progressKey(for: $0.name), stageCount: MainLanguageStructure.stagesPerSection)
-        }
-    }
+    /// Diller Tur 1 (7 kıta + Karışık) bitti mi.
+    func isMainLanguageCategoryCompleted() -> Bool { isCategoryCompleted(.languages, tour: 0) }
+
+    /// Lezzetler Tur 1 (Yemekler/İçecekler/Tatlılar + Karışık) bitti mi.
+    func isWorldFoodCategoryCompleted() -> Bool { isCategoryCompleted(.foods, tour: 0) }
 }

@@ -2,8 +2,7 @@ import AuthenticationServices
 import SwiftUI
 
 /// Uygulamanın kimlik doğrulama + oyuncu profili durumu. Apple'ın verdiği
-/// `userIdentifier` cihazda saklanır (Keychain değil UserDefaults — hassas bir sır
-/// değil, sadece opak bir tanımlayıcı); her açılışta `getCredentialState` ile hâlâ
+/// `userIdentifier` cihazda saklanır (Keychain'de); her açılışta `getCredentialState` ile hâlâ
 /// geçerli mi diye sorulur (Apple hesabından çıkış/iptal durumunu yakalamak için).
 @Observable
 final class AppState {
@@ -20,6 +19,11 @@ final class AppState {
     }
 
     private(set) var phase: Phase = .checkingExistingSession
+    /// Son CloudKit çağrısı başarısızsa false — yerel yedek kullanılıyor demektir.
+    private(set) var cloudReachable = true
+    /// Yerel yedek gerçek oyuncu verisi taşıyorsa bulut tekrar denenebilir; yedek yoksa
+    /// (boş varsayılan profil) buluttaki gerçek kaydın üzerine yazma riski nedeniyle denenmez.
+    private var localIsAuthoritative = true
     let appleSignIn = AppleSignInCoordinator()
 
     private static let userIdentifierKey = "kasif.appleUserIdentifier"
@@ -38,7 +42,13 @@ final class AppState {
     }
 
     func start() {
-        guard let savedUserIdentifier = UserDefaults.standard.string(forKey: Self.userIdentifierKey) else {
+        // Eski sürümlerde UserDefaults'ta saklanan kimliği Keychain'e taşı.
+        if KeychainStore.string(forKey: Self.userIdentifierKey) == nil,
+           let legacy = UserDefaults.standard.string(forKey: Self.userIdentifierKey) {
+            KeychainStore.set(legacy, forKey: Self.userIdentifierKey)
+        }
+        UserDefaults.standard.removeObject(forKey: Self.userIdentifierKey)
+        guard let savedUserIdentifier = KeychainStore.string(forKey: Self.userIdentifierKey) else {
             phase = .signedOut
             return
         }
@@ -47,21 +57,21 @@ final class AppState {
                 let state = try await ASAuthorizationAppleIDProvider().credentialState(forUserID: savedUserIdentifier)
                 switch state {
                 case .authorized:
-                    await loadProfile(userIdentifier: savedUserIdentifier, fallbackName: "Kaşif")
+                    await loadProfile(userIdentifier: savedUserIdentifier, fallbackName: String(localized: "Kaşif"))
                 case .revoked, .notFound, .transferred:
                     // Kullanıcı Apple hesabından bu uygulamanın erişimini gerçekten iptal
                     // etmiş — burada oturumu kapatmak doğru.
-                    UserDefaults.standard.removeObject(forKey: Self.userIdentifierKey)
+                    KeychainStore.remove(Self.userIdentifierKey)
                     phase = .signedOut
                 @unknown default:
-                    await loadProfile(userIdentifier: savedUserIdentifier, fallbackName: "Kaşif")
+                    await loadProfile(userIdentifier: savedUserIdentifier, fallbackName: String(localized: "Kaşif"))
                 }
             } catch {
                 // Durum sorgusu ağ/geçici bir sebeple başarısız oldu — bu, kullanıcının
                 // gerçekten çıkış yaptığı anlamına gelmez. Onu login ekranına geri atmak
                 // yerine iyimser şekilde profille devam ediyoruz (loadProfile zaten
                 // CloudKit'e erişilemezse yerel bir profile düşüyor).
-                await loadProfile(userIdentifier: savedUserIdentifier, fallbackName: "Kaşif")
+                await loadProfile(userIdentifier: savedUserIdentifier, fallbackName: String(localized: "Kaşif"))
             }
         }
     }
@@ -85,33 +95,108 @@ final class AppState {
     #if DEBUG
     /// Yalnızca DEBUG derlemelerinde: gerçek Apple ID'ye ihtiyaç duymadan (simulator'de
     /// iCloud hesabı olmadığında) akışı test edebilmek için. Release/App Store
-    /// derlemesine hiç girmez.
+    /// derlemesine hiç girmez. Bayrak Tahmin, Harita Bilmece ve Ana Diller'i baştan
+    /// tamamlanmış işaretler ki Dünya Yemekleri (en yeni kategori) simulator'de her
+    /// seferinde 3 kategoriyi elle bitirmeden doğrudan test edilebilsin — Dünya
+    /// Yemekleri'nin kendisi kasıtlı olarak bomboş bırakıldı, gerçek oynanışı test edilebilsin.
     func signInAsDebugGuest() {
-        phase = .signedIn(.newPlayer(appleUserIdentifier: "debug-guest", displayName: "Test Kaşif"))
+        var profile = PlayerProfile.newPlayer(appleUserIdentifier: "debug-guest", displayName: "Test Kaşif")
+        profile.completedStageKeys = Self.debugAllPriorCategoriesCompletedKeys
+        phase = .signedIn(profile)
+    }
+
+    private static var debugAllPriorCategoriesCompletedKeys: Set<String> {
+        var keys: Set<String> = []
+        let allStages = 0..<FlagGuessStructure.stagesPerSection
+        for continent in ContinentPathNode.order.map(\.name) {
+            for stage in allStages {
+                keys.insert("\(continent)|\(stage)") // Bayraklar
+                keys.insert("\(MainLanguageStructure.progressKey(for: continent))|\(stage)") // Diller
+            }
+        }
+        for stage in 0..<MapPuzzleStructure.stageCount {
+            keys.insert("\(MapPuzzleStructure.progressKey)|\(stage)") // Haritalar · Kıtalar
+        }
+        for stage in 0..<CountryPuzzleStructure.stageCount {
+            keys.insert("\(CountryPuzzleStructure.progressKey)|\(stage)") // Haritalar · Ülkeler
+        }
+        return keys
     }
     #endif
 
     func signOut() {
-        UserDefaults.standard.removeObject(forKey: Self.userIdentifierKey)
+        if case .signedIn(let profile) = phase {
+            LocalProfileCache.deleteIfSynced(userIdentifier: profile.appleUserIdentifier)
+        }
+        KeychainStore.remove(Self.userIdentifierKey)
+        StreakReminderScheduler.cancelAll() // çıkış yapan kişiye eski serinin hatırlatması gitmesin
         phase = .signedOut
     }
 
+    /// "Hesabımı Sil" — CloudKit kaydını siler, yerel oturumu temizler. Silme başarısız
+    /// olursa (ağ yok vb.) oturum AÇIK kalır ve false döner; kullanıcı tekrar deneyebilir.
+    @MainActor
+    func deleteAccount() async -> Bool {
+        guard case .signedIn(let profile) = phase else { return false }
+        do {
+            try await PlayerCloudKitService.delete(appleUserIdentifier: profile.appleUserIdentifier)
+        } catch {
+            return false
+        }
+        LocalProfileCache.delete(userIdentifier: profile.appleUserIdentifier)
+        KeychainStore.remove(Self.userIdentifierKey)
+        StreakReminderScheduler.cancelAll()
+        phase = .signedOut
+        return true
+    }
+
     private func handleSignedIn(userIdentifier: String, fullName: PersonNameComponents?, email: String?) {
-        UserDefaults.standard.set(userIdentifier, forKey: Self.userIdentifierKey)
+        KeychainStore.set(userIdentifier, forKey: Self.userIdentifierKey)
         let name = [fullName?.givenName, fullName?.familyName].compactMap { $0 }.joined(separator: " ")
-        Task { await loadProfile(userIdentifier: userIdentifier, fallbackName: name.isEmpty ? "Kaşif" : name, email: email) }
+        Task { await loadProfile(userIdentifier: userIdentifier, fallbackName: name.isEmpty ? String(localized: "Kaşif") : name, email: email) }
     }
 
     @MainActor
     private func loadProfile(userIdentifier: String, fallbackName: String, email: String? = nil) async {
         phase = .loadingProfile
+        let cached = LocalProfileCache.load(userIdentifier: userIdentifier)
         do {
-            let profile = try await PlayerCloudKitService.fetchOrCreateProfile(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
+            var profile = try await PlayerCloudKitService.fetchOrCreateProfile(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
+            if let cached, cached.dirty {
+                // Çevrimdışıyken yapılan değişiklikler gönderilmemiş — buluttakiyle BİRLEŞTİR
+                // (ezme yok, bkz. PlayerProfile.merging) ve gönder.
+                profile = cached.profile.merging(cloud: profile)
+                persist(profile)
+            } else {
+                LocalProfileCache.save(profile, dirty: false)
+            }
             phase = .signedIn(profile)
         } catch {
             // CloudKit'e erişilemiyorsa (iCloud oturumu yok, ağ yok vb.) kullanıcıyı
-            // uygulama dışında bırakmak yerine yerel/varsayılan bir profille devam ettiriyoruz.
-            phase = .signedIn(PlayerProfile.newPlayer(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email))
+            // uygulama dışında bırakmak yerine cihazdaki yedekle (yoksa yeni profille) devam
+            // ettiriyoruz. Değişiklikler `dirty` işaretlenir; bulut kaydının üzerine boş
+            // profil yazılmaz, bağlantı gelince yedek gönderilir.
+            let profile = cached?.profile ?? PlayerProfile.newPlayer(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
+            LocalProfileCache.save(profile, dirty: cached?.dirty ?? false)
+            cloudReachable = false
+            localIsAuthoritative = cached != nil
+            phase = .signedIn(profile)
+        }
+    }
+
+    /// Profili önce cihaza yazar (her zaman), sonra buluta göndermeyi dener. Bulut
+    /// erişilemiyorsa yedek `dirty` kalır ve sonraki açılışta gönderilir.
+    private func persist(_ profile: PlayerProfile) {
+        LocalProfileCache.save(profile, dirty: true)
+        guard cloudReachable || localIsAuthoritative else { return }
+        Task { @MainActor in
+            do {
+                try await PlayerCloudKitService.save(profile)
+                LocalProfileCache.save(profile, dirty: false)
+                cloudReachable = true
+            } catch {
+                cloudReachable = false
+            }
         }
     }
 
@@ -123,7 +208,7 @@ final class AppState {
         guard case .signedIn(var profile) = phase else { return }
         profile.displayName = displayName
         phase = .signedIn(profile)
-        Task { try? await PlayerCloudKitService.save(profile) }
+        persist(profile)
     }
 
     /// "Avatarını Oluştur" ekranından zemin rengi + karakter (ten/saç/aksesuar/yüz
@@ -132,8 +217,9 @@ final class AppState {
         guard case .signedIn(var profile) = phase else { return }
         profile.avatarColorHex = avatarColorHex
         profile.avatarCharacter = character
+        profile.hasCustomAvatar = true
         phase = .signedIn(profile)
-        Task { try? await PlayerCloudKitService.save(profile) }
+        persist(profile)
     }
 
     /// "Seri Kaybı Akışı" (bkz. Streak.swift) — "50 Puan ile Canlandır": puan düşer,
@@ -143,7 +229,7 @@ final class AppState {
         profile.points -= GameRules.streakReviveCost
         profile.lastActiveDate = .now
         phase = .signedIn(profile)
-        Task { try? await PlayerCloudKitService.save(profile) }
+        persist(profile)
     }
 
     /// "Vazgeç" → "Yeniden Başla": seri sıfırlanır, bugünden itibaren yeniden sayılır.
@@ -152,7 +238,7 @@ final class AppState {
         profile.streakDays = 0
         profile.lastActiveDate = .now
         phase = .signedIn(profile)
-        Task { try? await PlayerCloudKitService.save(profile) }
+        persist(profile)
     }
 
     /// Bir etap tamamlandığında (Bayrak Tahmin, Harita Bilmece ya da Ana Diller) çağrılır — hem günlük
@@ -192,6 +278,11 @@ final class AppState {
         profile.bestPointsByStage = bestPointsByStage
 
         phase = .signedIn(profile)
-        Task { try? await PlayerCloudKitService.save(profile) }
+        persist(profile)
+
+        // Bugün oynandığı için "yarın 19:00" hatırlatmasını yeniden planla — kullanıcı
+        // Ayarlar'dan açtıysa devam eder, kapalıysa reschedule zaten no-op (bkz. Scheduler).
+        let reminderEnabled = UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey)
+        StreakReminderScheduler.reschedule(streakDays: profile.streakDays, enabled: reminderEnabled)
     }
 }

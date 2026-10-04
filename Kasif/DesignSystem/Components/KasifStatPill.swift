@@ -40,6 +40,16 @@ struct KasifStatPill: View {
         .padding(.vertical, KasifSpacing.sm)
         .background(KasifColor.bgSurface, in: Capsule())
         .shadow(color: .black.opacity(0.08), radius: 3, x: 0, y: 2)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityText)
+    }
+
+    private var accessibilityText: String {
+        switch icon {
+        case .streak: return String(localized: "Seri: \(value) gün")
+        case .points: return String(localized: "\(value) puan")
+        case .hearts: return String(localized: "\(value) can")
+        }
     }
 }
 

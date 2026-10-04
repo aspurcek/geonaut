@@ -15,7 +15,7 @@ struct KasifSocialButton: View {
         Button(action: action) {
             HStack(spacing: KasifSpacing.sm) {
                 icon
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.custom(KasifFontName.balooBold, size: 14))
                     .foregroundStyle(provider == .apple ? .white : KasifColor.textPrimary)
             }

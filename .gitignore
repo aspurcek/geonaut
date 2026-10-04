@@ -7,3 +7,14 @@ xcuserdata/
 *.moved-aside
 *.xccheckout
 *.xcscmblueprint
+
+# Secrets / signing (asla commit'lenmemeli)
+.env
+.env.*
+*.p8
+*.p12
+*.cer
+*.mobileprovision
+*.certSigningRequest
+Secrets.xcconfig
+GoogleService-Info.plist

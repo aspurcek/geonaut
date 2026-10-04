@@ -9,5 +9,15 @@
 		<string>Nunito-Bold.ttf</string>
 		<string>Nunito-ExtraBold.ttf</string>
 	</array>
+	<!-- Açılış ekranı (30 Eyl 2026, önce Figma'da tasarlandı: "Açılış Ekranı (Launch
+	     Screen)" node 949:20255) — Onboarding'deki krem zemin + maskot, metinsiz
+	     (Apple HIG: launch screen anlık görünür, metin/yerelleştirme gerektirmemeli). -->
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+		<key>UIImageName</key>
+		<string>Mascot</string>
+	</dict>
 </dict>
 </plist>

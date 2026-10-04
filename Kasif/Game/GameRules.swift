@@ -76,6 +76,53 @@ enum MainLanguageStructure {
     static func progressKey(for continent: String) -> String { "AnaDiller-\(continent)" }
 }
 
+/// Dünya Yemekleri — diğer 3 kategori kıta bazlı ilerlerken, Dünya Yemekleri TÜR
+/// bazlı ilerliyor: "Avrupa/Asya/..." yerine "Yemekler/İçecekler/Tatlılar", en sonda
+/// da "Karışık" (bkz. WorldFoods.makeQuestions(forSection:stageIndex:)). Her bölümün
+/// kendi 8 etap/10 soru iskeleti Bayrak Tahmin'inkiyle aynı (bkz. FlagGuessStructure),
+/// ama etap içeriği kullanıcı kararıyla şu şekilde sabitlendi (kıta bazlı kategorilerin
+/// "tanıma → hatırlama" ilerleyişinden farklı, kendine özgü bir desen):
+/// Etap 1-4: yemeğin GÖRSELİ + adı birlikte gösterilir ("Görseldeki '...' hangi
+/// ülkeye ait?") — ülke adı şıklarından bulunur.
+/// Etap 5: yalnızca yemeğin İSMİ verilir (görsel yok) — şıklar ülke adı değil, 4 ülke
+/// BAYRAĞI (görsel şık).
+/// Etap 6: yalnızca yemeğin İSMİ verilir (görsel yok) — şıklar düz metin ülke adı.
+/// Etap 7-8: hepsi karışık — stil de yön de (ülke→yemek dahil) soru başına rastgele.
+/// Bkz. FoodQuestion.Style ve WorldFoods.makeQuestions.
+enum WorldFoodStructure {
+    static let sections = ["Yemekler", "İçecekler", "Tatlılar", "Karışık"]
+    static let sectionCount = sections.count
+    static let stagesPerSection = FlagGuessStructure.stagesPerSection
+    static let questionsPerStage = GameRules.questionsPerStage
+
+    /// Bir bölüm adını o bölümde sorulacak sabit türe çevirir — "Karışık" için nil
+    /// (soru başına rastgele tür, bkz. WorldFoods.makeQuestions).
+    static func foodType(for section: String) -> FoodType? {
+        switch section {
+        case "Yemekler": .yemek
+        case "İçecekler": .icecek
+        case "Tatlılar": .tatli
+        default: nil
+        }
+    }
+
+    /// Bir etap için sabit soru stili — "Karışık" bölümdeki tür seçimiyle aynı desen:
+    /// nil dönerse WorldFoods.makeQuestions soru başına rastgele bir Style seçer
+    /// (etap 7-8, stageIndex 6-7).
+    static func style(forStage stageIndex: Int) -> FoodQuestion.Style? {
+        switch stageIndex {
+        case 0, 1, 2, 3: .foodImageToCountry
+        case 4: .foodNameToCountryFlags
+        case 5: .foodNameToCountryText
+        default: nil
+        }
+    }
+
+    /// Diğer kategorilerin ad-alanlı anahtarlarıyla çakışmaması için önek — bkz.
+    /// MainLanguageStructure.progressKey'deki aynı gerekçe.
+    static func progressKey(for section: String) -> String { "DunyaYemekleri-\(section)" }
+}
+
 /// Harita Bilmece — bkz. Harita Bilmece Kural Kitabı böl. 01, 04, 05.
 ///
 /// Kaynak notu: Harita Bilmece kural kitabı PDF'i "Bölüm: 1 (yalnız Kıtalar)" diyor,

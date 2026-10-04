@@ -35,6 +35,20 @@ enum PlayerCloudKitService {
     /// başarısız olurdu (ve recordStageCompletion/updateProfile gibi çağıranlar bunu
     /// `try?` ile sessizce yutardı — ilerleme hiç kalıcı olmazdı).
     static func save(_ profile: PlayerProfile) async throws {
+        // İki cihaz ya da art arda iki kayıt aynı kaydı aynı anda değiştirirse CloudKit
+        // `serverRecordChanged` ile reddeder — o durumda kaydı yeniden getirip bir kez daha
+        // dene (en fazla 3 deneme) ki güncelleme sessizce kaybolmasın.
+        for attempt in 1...3 {
+            do {
+                try await saveOnce(profile)
+                return
+            } catch let error as CKError where error.code == .serverRecordChanged && attempt < 3 {
+                continue
+            }
+        }
+    }
+
+    private static func saveOnce(_ profile: PlayerProfile) async throws {
         let database = container.privateCloudDatabase
         let id = recordID(for: profile.appleUserIdentifier)
         let record: CKRecord
@@ -48,6 +62,7 @@ enum PlayerCloudKitService {
         record["points"] = profile.points
         record["streakDays"] = profile.streakDays
         record["avatarColorHex"] = Int64(profile.avatarColorHex)
+        record["hasCustomAvatar"] = profile.hasCustomAvatar ? 1 : 0
         record["skinTone"] = profile.skinTone.rawValue
         record["hairStyle"] = profile.hairStyle.rawValue
         record["hairColorHex"] = Int64(profile.hairColorHex)
@@ -60,14 +75,24 @@ enum PlayerCloudKitService {
         _ = try await database.save(record)
     }
 
+    /// Hesap silme (App Store 5.1.1(v)) — kayıt zaten yoksa başarılı sayılır.
+    static func delete(appleUserIdentifier: String) async throws {
+        do {
+            _ = try await container.privateCloudDatabase.deleteRecord(withID: recordID(for: appleUserIdentifier))
+        } catch let error as CKError where error.code == .unknownItem {
+            return
+        }
+    }
+
     private static func profile(from record: CKRecord) -> PlayerProfile {
         PlayerProfile(
             appleUserIdentifier: record.recordID.recordName.replacingOccurrences(of: "player-", with: ""),
-            displayName: record["displayName"] as? String ?? "Kaşif",
+            displayName: record["displayName"] as? String ?? String(localized: "Kaşif"),
             email: record["email"] as? String,
             points: record["points"] as? Int ?? GameRules.newPlayerStartingPoints,
             streakDays: record["streakDays"] as? Int ?? 0,
             avatarColorHex: UInt32((record["avatarColorHex"] as? Int64) ?? 0xFF987E),
+            hasCustomAvatar: ((record["hasCustomAvatar"] as? Int64) ?? 0) != 0,
             skinTone: (record["skinTone"] as? String).flatMap(SkinTone.init) ?? .acik,
             hairStyle: (record["hairStyle"] as? String).flatMap(HairStyle.init) ?? .kisa,
             hairColorHex: UInt32((record["hairColorHex"] as? Int64) ?? 0x222938),

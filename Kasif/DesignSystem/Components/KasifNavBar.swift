@@ -35,13 +35,15 @@ struct KasifNavBar: View {
                     VStack(spacing: KasifSpacing.xs) {
                         Image(systemName: tab.systemImage(isActive: isActive))
                             .font(.system(size: 22))
-                        Text(tab.title)
+                        Text(LocalizedStringKey(tab.title))
                             .font(KasifTypography.captionSmall)
                     }
                     .foregroundStyle(isActive ? KasifColor.accentPrimary : KasifColor.iconInactive)
                     .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(tab.title)
+                .accessibilityAddTraits(isActive ? .isSelected : [])
             }
         }
         .padding(.horizontal, KasifSpacing.md)

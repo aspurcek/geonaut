@@ -8,6 +8,11 @@ struct KasifFlagListRow: View {
     let countryCode: String
     let countryName: String
     var continentName: String? = nil
+    /// Figma'da "Bayrakları Öğren" / "Ana Dilleri Öğren" satırları beyaz zeminli
+    /// (node 334:11041 varsayılan dolgusu), ama Harita Bilmece "Ülkeler" listesindeki
+    /// (node 341:44855) örneklerde bu dolgu kaldırılmış — satırlar şeffaf, krem
+    /// bgCanvas zemin arkadan görünüyor. Varsayılan true iki mevcut kullanımı korur.
+    var showsWhiteBackground: Bool = true
 
     var body: some View {
         HStack(spacing: 14) {
@@ -23,7 +28,7 @@ struct KasifFlagListRow: View {
 
             if let continentName {
                 Spacer(minLength: KasifSpacing.sm)
-                Text(continentName)
+                Text(D(continentName))
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(KasifColor.textMuted)
                     .lineLimit(1)
@@ -40,7 +45,7 @@ struct KasifFlagListRow: View {
         .padding(.horizontal, KasifSpacing.xs)
         .padding(.vertical, 10)
         .frame(height: 56)
-        .background(Color.white)
+        .background(showsWhiteBackground ? Color.white : Color.clear)
         .contentShape(Rectangle())
     }
 }

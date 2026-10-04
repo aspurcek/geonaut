@@ -16,6 +16,9 @@ struct KasifProgressBar: View {
         }
         .frame(height: 14)
         .animation(.easeOut(duration: 0.3), value: progress)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("İlerleme")
+        .accessibilityValue(String(localized: "yüzde \(Int(min(max(progress, 0), 1) * 100))"))
     }
 }
 

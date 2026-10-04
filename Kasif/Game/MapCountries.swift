@@ -5,7 +5,9 @@ import CoreGraphics
 /// CLAUDE_CODE_HANDOFF.md böl. 3.2: "Ülkeler bölümünde kullanılan 17 ülke."
 struct MapCountry {
     let code: String
-    let name: String
+    /// Türkçe kaynak ad (karşılaştırma/anahtar); ekranda `name` (yerelleştirilmiş) gösterilir.
+    let turkishName: String
+    var name: String { D(turkishName) }
     let continent: String
     /// Figma'nın "ContinentMap" dünya haritası SVG'sindeki (aynı veri, node 330:14385
     /// vb.) gerçek ülke sınırlarından hesaplanmış konum/boyut — Tip C'nin "haritadan
@@ -16,6 +18,14 @@ struct MapCountry {
     /// çocuklar için bilinçli olarak cömert/geniş dokunma alanları kullanılıyor.
     let mapCenter: CGPoint
     let mapHalfSize: CGSize
+
+    init(code: String, name: String, continent: String, mapCenter: CGPoint, mapHalfSize: CGSize) {
+        self.code = code
+        self.turkishName = name
+        self.continent = continent
+        self.mapCenter = mapCenter
+        self.mapHalfSize = mapHalfSize
+    }
 
     /// "Avrupa / Asya" gibi kıta arası ülkeler için kabul edilen tüm kıta adları.
     var acceptedContinents: Set<String> {

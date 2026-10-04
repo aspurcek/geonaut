@@ -14,6 +14,18 @@ struct KasifApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(appState: appState)
+                // iPad: arayüz telefon genişliğinde tasarlandı, o yüzden geniş ekranda
+                // uzayıp bozulmaması için ortalanmış bir sütun olarak gösteriliyor —
+                // ama artık iPad'de iPhone'dan daha geniş bir sütun (bkz.
+                // KasifLayout.columnMaxWidth): kategori kartları, rozet ızgarası gibi
+                // kendi kendine sarmalanan (flow) bileşenler bu sayede iPad'de daha
+                // fazla öğeyi tek satırda/ekranda gösterebiliyor (iPhone'da maxWidth etkisiz).
+                .frame(maxWidth: KasifLayout.columnMaxWidth)
+                .frame(maxWidth: .infinity)
+                .background(KasifColor.bgCanvas.ignoresSafeArea())
+                // Tasarım yalnızca açık (krem) tema için hazırlandı: sabit renkli zeminlerde
+                // koyu moddaki sistem metin renkleri okunmaz hâle gelirdi — her zaman açık tema.
+                .preferredColorScheme(.light)
                 .task { appState.start() }
         }
     }
@@ -32,8 +44,7 @@ private struct RootView: View {
         case .checkingExistingSession, .signingIn, .loadingProfile:
             ZStack {
                 KasifColor.bgCanvas.ignoresSafeArea()
-                ProgressView()
-                    .tint(KasifColor.accentPrimary)
+                KasifStatusView(style: .loading, title: "Yükleniyor…", subtitle: "Dünyanı hazırlıyoruz.")
             }
 
         case .signedOut:
@@ -54,7 +65,7 @@ private struct RootView: View {
 
         case .guest:
             RootTabView(
-                profile: .newPlayer(appleUserIdentifier: "guest", displayName: "Kaşif"),
+                profile: .newPlayer(appleUserIdentifier: "guest", displayName: String(localized: "Kaşif")),
                 isGuest: true,
                 onRequireSignIn: { appState.signInWithApple() }
             )
@@ -74,7 +85,7 @@ private struct RootView: View {
                 .onAppear { isHandlingStreakLoss = true }
             } else {
                 RootTabView(
-                    profile: profile,
+                    profile: profile, cloudReachable: appState.cloudReachable,
                     onSaveSettings: { displayName in
                         appState.updateProfile(displayName: displayName)
                     },
@@ -84,22 +95,16 @@ private struct RootView: View {
                     onStageCompleted: { points, completedStageKeys, learnedCountryCodes, bestPointsByStage in
                         appState.recordStageCompletion(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)
                     },
-                    onSignOut: { appState.signOut() }
+                    onSignOut: { appState.signOut() },
+                    onDeleteAccount: { await appState.deleteAccount() }
                 )
             }
 
         case .error(let message):
-            VStack(spacing: KasifSpacing.lg) {
-                Text("Bir şeyler ters gitti")
-                    .font(KasifTypography.headingM)
-                Text(message)
-                    .font(KasifTypography.bodySemibold)
-                    .foregroundStyle(KasifColor.textSecondary)
-                    .multilineTextAlignment(.center)
-                Button("Tekrar Dene") { appState.signInWithApple() }
-                    .buttonStyle(.kasifPrimary)
-            }
-            .padding(KasifSpacing.xxxl)
+            KasifStatusView(
+                style: .error, title: "Bir şeyler ters gitti", subtitle: message,
+                actionTitle: "Tekrar Dene", action: { appState.signInWithApple() }
+            )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(KasifColor.bgCanvas)
         }

@@ -10,13 +10,14 @@ struct CategoryCompleteView: View {
         ScrollView {
             VStack(spacing: KasifSpacing.lg) {
                 KasifAuthIllustration(type: .trophy)
+                    .kasifWinGlow()
 
-                Text("Bayrak Bilmece Kupası!")
+                Text("Bayrak Ustası!")
                     .font(.custom(KasifFontName.balooBold, size: 26))
                     .foregroundStyle(KasifColor.textPrimary)
                     .multilineTextAlignment(.center)
 
-                Text("Dünyadaki tüm kıtaların bayraklarını öğrendin! Harita Bilmece kategorisinin kilidi açıldı.")
+                Text("Bayraklar kategorisinin 3 turunu da bitirdin! Dünyadaki tüm kıtaların bayraklarını öğrendin.")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(KasifColor.textSecondary)
                     .multilineTextAlignment(.center)
@@ -32,7 +33,7 @@ struct CategoryCompleteView: View {
                                         .font(.system(size: 18))
                                         .foregroundStyle(.white)
                                 }
-                            Text(continent)
+                            Text(LocalizedStringKey(continent))
                                 .font(.custom(KasifFontName.balooBold, size: 10))
                                 .foregroundStyle(KasifColor.textPrimary)
                                 .multilineTextAlignment(.center)
@@ -51,7 +52,7 @@ struct CategoryCompleteView: View {
             .padding(.top, KasifSpacing.xxxxl)
             .padding(.bottom, KasifSpacing.xxxl)
         }
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 

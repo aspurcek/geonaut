@@ -34,7 +34,7 @@ struct KasifAchievementBadge: View {
                     }
                 }
 
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.custom(KasifFontName.balooBold, size: 14))
                 .foregroundStyle(state == .locked ? KasifColor.textMuted : KasifColor.textPrimary)
                 .lineLimit(1)

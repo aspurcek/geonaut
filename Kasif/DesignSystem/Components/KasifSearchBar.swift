@@ -16,7 +16,7 @@ struct KasifSearchBar: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(KasifColor.textSecondary)
 
-            TextField(placeholder, text: $text)
+            TextField(LocalizedStringKey(placeholder), text: $text)
                 .focused($isFocused)
                 .font(.system(size: 15))
                 .foregroundStyle(KasifColor.textPrimary)

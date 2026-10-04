@@ -26,7 +26,7 @@ struct MapQuizQuestion {
 }
 
 enum MapQuizGenerator {
-    static func makeQuestions(stageIndex: Int, count: Int = GameRules.questionsPerStage) -> [MapQuizQuestion] {
+    static func makeQuestions(stageIndex: Int, count: Int = GameRules.questionsPerStage, tour: Int = 0) -> [MapQuizQuestion] {
         // stageIndex 0 tabanlı (Etap 1 = 0); questionTypes(forStage:) Kural Kitabı'ndaki
         // 1 tabanlı etap numaralarını (Etap 1-2, 3, 4, 5, 6-8) bekliyor.
         let types = MapPuzzleStructure.questionTypes(forStage: stageIndex + 1)
@@ -34,10 +34,15 @@ enum MapQuizGenerator {
         // `Languages.makeQuestions`'daki "havuz boşsa sessizce daha az soru üret"
         // kuralıyla tutarlı olsun diye burada da çökme yerine erken çıkış tercih edildi.
         guard !MapCountries.all.isEmpty else { return [] }
+        // Aynı ülke bir etapta tekrar etmesin diye havuzdan çekerek (without
+        // replacement) seçiliyor — bkz. Countries.makeQuestions'daki aynı prensip.
+        let preferred = TourStructure.preferredCodes(MapCountries.all.map(\.code), tour: tour, stageIndex: stageIndex, size: count)
+        var deck = TourStructure.deck(MapCountries.all, code: \.code, preferred: preferred)
         return (0..<count).compactMap { _ -> MapQuizQuestion? in
             let kind = types.randomElement() ?? .highlightMapSelectName
-            guard let country = MapCountries.all.randomElement(),
-                  let correctContinent = country.acceptedContinents.randomElement() else { return nil }
+            if deck.isEmpty { deck = TourStructure.deck(MapCountries.all, code: \.code, preferred: preferred) }
+            let country = deck.removeFirst()
+            guard let correctContinent = country.acceptedContinents.randomElement() else { return nil }
 
             var options: [String] = []
             if kind != .flagTapMap {

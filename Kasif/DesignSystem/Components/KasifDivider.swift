@@ -8,7 +8,7 @@ struct KasifDivider: View {
     var body: some View {
         HStack(spacing: KasifSpacing.md) {
             Rectangle().fill(KasifColor.borderSubtle).frame(height: 1.5)
-            Text(label)
+            Text(LocalizedStringKey(label))
                 .font(KasifTypography.bodySemibold)
                 .foregroundStyle(KasifColor.textSecondary)
                 .fixedSize()

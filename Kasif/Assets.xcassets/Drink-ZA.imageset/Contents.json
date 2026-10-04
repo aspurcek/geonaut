@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Drink-ZA.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

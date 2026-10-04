@@ -33,6 +33,8 @@ struct KasifCountryInfoCard: View {
                 chip(icon: "🗣️", value: info.language, label: "Dili")
                 chip(icon: "🌍", value: info.continent, label: "Kıtası")
             }
+            // Kutular aynı yükseklikte olsun (kullanıcı kararı) — en uzun kutuya eşitlenir.
+            .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.xl)
@@ -42,17 +44,17 @@ struct KasifCountryInfoCard: View {
     private func chip(icon: String, value: String, label: String) -> some View {
         VStack(spacing: KasifSpacing.xs) {
             Text(icon).font(.system(size: 22))
-            Text(value)
+            Text(D(value))
                 .font(.custom(KasifFontName.balooExtraBold, size: 16))
                 .foregroundStyle(KasifColor.textPrimary)
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)
-            Text(label)
+            Text(LocalizedStringKey(label))
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(KasifColor.textSecondary)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.vertical, KasifSpacing.md)
         .background(KasifColor.bgCanvas, in: RoundedRectangle(cornerRadius: KasifRadius.lg))
     }

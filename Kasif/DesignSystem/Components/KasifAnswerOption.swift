@@ -33,7 +33,7 @@ struct KasifAnswerOption: View {
         Button {
             action?()
         } label: {
-            Text(text)
+            Text(D(text))
                 .font(.custom(KasifFontName.balooBold, size: 15))
                 .foregroundStyle(textColor)
                 .frame(maxWidth: .infinity)

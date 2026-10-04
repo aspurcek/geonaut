@@ -27,15 +27,15 @@ struct KasifTextField: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: KasifSpacing.xs) {
-            Text(label)
+            Text(LocalizedStringKey(label))
                 .font(KasifTypography.bodySemibold)
                 .foregroundStyle(KasifColor.textPrimary)
 
             Group {
                 if isSecure {
-                    SecureField(placeholder, text: $text)
+                    SecureField(LocalizedStringKey(placeholder), text: $text)
                 } else {
-                    TextField(placeholder, text: $text)
+                    TextField(LocalizedStringKey(placeholder), text: $text)
                         .keyboardType(keyboardType)
                 }
             }
@@ -52,11 +52,11 @@ struct KasifTextField: View {
             }
 
             if let errorMessage {
-                Text(errorMessage)
+                Text(LocalizedStringKey(errorMessage))
                     .font(KasifTypography.caption)
                     .foregroundStyle(KasifColor.accentDanger)
             } else if !helperText.isEmpty {
-                Text(helperText)
+                Text(LocalizedStringKey(helperText))
                     .font(KasifTypography.caption)
                     .foregroundStyle(KasifColor.textMuted)
             }
@@ -67,7 +67,7 @@ struct KasifTextField: View {
 
 #Preview {
     @Previewable @State var email = ""
-    @Previewable @State var filled = "aslikaya@ornek.com"
+    @Previewable @State var filled = "ornek@eposta.com"
     @Previewable @State var invalid = "ornek@eposta"
 
     VStack(spacing: KasifSpacing.xl) {

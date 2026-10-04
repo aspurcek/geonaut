@@ -3,7 +3,19 @@ import SwiftUI
 /// Figma Design System / Bileşenler / Streak Calendar (node 162:418). Profil ekranındaki
 /// haftalık seri takvimi — 7 gün için KasifDayChip'leri bir kartta birleştirir.
 struct KasifStreakCalendar: View {
-    static let dayLabels = ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pa"]
+    /// Pazartesi'den Pazar'a 7 kısa gün adı — uygulamanın diline göre.
+    static let dayLabels: [String] = {
+        let locale = DisplayName.locale
+        if locale.language.languageCode?.identifier == "tr" { return ["Pt", "Sa", "Ça", "Pe", "Cu", "Ct", "Pa"] }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = locale
+        let sundayFirst = calendar.shortStandaloneWeekdaySymbols
+        let mondayFirst = Array(sundayFirst.dropFirst()) + [sundayFirst[0]]
+        return mondayFirst.map { symbol in
+            let trimmed = symbol.replacingOccurrences(of: ".", with: "")
+            return String(trimmed.prefix(2)).prefix(1).uppercased(with: locale) + String(trimmed.prefix(2)).dropFirst()
+        }
+    }()
 
     /// 7 elemanlı dizi, Pazartesi'den Pazar'a.
     let dayStates: [KasifDayChip.State]

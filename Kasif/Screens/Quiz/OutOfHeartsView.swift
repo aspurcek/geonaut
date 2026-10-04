@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Figma "Canların Bitti" (node 174:1034). Bkz. Bayrak Tahmin Kural Kitabı böl. 04:
 /// puan ≥ 50 ise "Puanla Devam Et" (50 puan harcanır, canlar 5'e tamamlanır), değilse
-/// sadece "Etabı Baştan Başla" (ücretsiz, ilerleme sıfırlanır) aktif olur.
+/// sadece "Seviyeyi Baştan Başla" (ücretsiz, ilerleme sıfırlanır) aktif olur.
 ///
 /// Not: Figma'daki iki buton da genel "Başlayalım" placeholder metniyle bırakılmış —
 /// kural kitabındaki gerçek eylemlere göre metinler dolduruldu (tasarımda eksik olan
@@ -37,7 +37,7 @@ struct OutOfHeartsView: View {
                     .frame(maxWidth: .infinity)
                     .disabled(!canAffordRefill)
 
-                Button("Etabı Baştan Başla", action: onRestartStage)
+                Button("Seviyeyi Baştan Başla", action: onRestartStage)
                     .buttonStyle(.kasifSecondary)
                     .frame(maxWidth: .infinity)
             }
@@ -46,7 +46,7 @@ struct OutOfHeartsView: View {
         }
         .padding(.horizontal, KasifSpacing.xxl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 

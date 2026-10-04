@@ -40,7 +40,7 @@ struct KasifToast: View {
             Image(systemName: systemImage)
                 .font(.system(size: 20))
                 .foregroundStyle(foreground)
-            Text(message)
+            Text(LocalizedStringKey(message))
                 .font(KasifTypography.bodySemibold)
                 .foregroundStyle(foreground)
                 .fixedSize(horizontal: false, vertical: true)

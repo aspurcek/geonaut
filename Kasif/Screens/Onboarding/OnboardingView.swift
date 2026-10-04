@@ -30,28 +30,30 @@ struct OnboardingView: View {
                 Image(systemName: "star.fill")
                     .foregroundStyle(KasifColor.accentPrimarySoft)
                     .font(.system(size: 22))
+                    .kasifFloat(dx: 5, dy: 9, duration: 4.2)
                     .position(x: geo.size.width * 0.092, y: geo.size.height * 0.076)
                 Image(systemName: "star.fill")
                     .foregroundStyle(KasifColor.accentHighlight)
                     .font(.system(size: 16))
+                    .kasifFloat(dx: -6, dy: 7, duration: 3.6, delay: 0.6)
                     .position(x: geo.size.width * 0.718, y: geo.size.height * 0.130)
                 Circle()
                     .strokeBorder(KasifColor.accentInfoStrong.opacity(0.5), style: StrokeStyle(lineWidth: 1.5, dash: [3, 3]))
                     .frame(width: 20, height: 20)
+                    .kasifFloat(dx: 4, dy: -8, duration: 5, delay: 1.1)
                     .position(x: geo.size.width * 0.836, y: geo.size.height * 0.178)
 
                 VStack(spacing: KasifSpacing.xxxxl) {
                     Spacer()
 
-                    Image("Macot")
-                        .resizable()
-                        .frame(width: 176, height: 176)
+                    // Kullanıcı kararı: giriş ekranında maskot zıplasın (bkz. KasifBouncingMascot).
+                    KasifBouncingMascot(size: 176)
 
                     VStack(spacing: KasifSpacing.xs) {
-                        Text("Kaşif")
+                        Text("Geopal")
                             .font(KasifTypography.display)
                             .foregroundStyle(KasifColor.textPrimary)
-                        Text("Bayrakları öğren, dünyayı keşfet!")
+                        Text("Oyna, öğren, dünyayı keşfet!")
                             .font(KasifTypography.bodyBoldL)
                             .foregroundStyle(KasifColor.textSecondary)
                     }
@@ -62,6 +64,11 @@ struct OnboardingView: View {
                         Button("Şimdi değil, önce deneyeyim", action: onTryAsGuest)
                             .font(KasifTypography.bodySemibold)
                             .foregroundStyle(KasifColor.textSecondary)
+                        if let privacyURL = LegalLinks.privacyPolicy {
+                            Link("Gizlilik Politikası", destination: privacyURL)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(KasifColor.textMuted)
+                        }
                     }
                     .padding(.horizontal, KasifSpacing.xl)
 

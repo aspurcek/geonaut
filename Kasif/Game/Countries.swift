@@ -8,7 +8,14 @@ import Foundation
 /// asseti olan 17 ülkeyle sınırlı — bkz. MapCountries.swift.
 struct Country {
     let code: String // ISO 3166-1 alpha-2
-    let name: String
+    /// Türkçe kaynak ad — karşılaştırma/anahtar için. Ekranda `name` (yerelleştirilmiş) gösterilir.
+    let turkishName: String
+    var name: String { D(turkishName) }
+
+    init(code: String, name: String) {
+        self.code = code
+        self.turkishName = name
+    }
 }
 
 enum Countries {
@@ -568,14 +575,47 @@ enum Countries {
 
     /// Bir etap için 10 soru üretir. `isRecall`=false ise bayrak→isim (etap 1-5),
     /// true ise karışık yön (etap 6-8) — bkz. Bayrak Tahmin Kural Kitabı böl. 03.
-    static func makeQuestions(from pool: [Country], count: Int = GameRules.questionsPerStage, isRecall: Bool) -> [FlagQuestion] {
+    /// Aynı koda sahip girişleri teke indirir — bir ülke birden çok kıtada listelenmiş olabilir
+    /// (örn. "Karışık" havuzu bunların birleşimi), aksi hâlde aynı ülke iki kez sorulabiliyordu.
+    static func uniqueByCode(_ countries: [Country]) -> [Country] {
+        var seen: Set<String> = []
+        return countries.filter { seen.insert($0.code).inserted }
+    }
+
+    /// Havuz bir etabın soru sayısından küçükse (örn. Antarktika 8 ülke, etap 10 soru) aynı
+    /// ülkeyi tekrar sormak yerine havuz dışından rastgele ülkelerle tamamlar.
+    static func fillerCountries(excluding pool: [Country], needed: Int) -> [Country] {
+        guard needed > 0 else { return [] }
+        let taken = Set(pool.map(\.code))
+        return Array(uniqueByCode(all).filter { !taken.contains($0.code) }.shuffled().prefix(needed))
+    }
+
+    static func makeQuestions(from rawPool: [Country], count: Int = GameRules.questionsPerStage, isRecall: Bool, tour: Int = 0, stageIndex: Int = 0) -> [FlagQuestion] {
+        guard !rawPool.isEmpty else { return [] }
+        let base = uniqueByCode(rawPool)
+        // Küçük havuz: tekrar yerine havuz dışından tamamlama (bkz. fillerCountries).
+        let pool = base + fillerCountries(excluding: base, needed: count - base.count)
+        // Tur 1/2/3: her tur aynı etapta farklı ülkelere öncelik verir (bkz. TourStructure).
+        let preferred = TourStructure.preferredCodes(base.map(\.code), tour: tour, stageIndex: stageIndex, size: count)
+        // Kullanıcı geri bildirimi: aynı soru bir etapta tekrar etmesin. Her doğru
+        // cevap havuzdan ÇEKİLEREK (without replacement) seçiliyor — havuz küçükse
+        // (ör. Antarktika 8 ülke, 10 soru) tükenince yeniden karılıp devam ediyor,
+        // ama tükenme sınırında bile bir öncekiyle aynı ülke ardı ardına gelmiyor
+        // (bkz. WorldFoods.usedImageCodes'daki aynı prensip).
+        var deck = TourStructure.deck(pool, code: \.code, preferred: preferred)
         var result: [FlagQuestion] = []
+        var lastCode: String?
         for _ in 0..<count {
-            let shuffled = pool.shuffled()
-            // Havuz hiç boş olmamalı ama `Languages.makeQuestions`'daki "boşsa
-            // sessizce daha az soru üret" kuralıyla tutarlı olsun diye çökme yok.
-            guard let correct = shuffled.first else { continue }
-            let distractors = Array(shuffled.dropFirst().prefix(3))
+            if deck.isEmpty {
+                deck = TourStructure.deck(pool, code: \.code, preferred: preferred)
+                if deck.count > 1, deck.first?.code == lastCode {
+                    deck.swapAt(0, 1)
+                }
+            }
+            let correct = deck.removeFirst()
+            lastCode = correct.code
+            let shuffled = pool.filter { $0.code != correct.code }.shuffled()
+            let distractors = Array(shuffled.prefix(3))
             let direction: FlagQuestion.Direction = isRecall && Bool.random() ? .nameToFlag : .flagToName
             if direction == .nameToFlag {
                 let flagOptions = ([correct] + distractors).shuffled().map(\.code)

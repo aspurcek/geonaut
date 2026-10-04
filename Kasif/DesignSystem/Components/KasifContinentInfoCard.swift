@@ -28,11 +28,11 @@ struct KasifContinentInfoCard: View {
                     .padding(.vertical, 5)
                     .background(KasifColor.accentPrimary, in: Capsule())
 
-                Text(info.name)
+                Text(LocalizedStringKey(info.name))
                     .font(.custom(KasifFontName.balooExtraBold, size: 30))
                     .foregroundStyle(KasifColor.textPrimary)
 
-                Text(info.fact)
+                Text(LocalizedStringKey(info.fact))
                     .font(.system(size: 14.5))
                     .foregroundStyle(KasifColor.textMuted)
             }

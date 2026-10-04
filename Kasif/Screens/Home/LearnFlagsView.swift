@@ -7,7 +7,7 @@ struct LearnFlagsView: View {
     @State private var query = ""
     @State private var selectedCountry: CountryCardInfo?
 
-    private var allCountries: [Country] { Countries.all }
+    private var allCountries: [Country] { Countries.all.sortedLocalized(by: \.name) }
 
     private var filtered: [Country] {
         guard !query.isEmpty else { return allCountries }
@@ -18,6 +18,7 @@ struct LearnFlagsView: View {
         VStack(alignment: .leading, spacing: 0) {
             Button(action: onBack) {
                 Image(systemName: "chevron.left")
+                    .accessibilityLabel("Geri")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(KasifColor.textPrimary)
                     .padding(KasifSpacing.sm)
@@ -39,6 +40,9 @@ struct LearnFlagsView: View {
             KasifSearchBar(placeholder: "Bayrak veya ülke adı ara...", text: $query)
                 .padding(.bottom, KasifSpacing.sm)
 
+            if filtered.isEmpty {
+                KasifStatusView(style: .empty, title: "Sonuç bulunamadı", subtitle: "Farklı bir ülke veya kelime denemeyi dene.")
+            } else {
             ScrollView {
                 LazyVStack(spacing: 0) {
                     ForEach(filtered, id: \.code) { country in
@@ -51,13 +55,14 @@ struct LearnFlagsView: View {
                     }
                 }
             }
+            }
         }
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.md)
         // Figma'da bu ekranın zemini krem bgCanvas değil, neredeyse beyaz
         // bgSurface (#FDFCF8) — satır kartlarıyla (Color.white) aynı aileden,
         // krem zemin diğer ekranlardan farklı olarak burada kullanılmıyor.
-        .background(KasifColor.bgSurface)
+        .background { KasifColor.bgSurface.ignoresSafeArea() }
         .countryInfoSheet(selected: $selectedCountry)
     }
 

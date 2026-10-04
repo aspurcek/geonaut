@@ -11,13 +11,14 @@ struct MapCategoryCompleteView: View {
         ScrollView {
             VStack(spacing: KasifSpacing.lg) {
                 KasifAuthIllustration(type: .trophy)
+                    .kasifWinGlow()
 
-                Text("Harita Bilmece Kupası!")
+                Text("Harita Ustası!")
                     .font(.custom(KasifFontName.balooBold, size: 26))
                     .foregroundStyle(KasifColor.textPrimary)
                     .multilineTextAlignment(.center)
 
-                Text("Dünyanın 7 kıtasını ve ülkelerini haritada bulmayı öğrendin! Ana Diller kategorisinin kilidi açıldı.")
+                Text("Haritalar kategorisinin 3 turunu da bitirdin! Kıtaları ve ülkeleri haritada bulmayı öğrendin.")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(KasifColor.textSecondary)
                     .multilineTextAlignment(.center)
@@ -31,7 +32,7 @@ struct MapCategoryCompleteView: View {
             .padding(.top, KasifSpacing.xxxxl)
             .padding(.bottom, KasifSpacing.xxxl)
         }
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 

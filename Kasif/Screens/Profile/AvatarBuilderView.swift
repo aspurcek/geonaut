@@ -30,6 +30,7 @@ struct AvatarBuilderView: View {
         VStack(alignment: .leading, spacing: 0) {
             Button(action: onBack) {
                 Image(systemName: "chevron.left")
+                    .accessibilityLabel("Geri")
                     .font(.system(size: 18, weight: .semibold))
                     .foregroundStyle(KasifColor.textPrimary)
                     .padding(KasifSpacing.sm)
@@ -120,13 +121,13 @@ struct AvatarBuilderView: View {
         }
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.md)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 
     @ViewBuilder
     private func pickerSection(title: String, @ViewBuilder content: () -> some View) -> some View {
         VStack(spacing: KasifSpacing.sm) {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(KasifColor.textMuted)
             HStack(spacing: 14) {

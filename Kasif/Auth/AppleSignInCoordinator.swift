@@ -35,8 +35,9 @@ final class AppleSignInCoordinator: NSObject {
 extension AppleSignInCoordinator: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
-            state = .failed("Beklenmeyen kimlik bilgisi türü")
-            onFailed?("Beklenmeyen kimlik bilgisi türü")
+            let message = String(localized: "Beklenmeyen kimlik bilgisi türü")
+            state = .failed(message)
+            onFailed?(message)
             return
         }
         state = .idle

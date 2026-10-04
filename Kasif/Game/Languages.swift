@@ -42,18 +42,33 @@ enum Languages {
     /// Bir etap için 10 soru üretir — bkz. MainLanguageStructure.style(forStage:):
     /// .standard/.tricky → her zaman bayrak uyarımı; .mixed (etap 7-8) → soru başına
     /// rastgele bayrak ya da harita uyarımı (harita yalnızca görseli olan ülkelerden).
-    static func makeQuestions(forContinent continent: String, stageIndex: Int) -> [LanguageQuestion] {
+    static func makeQuestions(forContinent continent: String, stageIndex: Int, tour: Int = 0) -> [LanguageQuestion] {
         let style = MainLanguageStructure.style(forStage: stageIndex)
         let fullPool = Countries.pool(forContinent: continent)
         let sourcePool = style == .tricky ? trickyPool(forContinent: continent) : fullPool
         let mapPool = fullPool.filter { mapEligibleCodes.contains($0.code) }
         let distractorSource = fullPool + Countries.mixed
+        let preferred = TourStructure.preferredCodes(fullPool.map(\.code), tour: tour, stageIndex: stageIndex)
+        let everyCountry = Countries.uniqueByCode(Countries.all)
 
+        // Aynı ülke bir etapta tekrar etmesin diye önce henüz sorulmamışlardan
+        // seçiliyor — havuz küçükse (ör. "zor" havuzu) ve tükenirse tekrara
+        // düşülüyor (bkz. Countries.makeQuestions/WorldFoods'taki aynı prensip).
+        var usedCodes: Set<String> = []
         var result: [LanguageQuestion] = []
         for _ in 0..<GameRules.questionsPerStage {
             let useMap = style == .mixed && !mapPool.isEmpty && Bool.random()
             let effectivePool = useMap ? mapPool : sourcePool
-            guard let correct = effectivePool.randomElement() else { continue }
+            // Aynı ülke bir etapta tekrar etmesin: önce havuzdan, tükenirse kıtanın tamamından,
+            // o da tükenirse (küçük havuz) tüm ülkelerden seçilir — harita sorusunda yalnızca
+            // haritası gösterilebilen ülkeler.
+            var chosen: Country?
+            for candidatePool in [effectivePool, fullPool, everyCountry] {
+                let eligible = candidatePool.filter { !usedCodes.contains($0.code) && (!useMap || mapEligibleCodes.contains($0.code)) }
+                if let pick = TourStructure.pick(eligible, code: \.code, preferred: preferred) { chosen = pick; break }
+            }
+            guard let correct = chosen ?? effectivePool.randomElement() else { continue }
+            usedCodes.insert(correct.code)
             let correctLanguage = language(for: correct.code)
 
             var seenLanguages: Set<String> = [correctLanguage]

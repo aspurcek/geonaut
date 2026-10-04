@@ -18,6 +18,7 @@ struct LanguageQuestionView: View {
             HStack(spacing: KasifSpacing.md) {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
+                        .accessibilityLabel("Geri")
                         .font(.system(size: 18, weight: .semibold))
                         .foregroundStyle(KasifColor.textPrimary)
                 }
@@ -25,7 +26,7 @@ struct LanguageQuestionView: View {
                 KasifStatPill(icon: .hearts, value: "\(hearts)")
             }
 
-            Text(question.stimulus == .flag ? "Bu ülkenin ana dili nedir?" : "Haritadaki ülkenin ana dili nedir?")
+            Text(question.stimulus == .flag ? LocalizedStringKey("Bu ülkenin ana dili nedir?") : LocalizedStringKey("Haritadaki ülkenin ana dili nedir?"))
                 .font(.custom(KasifFontName.balooBold, size: 20))
                 .foregroundStyle(KasifColor.textPrimary)
                 .multilineTextAlignment(.center)
@@ -52,7 +53,7 @@ struct LanguageQuestionView: View {
         .padding(.horizontal, KasifSpacing.xl)
         .padding(.top, KasifSpacing.lg)
         .padding(.bottom, KasifSpacing.xxxl)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 
     /// Önce elle hazırlanmış `CountryMap-<kod>` varsa onu gösterir (17 ülke, oyunun

@@ -42,7 +42,7 @@ struct StreakRevivedView: View {
         }
         .padding(.horizontal, KasifSpacing.xxl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 
     /// Figma'daki 5 yıldızlı konfeti şeridinin (node 508:12179) sabit renk/boyut

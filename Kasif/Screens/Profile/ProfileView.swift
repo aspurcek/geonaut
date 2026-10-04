@@ -14,8 +14,9 @@ struct ProfileView: View {
     var onSaveAvatar: (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void
     var onSeeAllBadges: () -> Void
     var onSignOut: () -> Void = {}
+    var onDeleteAccount: () async -> Bool = { true }
 
-    private enum Route: Hashable { case settings, avatarBuilder }
+    private enum Route: Hashable { case settings, avatarBuilder, photoCredits }
     @State private var path = NavigationPath()
 
     private var avatarColor: Color { Color(hex: avatarColorHex) }
@@ -26,7 +27,7 @@ struct ProfileView: View {
     // Bkz. KasifLevel.swift — Kural Kitabı böl. 07'nin tanımsız bıraktığı kademe
     // adları/puan eşikleri, içerik puan tavanlarına orantılı olarak burada karara bağlandı.
     private var level: KasifLevel { KasifLevel.level(forPoints: points) }
-    private var levelTitle: String { "Kaşif seviyesi: \(level.title)" }
+    private var levelTitle: String { String(localized: "Kaşif seviyesi: \(L(level.title))") }
     let weekDayStates: [KasifDayChip.State] = [.completed, .completed, .completed, .active, .upcoming, .upcoming, .upcoming]
 
     /// Gerçek GameProgress'ten ilk 3 kıta rozeti + kategori kupası (bkz. BadgeCatalog) —
@@ -68,21 +69,27 @@ struct ProfileView: View {
             // güvenli alan kadar üst boşluk bırakıyor — bu yüzden bleed işlemi
             // burada, en dıştaki container'da yapılmalı (NavBar'ın alt bleed'iyle aynı mantık).
             .ignoresSafeArea(edges: [.top, .bottom])
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: Route.self) { route in
                 switch route {
                 case .settings:
                     SettingsView(
                         displayName: displayName, email: email, avatarColorHex: avatarColorHex, character: character,
+                        streakDays: streak,
                         onBack: { path.removeLast() },
                         onEditAvatar: { path.append(Route.avatarBuilder) },
                         onSave: { newName in
                             onSaveSettings(newName)
                             path.removeLast()
                         },
-                        onSignOut: onSignOut
+                        onSignOut: onSignOut, onDeleteAccount: onDeleteAccount,
+                        onOpenCredits: { path.append(Route.photoCredits) }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .photoCredits:
+                    PhotoCreditsView(onBack: { path.removeLast() })
+                        .toolbar(.hidden, for: .navigationBar)
 
                 case .avatarBuilder:
                     AvatarBuilderView(
@@ -93,7 +100,7 @@ struct ProfileView: View {
                             path.removeLast()
                         }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
                 }
             }
         }
@@ -186,7 +193,7 @@ struct ProfileView: View {
 #Preview {
     ProfileView(
         selectedTab: .constant(.profile),
-        displayName: "Aslı", email: "asli.karabulut@gmail.com", points: 340, streak: 4,
+        displayName: "Aslı", email: "ornek@eposta.com", points: 340, streak: 4,
         avatarColorHex: 0xFF987E, character: AvatarCharacter(), progress: GameProgress(),
         onSaveSettings: { _ in }, onSaveAvatar: { _, _ in }, onSeeAllBadges: {}
     )

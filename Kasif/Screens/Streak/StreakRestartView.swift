@@ -29,7 +29,7 @@ struct StreakRestartView: View {
         }
         .padding(.horizontal, KasifSpacing.xxl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(KasifColor.bgCanvas)
+        .background { KasifColor.bgCanvas.ignoresSafeArea() }
     }
 }
 

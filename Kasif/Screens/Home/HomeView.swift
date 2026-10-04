@@ -1,7 +1,12 @@
 import SwiftUI
 
-/// Figma "Ana Sayfa - Kıta Yolu" (node 271:5428) — Bayrak Tahmin kategorisinin ana
-/// ekranı: üst istatistikler, kategori seçim kartları, kıta yolu.
+/// Figma "Ana Sayfa - Kıta Yolu" (node 271:5428) — tüm 4 kategorinin ortak ana ekranı.
+/// Kullanıcı kararı: kategori kartına dokunmak NavigationStack push'u YAPMAMALI (geri
+/// kaydırma jestli, farklı bir "sayfa" hissi veren bir geçiş) — Bayrak Tahmin zaten hep
+/// push'suz görünüyordu (bu ekranın kendisi olduğu için), diğer üç kategori de aynı
+/// şekilde `selectedCategory` durumuyla YERİNDE değişmeli. Yalnızca bir kıtaya/etaba
+/// girmek (EtapMapView, Quiz) hâlâ push kalıyor — Bayrak Tahmin'in kendi kıta/etap
+/// geçişleri zaten hep push'tu, buradaki şikayet yalnızca kategori düzeyindeydi.
 struct HomeView: View {
     @Binding var selectedTab: KasifTab
     /// RootTabView'de tutulur (bkz. RootTabView.swift'teki mimari notu) — sekme
@@ -10,9 +15,20 @@ struct HomeView: View {
     @State var streak: Int
     /// Dün oynanmış, bugün henüz oynanmamış — bkz. Streak.swift/StreakStatus.atRisk.
     var streakAtRisk: Bool = false
+    /// iCloud/ağ şu an erişilemiyor — ilerleme cihazda saklanıyor ama buluta
+    /// gitmiyor (bkz. AppState.cloudReachable/LocalProfileCache). Kullanıcıya
+    /// açık bilgi vermek için (bkz. yol haritası "kullanıcıya açık bilgi" maddesi).
+    var cloudReachable: Bool = true
     /// RootTabView'in sahip olduğu paylaşılan örnek — HomeView kendi kopyasını
     /// oluşturmuyor (bkz. RootTabView.swift'teki mimari notu).
     var progress: GameProgress
+    /// Header'daki profil kısayolu için — bkz. topBar. Kullanıcı hiç avatar
+    /// oluşturmadıysa (hasCustomAvatar == false) gerçek renk/karakter yerine sabit
+    /// mor + profil ikonu gösterilir (bkz. ProfileView.avatarSection'daki KasifAvatar
+    /// kullanımıyla aynı veri, ayrı bir kopya tutulmuyor).
+    var avatarColorHex: UInt32 = 0xFF987E
+    var avatarCharacter: AvatarCharacter = AvatarCharacter()
+    var hasCustomAvatar: Bool = false
     var isGuest: Bool = false
     var onRequireSignIn: () -> Void = {}
     /// Bir etap bitince çağrılır — AppState.recordStageCompletion'a kadar iletilir (bkz.
@@ -22,24 +38,72 @@ struct HomeView: View {
     var onStageCompleted: () -> Void = {}
     @State private var path = NavigationPath()
 
+    private enum HomeCategory {
+        case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri
+
+        var tourCategory: TourCategory {
+            switch self {
+            case .bayrakTahmin: .flags
+            case .haritaBilmece: .maps
+            case .anaDiller: .languages
+            case .dunyaYemekleri: .foods
+            }
+        }
+    }
+    @State private var selectedCategory: HomeCategory = .bayrakTahmin
+    /// Kategori başına seçili tur (0 = Tur 1) — bkz. tourSelector. Kilitli bir tur seçilemez.
+    @State private var selectedTours: [TourCategory: Int] = [:]
+    /// Kilitli bir tura dokunulunca altında "önce Tur X'i bitir" ipucu gösterilir.
+    @State private var lockedTourHint: Int?
+
     private enum Route: Hashable {
-        case etapMap(continent: String)
-        case quiz(continent: String, stageIndex: Int)
+        case etapMap(continent: String, tour: Int)
+        case quiz(continent: String, stageIndex: Int, tour: Int)
         case continentComplete(continent: String)
         case categoryComplete
+        case tourComplete(category: TourCategory, tour: Int)
         case learnFlags
-        case mapPuzzleEntry
-        case mapPuzzleEtapMap
-        case mapPuzzleQuiz(stageIndex: Int)
-        case countryPuzzleEtapMap
-        case countryPuzzleQuiz(stageIndex: Int)
+        case learnContinents
+        case mapPuzzleEtapMap(tour: Int)
+        case mapPuzzleQuiz(stageIndex: Int, tour: Int)
+        case countryPuzzleEtapMap(tour: Int)
+        case countryPuzzleQuiz(stageIndex: Int, tour: Int)
         case mapCategoryComplete
-        case anaDillerHome
-        case anaDillerEtapMap(continent: String)
-        case anaDillerQuiz(continent: String, stageIndex: Int)
+        case anaDillerEtapMap(continent: String, tour: Int)
+        case anaDillerQuiz(continent: String, stageIndex: Int, tour: Int)
         case anaDillerContinentComplete(continent: String)
         case anaDillerCategoryComplete
         case learnLanguages
+        case worldFoodsEtapMap(continent: String, tour: Int)
+        case worldFoodsQuiz(continent: String, stageIndex: Int, tour: Int)
+        case worldFoodsContinentComplete(continent: String)
+        case worldFoodsCategoryComplete
+        case learnFoods
+    }
+
+    private func selectedTour(_ category: TourCategory) -> Int {
+        let tour = selectedTours[category] ?? 0
+        // Güvenlik ağı: seçili tur (ör. hesap değişince) kilitliyse Tur 1'e dön.
+        return progress.isTourUnlocked(category, tour: tour) ? tour : 0
+    }
+
+    /// Bir etap bitince: o tur (ya da kategori) YENİ tamamlandıysa kutlama ekranına, aksi
+    /// hâlde köke (Ana Sayfa) döner. Kupa yalnızca 3 turun hepsi bitince (bkz. GameProgress).
+    private func advanceAfterStage(_ category: TourCategory, tour: Int, wasTourDone: Bool) {
+        guard !wasTourDone, progress.isCategoryCompleted(category, tour: tour) else {
+            path.removeLast(path.count)
+            return
+        }
+        if progress.isCategoryTrophyEarned(category) {
+            switch category {
+            case .flags: path.append(Route.categoryComplete)
+            case .maps: path.append(Route.mapCategoryComplete)
+            case .languages: path.append(Route.anaDillerCategoryComplete)
+            case .foods: path.append(Route.worldFoodsCategoryComplete)
+            }
+        } else {
+            path.append(Route.tourComplete(category: category, tour: tour))
+        }
     }
 
     var body: some View {
@@ -52,45 +116,19 @@ struct HomeView: View {
                             KasifToast(message: "Serini kaybetmek üzeresin! Bugün oyna, seriyi koru. 🔥", tone: .warning)
                                 .padding(.horizontal, KasifSpacing.xl)
                         }
-
-                        header
-
-                        // Figma'daki "yolun başındaki bilgi durağı" (node 297:8933) —
-                        // mor daire + bayrak ikonu, Bayrakları Öğren'i açar. Bu mor
-                        // (#9966E6) bir Figma değişkenine bağlı değil, bu node'a özel
-                        // sabit bir renk — KasifColor.accentTertiaryStrong (#9783BE)
-                        // ile karıştırılmamalı.
-                        GeometryReader { geo in
-                            Button { path.append(Route.learnFlags) } label: {
-                                VStack(spacing: KasifSpacing.sm) {
-                                    Circle()
-                                        .fill(Color(hex: 0x9966E6))
-                                        .frame(width: 56, height: 56)
-                                        .overlay {
-                                            Image(systemName: "flag.fill")
-                                                .font(.system(size: 22))
-                                                .foregroundStyle(.white)
-                                        }
-                                    Text("Öğren")
-                                        .font(.custom(KasifFontName.balooBold, size: 14))
-                                        .foregroundStyle(Color(hex: 0x9966E6))
-                                }
-                            }
-                            .buttonStyle(.plain)
-                            .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+                        if !cloudReachable {
+                            KasifToast(message: "Çevrimdışısın — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak.", tone: .info)
+                                .padding(.horizontal, KasifSpacing.xl)
                         }
-                        .frame(height: 84)
-                        .padding(.horizontal, KasifSpacing.xxxxl)
 
-                        ContinentPathView(nodes: ContinentPathNode.flagGuessPath(progress: progress)) { node in
-                            guard node.state != .locked else { return }
-                            if isGuest && node.name != "Avrupa" {
-                                onRequireSignIn()
-                            } else {
-                                path.append(Route.etapMap(continent: node.name))
-                            }
+                        topBar
+
+                        switch selectedCategory {
+                        case .bayrakTahmin: bayrakTahminContent
+                        case .haritaBilmece: haritaBilmeceContent
+                        case .anaDiller: anaDillerContent
+                        case .dunyaYemekleri: dunyaYemekleriContent
                         }
-                        .padding(.horizontal, KasifSpacing.xxxxl)
                     }
                     .padding(.top, KasifSpacing.md)
                     .padding(.bottom, KasifSpacing.xxxl)
@@ -99,225 +137,312 @@ struct HomeView: View {
             }
             .background(KasifColor.bgCanvas)
             .ignoresSafeArea(edges: .bottom)
-            .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
+            .onChange(of: selectedCategory) { _, _ in lockedTourHint = nil }
+            #if DEBUG
+            // Yalnızca geliştirme: kazanma ekranlarını hızlı görmek için, ör. uygulamayı
+            // `-debugRoute tour|continent|trophy|maptrophy` argümanıyla başlat.
+            .task {
+                switch UserDefaults.standard.string(forKey: "debugRoute") {
+                case "tour": path.append(Route.tourComplete(category: .flags, tour: 0))
+                case "continent": path.append(Route.continentComplete(continent: "Avrupa"))
+                case "trophy": path.append(Route.categoryComplete)
+                case "maptrophy": path.append(Route.mapCategoryComplete)
+                default: break
+                }
+            }
+            #endif
             .navigationDestination(for: Route.self) { route in
                 switch route {
-                case .etapMap(let continent):
+                case .etapMap(let continent, let tour):
                     EtapMapView(
                         sectionName: continent,
-                        categoryName: "Bayrak Tahmin",
-                        etapStates: progress.etapStates(continent: continent, stageCount: FlagGuessStructure.stagesPerSection),
+                        categoryName: "Bayraklar",
+                        tour: tour,
+                        etapStates: progress.etapStates(continent: TourStructure.progressKey(continent, tour: tour), stageCount: FlagGuessStructure.stagesPerSection),
                         onSelectEtap: { stageIndex in
                             // Ürün kararı: giriş yapmadan yalnızca Avrupa'nın 1. etabı
                             // oynanabilir — gerisi "Apple ile giriş yap" ile açılır.
                             if isGuest && stageIndex > 0 {
                                 onRequireSignIn()
                             } else {
-                                path.append(Route.quiz(continent: continent, stageIndex: stageIndex))
+                                path.append(Route.quiz(continent: continent, stageIndex: stageIndex, tour: tour))
                             }
                         },
                         onBack: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
-                case .quiz(let continent, let stageIndex):
-                    let session = QuizSession(stageIndex: stageIndex, questions: Countries.makeQuestions(from: Countries.pool(forContinent: continent), isRecall: stageIndex >= 5))
+                case .quiz(let continent, let stageIndex, let tour):
+                    let progressKey = TourStructure.progressKey(continent, tour: tour)
+                    let session = QuizSession(stageIndex: stageIndex, questions: Countries.makeQuestions(from: Countries.pool(forContinent: continent), isRecall: stageIndex >= 5, tour: tour, stageIndex: stageIndex))
                     QuizSessionView(
                         session: session,
                         points: $points,
                         onFinished: { earnedPoints in
-                            points += progress.pointsToAward(continent: continent, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: continent, stageIndex: stageIndex)
+                            let wasTourDone = progress.isCategoryCompleted(.flags, tour: tour)
+                            let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
+                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(session.questions.map(\.countryCode))
                             onStageCompleted()
 
-                            let continentJustFinished = progress.isContinentCompleted(continent, stageCount: FlagGuessStructure.stagesPerSection)
-                            // Karışık'ın kendi kupası/tamamlama ekranı yok (bkz. Bayrak
-                            // Tahmin Kural Kitabı böl. 07) — direkt kategori kontrolüne geçilir.
-                            if continentJustFinished && continent != "Karışık" {
+                            let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
+                            // Kıta rozetleri Tur 1'e bağlı (kullanıcı kararı); Karışık'ın kendi
+                            // kupası/tamamlama ekranı yok (bkz. Bayrak Tahmin Kural Kitabı böl. 07).
+                            if tour == 0 && continentJustFinished && continent != "Karışık" {
                                 path.append(Route.continentComplete(continent: continent))
-                            } else if progress.isFlagGuessCategoryCompleted() {
-                                path.append(Route.categoryComplete)
                             } else {
-                                path.removeLast(path.count)
+                                advanceAfterStage(.flags, tour: tour, wasTourDone: wasTourDone)
                             }
                         },
                         onExit: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
                 case .continentComplete(let continent):
                     ContinentCompleteView(
                         continentName: continent,
-                        onContinue: {
-                            if progress.isFlagGuessCategoryCompleted() {
-                                path.append(Route.categoryComplete)
-                            } else {
-                                path.removeLast(path.count)
-                            }
-                        }
+                        onContinue: { advanceAfterStage(.flags, tour: 0, wasTourDone: false) }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
                 case .categoryComplete:
                     CategoryCompleteView(onContinue: { path.removeLast(path.count) })
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
+
+                case .tourComplete(let category, let tour):
+                    TourCompleteView(
+                        category: category, tour: tour,
+                        onContinue: {
+                            // Bitirilen turun yerine bir sonraki tura geçilmiş olarak Ana Sayfa'ya dön.
+                            selectedTours[category] = min(tour + 1, TourStructure.lastTour)
+                            path.removeLast(path.count)
+                        }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
 
                 case .learnFlags:
                     LearnFlagsView(onBack: { path.removeLast() })
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
 
-                case .mapPuzzleEntry:
-                    MapPuzzleEntryView(
-                        onBack: { path.removeLast() },
-                        onSelectContinentsStage: { path.append(Route.mapPuzzleEtapMap) },
-                        onSelectCountriesStage: { path.append(Route.countryPuzzleEtapMap) }
-                    )
-                    .navigationBarHidden(true)
+                case .learnContinents:
+                    LearnContinentsView(onBack: { path.removeLast() })
+                        .toolbar(.hidden, for: .navigationBar)
 
-                case .mapPuzzleEtapMap:
+                case .mapPuzzleEtapMap(let tour):
                     EtapMapView(
                         sectionName: "Kıtalar",
-                        categoryName: "Harita Bilmece",
-                        etapStates: progress.etapStates(continent: MapPuzzleStructure.progressKey, stageCount: MapPuzzleStructure.stageCount),
-                        onSelectEtap: { stageIndex in path.append(Route.mapPuzzleQuiz(stageIndex: stageIndex)) },
+                        categoryName: "Haritalar",
+                        tour: tour,
+                        etapStates: progress.etapStates(continent: TourStructure.progressKey(MapPuzzleStructure.progressKey, tour: tour), stageCount: MapPuzzleStructure.stageCount),
+                        onSelectEtap: { stageIndex in path.append(Route.mapPuzzleQuiz(stageIndex: stageIndex, tour: tour)) },
                         onBack: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
-                case .mapPuzzleQuiz(let stageIndex):
-                    let mapSession = MapQuizSession(stageIndex: stageIndex, questions: MapQuizGenerator.makeQuestions(stageIndex: stageIndex))
+                case .mapPuzzleQuiz(let stageIndex, let tour):
+                    let progressKey = TourStructure.progressKey(MapPuzzleStructure.progressKey, tour: tour)
+                    let mapSession = MapQuizSession(stageIndex: stageIndex, questions: MapQuizGenerator.makeQuestions(stageIndex: stageIndex, tour: tour))
                     MapQuizSessionView(
                         session: mapSession,
                         points: $points,
                         onFinished: { earnedPoints in
-                            points += progress.pointsToAward(continent: MapPuzzleStructure.progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: MapPuzzleStructure.progressKey, stageIndex: stageIndex)
+                            let wasTourDone = progress.isCategoryCompleted(.maps, tour: tour)
+                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(mapSession.questions.map { $0.country.code })
                             onStageCompleted()
-                            if progress.isMapPuzzleCategoryCompleted() {
-                                path.append(Route.mapCategoryComplete)
-                            } else {
-                                path.removeLast(path.count)
-                            }
+                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone)
                         },
                         onExit: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
-                case .countryPuzzleEtapMap:
+                case .countryPuzzleEtapMap(let tour):
                     EtapMapView(
                         sectionName: "Ülkeler",
-                        categoryName: "Harita Bilmece",
-                        etapStates: progress.etapStates(continent: CountryPuzzleStructure.progressKey, stageCount: CountryPuzzleStructure.stageCount),
-                        onSelectEtap: { stageIndex in path.append(Route.countryPuzzleQuiz(stageIndex: stageIndex)) },
+                        categoryName: "Haritalar",
+                        tour: tour,
+                        etapStates: progress.etapStates(continent: TourStructure.progressKey(CountryPuzzleStructure.progressKey, tour: tour), stageCount: CountryPuzzleStructure.stageCount),
+                        onSelectEtap: { stageIndex in path.append(Route.countryPuzzleQuiz(stageIndex: stageIndex, tour: tour)) },
                         onBack: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
-                case .countryPuzzleQuiz(let stageIndex):
-                    let countrySession = CountryQuizSession(stageIndex: stageIndex, questions: CountryQuizGenerator.makeQuestions(stageIndex: stageIndex))
+                case .countryPuzzleQuiz(let stageIndex, let tour):
+                    let progressKey = TourStructure.progressKey(CountryPuzzleStructure.progressKey, tour: tour)
+                    let countrySession = CountryQuizSession(stageIndex: stageIndex, questions: CountryQuizGenerator.makeQuestions(stageIndex: stageIndex, tour: tour))
                     CountryQuizSessionView(
                         session: countrySession,
                         points: $points,
                         onFinished: { earnedPoints in
-                            points += progress.pointsToAward(continent: CountryPuzzleStructure.progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: CountryPuzzleStructure.progressKey, stageIndex: stageIndex)
+                            let wasTourDone = progress.isCategoryCompleted(.maps, tour: tour)
+                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(countrySession.questions.map { $0.country.code })
                             onStageCompleted()
-                            if progress.isMapPuzzleCategoryCompleted() {
-                                path.append(Route.mapCategoryComplete)
-                            } else {
-                                path.removeLast(path.count)
-                            }
+                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone)
                         },
                         onExit: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
                 case .mapCategoryComplete:
                     MapCategoryCompleteView(onContinue: { path.removeLast(path.count) })
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
 
-                case .anaDillerHome:
-                    AnaDillerHomeView(
-                        progress: progress,
-                        onBack: { path.removeLast() },
-                        onSelectContinent: { continent in path.append(Route.anaDillerEtapMap(continent: continent)) },
-                        onSelectLearn: { path.append(Route.learnLanguages) }
-                    )
-                    .navigationBarHidden(true)
-
-                case .anaDillerEtapMap(let continent):
+                case .anaDillerEtapMap(let continent, let tour):
                     EtapMapView(
                         sectionName: continent,
-                        categoryName: "Ana Diller",
+                        categoryName: "Diller",
+                        tour: tour,
                         etapStates: progress.etapStates(
-                            continent: MainLanguageStructure.progressKey(for: continent),
+                            continent: TourStructure.progressKey(MainLanguageStructure.progressKey(for: continent), tour: tour),
                             stageCount: MainLanguageStructure.stagesPerSection
                         ),
-                        onSelectEtap: { stageIndex in path.append(Route.anaDillerQuiz(continent: continent, stageIndex: stageIndex)) },
+                        onSelectEtap: { stageIndex in path.append(Route.anaDillerQuiz(continent: continent, stageIndex: stageIndex, tour: tour)) },
                         onBack: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
-                case .anaDillerQuiz(let continent, let stageIndex):
-                    let progressKey = MainLanguageStructure.progressKey(for: continent)
+                case .anaDillerQuiz(let continent, let stageIndex, let tour):
+                    let progressKey = TourStructure.progressKey(MainLanguageStructure.progressKey(for: continent), tour: tour)
                     let languageSession = LanguageQuizSession(
                         stageIndex: stageIndex,
-                        questions: Languages.makeQuestions(forContinent: continent, stageIndex: stageIndex)
+                        questions: Languages.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
                     )
                     LanguageQuizSessionView(
                         session: languageSession,
                         points: $points,
                         onFinished: { earnedPoints in
+                            let wasTourDone = progress.isCategoryCompleted(.languages, tour: tour)
+                            let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
                             points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(languageSession.questions.map(\.countryCode))
                             onStageCompleted()
 
-                            let continentJustFinished = progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
-                            if continentJustFinished && continent != "Karışık" {
+                            let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
+                            if tour == 0 && continentJustFinished && continent != "Karışık" {
                                 path.append(Route.anaDillerContinentComplete(continent: continent))
-                            } else if progress.isMainLanguageCategoryCompleted() {
-                                path.append(Route.anaDillerCategoryComplete)
                             } else {
-                                // Bayrak Tahmin/Harita Bilmece ile aynı kural: her etap
-                                // sonunda köke (Ana Sayfa) dönülür, Ana Diller Giriş'ine değil.
-                                path.removeLast(path.count)
+                                // Her etap sonunda köke (Ana Sayfa) dönülür, ayrı bir Giriş'e değil.
+                                advanceAfterStage(.languages, tour: tour, wasTourDone: wasTourDone)
                             }
                         },
                         onExit: { path.removeLast() }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
                 case .anaDillerContinentComplete(let continent):
                     ContinentCompleteView(
                         continentName: continent,
-                        achievementText: "\(continent)'daki ülkelerin ana dillerini öğrendin. \(continent) Kupasını kazandın!",
-                        onContinue: {
-                            if progress.isMainLanguageCategoryCompleted() {
-                                path.append(Route.anaDillerCategoryComplete)
-                            } else {
-                                path.removeLast(path.count)
-                            }
-                        }
+                        achievementText: String(localized: "\(L(continent))'daki ülkelerin ana dillerini öğrendin. \(L(continent)) Kupasını kazandın!"),
+                        onContinue: { advanceAfterStage(.languages, tour: 0, wasTourDone: false) }
                     )
-                    .navigationBarHidden(true)
+                    .toolbar(.hidden, for: .navigationBar)
 
                 case .anaDillerCategoryComplete:
                     AnaDillerCategoryCompleteView(onContinue: { path.removeLast(path.count) })
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
 
                 case .learnLanguages:
                     LearnLanguagesView(onBack: { path.removeLast() })
-                        .navigationBarHidden(true)
+                        .toolbar(.hidden, for: .navigationBar)
+
+                case .worldFoodsEtapMap(let continent, let tour):
+                    EtapMapView(
+                        sectionName: continent,
+                        categoryName: "Lezzetler",
+                        tour: tour,
+                        etapStates: progress.etapStates(
+                            continent: TourStructure.progressKey(WorldFoodStructure.progressKey(for: continent), tour: tour),
+                            stageCount: WorldFoodStructure.stagesPerSection
+                        ),
+                        onSelectEtap: { stageIndex in path.append(Route.worldFoodsQuiz(continent: continent, stageIndex: stageIndex, tour: tour)) },
+                        onBack: { path.removeLast() }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .worldFoodsQuiz(let continent, let stageIndex, let tour):
+                    let progressKey = TourStructure.progressKey(WorldFoodStructure.progressKey(for: continent), tour: tour)
+                    let foodSession = FoodQuizSession(
+                        stageIndex: stageIndex,
+                        questions: WorldFoods.makeQuestions(forSection: continent, stageIndex: stageIndex, tour: tour)
+                    )
+                    FoodQuizSessionView(
+                        session: foodSession,
+                        points: $points,
+                        onFinished: { earnedPoints in
+                            let wasTourDone = progress.isCategoryCompleted(.foods, tour: tour)
+                            let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
+                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
+                            progress.markCountriesSeen(foodSession.questions.map(\.countryCode))
+                            onStageCompleted()
+
+                            let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
+                            if tour == 0 && continentJustFinished && continent != "Karışık" {
+                                path.append(Route.worldFoodsContinentComplete(continent: continent))
+                            } else {
+                                advanceAfterStage(.foods, tour: tour, wasTourDone: wasTourDone)
+                            }
+                        },
+                        onExit: { path.removeLast() }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .worldFoodsContinentComplete(let continent):
+                    ContinentCompleteView(
+                        continentName: continent,
+                        achievementText: worldFoodsAchievementText(for: continent),
+                        onContinue: { advanceAfterStage(.foods, tour: 0, wasTourDone: false) }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .worldFoodsCategoryComplete:
+                    WorldFoodsCategoryCompleteView(onContinue: { path.removeLast(path.count) })
+                        .toolbar(.hidden, for: .navigationBar)
+
+                case .learnFoods:
+                    LearnFoodsView(onBack: { path.removeLast() })
+                        .toolbar(.hidden, for: .navigationBar)
                 }
             }
         }
     }
 
-    private var header: some View {
+    /// Kullanıcı "Avatarını Oluştur"u en az bir kez kaydettiyse (bkz. hasCustomAvatar)
+    /// gerçek renk/karakteriyle küçültülmüş bir KasifAvatar — ProfileView.avatarSection'daki
+    /// ile AYNI bileşen, burada yalnızca 38pt'e ölçeklenmiş hali. Hiç avatar
+    /// oluşturmadıysa eskiden beri kullanılan sabit mor + profil ikonu daire korunur.
+    @ViewBuilder
+    private var headerAvatar: some View {
+        if hasCustomAvatar {
+            KasifAvatar(backgroundColor: Color(hex: avatarColorHex), character: avatarCharacter)
+                .scaleEffect(38 / 104)
+                .frame(width: 38, height: 38)
+        } else {
+            Circle()
+                .fill(KasifColor.accentTertiary)
+                .frame(width: 38, height: 38)
+                .overlay {
+                    Image(systemName: "person.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(.white)
+                }
+        }
+    }
+
+    /// Yalnızca üst istatistikler + kategori kartları — kategoriye özgü başlık/içerik
+    /// artık ayrı ekranlarda değil, aşağıdaki `xContent` computed property'lerinde
+    /// (bkz. yukarıdaki mimari not). Kullanıcı kararı: iPad'de de yapı birebir aynı
+    /// kalsın, yalnızca genişliğe göre responsive olsun (bkz. KasifLayout.columnMaxWidth
+    /// ile KasifApp.swift'teki ortalanmış sütun) — ayrı bir iPad yerleşimi YOK. Tek
+    /// istisna: kategori kartları iPad'in geniş sütununda sola yapışık kalmasın diye
+    /// ortalanıyor (bkz. categoryRow) — iPhone'da kaydırma davranışı aynı kalıyor.
+    private var topBar: some View {
         VStack(spacing: KasifSpacing.md) {
             HStack {
                 HStack(spacing: KasifSpacing.sm) {
@@ -328,20 +453,199 @@ struct HomeView: View {
                 // Figma'daki referans görsele göre bu, Profil'e kısayol veren bir
                 // avatar simgesi (bildirim zili değil).
                 Button { selectedTab = .profile } label: {
-                    Circle()
-                        .fill(KasifColor.accentTertiary)
-                        .frame(width: 38, height: 38)
-                        .overlay {
-                            Image(systemName: "person.fill")
-                                .font(.system(size: 16))
-                                .foregroundStyle(.white)
-                        }
+                    headerAvatar
                         .shadow(color: .black.opacity(0.08), radius: 3, x: 0, y: 2)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Profil")
             }
             .padding(.horizontal, KasifSpacing.xl)
 
+            categoryRow
+        }
+    }
+
+    /// categoryButtons'ı içeren satır — genişliğe göre responsive: kartların toplam
+    /// genişliği ekrana (iPad'in geniş sütununa) sığıyorsa kartlar genişliği eşit
+    /// paylaşarak sağa-sola dolduruyor (kullanıcı kararı: "kategori cardları sağa
+    /// sola fill olsun"), sığmıyorsa (iPhone) eskisi gibi sabit genişlikte, sola
+    /// yaslı, kaydırmalı bir satır.
+    private var categoryRow: some View {
+        GeometryReader { geo in
+            let cardsWidth = CGFloat(4) * 106 + CGFloat(3) * KasifSpacing.md
+            if cardsWidth <= geo.size.width {
+                HStack(alignment: .top, spacing: KasifSpacing.md) {
+                    categoryButtons(fillWidth: true)
+                }
+                .padding(.horizontal, KasifSpacing.xl)
+            } else {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(alignment: .top, spacing: KasifSpacing.md) {
+                        categoryButtons(fillWidth: false)
+                    }
+                    .padding(.horizontal, KasifSpacing.xl)
+                }
+                .scrollClipDisabled()
+            }
+        }
+        .frame(height: 112)
+    }
+
+    /// Ana Sayfa kategori kartları (Bayraklar/Haritalar/Diller/Lezzetler) — categoryRow
+    /// içinde kullanılıyor; iPad'de genişliği dolduran (fillWidth), iPhone'da sabit
+    /// genişlikte kaydırmalı satırda aynı içerik.
+    @ViewBuilder
+    private func categoryButtons(fillWidth: Bool) -> some View {
+                    Button { selectedCategory = .bayrakTahmin } label: {
+                        KasifCategoryCard(
+                            title: "Bayraklar", icon: .system("flag.fill"), state: .unlocked,
+                            iconCircleColor: KasifColor.accentPrimary, iconTintColor: .white,
+                            isCurrentCategory: selectedCategory == .bayrakTahmin,
+                            fillWidth: fillWidth
+                        )
+                    }
+                    .buttonStyle(.kasifCategoryCard)
+
+                    let mapUnlocked = progress.isFlagGuessCategoryCompleted()
+                    Button {
+                        if !mapUnlocked {
+                            return
+                        } else if isGuest {
+                            onRequireSignIn()
+                        } else {
+                            selectedCategory = .haritaBilmece
+                        }
+                    } label: {
+                        KasifCategoryCard(
+                            title: "Haritalar", icon: .system("map.fill"),
+                            state: mapUnlocked ? .unlocked : .locked,
+                            iconCircleColor: KasifColor.accentInfo, iconTintColor: KasifColor.accentInfoStrong,
+                            isCurrentCategory: selectedCategory == .haritaBilmece,
+                            fillWidth: fillWidth
+                        )
+                    }
+                    .buttonStyle(.kasifCategoryCard)
+
+                    let languagesUnlocked = progress.isMapPuzzleCategoryCompleted()
+                    Button {
+                        if !languagesUnlocked {
+                            return
+                        } else if isGuest {
+                            onRequireSignIn()
+                        } else {
+                            selectedCategory = .anaDiller
+                        }
+                    } label: {
+                        KasifCategoryCard(
+                            title: "Diller", icon: .system("character.book.closed.fill"),
+                            state: languagesUnlocked ? .unlocked : .locked,
+                            iconCircleColor: KasifColor.accentTertiary, iconTintColor: KasifColor.accentTertiaryStrong,
+                            isCurrentCategory: selectedCategory == .anaDiller,
+                            fillWidth: fillWidth
+                        )
+                    }
+                    .buttonStyle(.kasifCategoryCard)
+
+                    let foodsUnlocked = progress.isMainLanguageCategoryCompleted()
+                    Button {
+                        if !foodsUnlocked {
+                            return
+                        } else if isGuest {
+                            onRequireSignIn()
+                        } else {
+                            selectedCategory = .dunyaYemekleri
+                        }
+                    } label: {
+                        KasifCategoryCard(
+                            title: "Lezzetler", icon: .system("fork.knife"),
+                            state: foodsUnlocked ? .unlocked : .locked,
+                            iconCircleColor: KasifColor.accentSuccess, iconTintColor: KasifColor.accentSuccessStrong,
+                            isCurrentCategory: selectedCategory == .dunyaYemekleri,
+                            fillWidth: fillWidth
+                        )
+                    }
+                    .buttonStyle(.kasifCategoryCard)
+    }
+
+    /// Kategori başlığının altındaki Tur 1 / Tur 2 / Tur 3 seçici — kullanıcı kararı: modern,
+    /// yumuşak bir "Tur 1 ··· Tur 2 ··· Tur 3" şeridi (kapsül/segment yok). Seçili tur yumuşak
+    /// bir mercan zemin alır, biten turda onay işareti + yeşil, kilitli turda kilit + soluk renk;
+    /// turlar arasındaki noktalar önceki tur bitince yeşile döner.
+    private func tourSelector(for category: TourCategory) -> some View {
+        let selected = selectedTour(category)
+        return VStack(alignment: .leading, spacing: KasifSpacing.xs) {
+            HStack(spacing: 6) {
+                ForEach(0..<TourStructure.count, id: \.self) { tour in
+                    tourStep(for: category, tour: tour, isSelected: selected == tour)
+                    if tour < TourStructure.count - 1 {
+                        tourDots(isDone: progress.isCategoryCompleted(category, tour: tour))
+                    }
+                }
+            }
+
+            if let hint = lockedTourHint {
+                Text("Tur \(hint + 1)'in kilidini açmak için önce Tur \(hint)'i bitir.")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(KasifColor.textMuted)
+                    .padding(.horizontal, KasifSpacing.sm)
+            }
+        }
+        .padding(.horizontal, KasifSpacing.xl)
+    }
+
+    private func tourStep(for category: TourCategory, tour: Int, isSelected: Bool) -> some View {
+        let unlocked = progress.isTourUnlocked(category, tour: tour) && !(isGuest && tour > 0)
+        let done = progress.isCategoryCompleted(category, tour: tour)
+        let textColor: Color = !unlocked ? KasifColor.textMuted
+            : isSelected ? KasifColor.accentPrimary
+            : done ? KasifColor.accentSuccessStrong
+            : KasifColor.textSecondary
+        return Button {
+            if unlocked {
+                selectedTours[category] = tour
+                lockedTourHint = nil
+            } else if isGuest {
+                onRequireSignIn()
+            } else {
+                lockedTourHint = tour
+            }
+        } label: {
+            HStack(spacing: 4) {
+                if !unlocked {
+                    Image(systemName: "lock.fill").font(.system(size: 10))
+                } else if done {
+                    Image(systemName: "checkmark.circle.fill").font(.system(size: 12))
+                }
+                Text("Tur \(tour + 1)")
+                    .lineLimit(1)
+            }
+            .fixedSize()
+            .font(.custom(KasifFontName.balooBold, size: 15))
+            .foregroundStyle(textColor)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(isSelected ? KasifColor.accentPrimary.opacity(0.14) : .clear, in: Capsule())
+            .animation(.easeOut(duration: 0.15), value: isSelected)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    /// İki tur arasındaki üç nokta — soldaki tur bitince yeşile döner.
+    private func tourDots(isDone: Bool) -> some View {
+        HStack(spacing: 5) {
+            ForEach(0..<3, id: \.self) { _ in
+                Circle()
+                    .fill(isDone ? KasifColor.accentSuccess : KasifColor.textMuted.opacity(0.35))
+                    .frame(width: 4, height: 4)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityHidden(true)
+    }
+
+    private var bayrakTahminContent: some View {
+        Group {
             VStack(alignment: .leading, spacing: 2) {
                 Text("Dünya Turu")
                     .font(KasifTypography.headingL)
@@ -353,57 +657,200 @@ struct HomeView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, KasifSpacing.xl)
 
-            HStack(spacing: KasifSpacing.md) {
-                // Ana Sayfa her zaman Bayrak Tahmin'in ekranı olduğu için kartı hep
-                // "aktif kategori" görünümünde (coral kenarlık+parlama) — bkz. node
-                // 271:5448. Harita Bilmece kendi akışında (344:55301) aynı görünümü
-                // taşır ama burada değil, çünkü Ana Sayfa onun ekranı değil.
-                Button {} label: {
-                    KasifCategoryCard(
-                        title: "Bayrak Tahmin", icon: .emoji("🇹🇷"), state: .unlocked,
-                        iconCircleColor: KasifColor.accentPrimary,
-                        isCurrentCategory: true
-                    )
-                }
-                .buttonStyle(.kasifCategoryCard)
+            tourSelector(for: .flags)
 
-                let mapUnlocked = progress.isFlagGuessCategoryCompleted()
-                Button {
-                    if !mapUnlocked {
-                        return
-                    } else if isGuest {
-                        onRequireSignIn()
-                    } else {
-                        path.append(Route.mapPuzzleEntry)
+            // Figma'daki "yolun başındaki bilgi durağı" (node 297:8933) — mor daire +
+            // bayrak ikonu, Bayrakları Öğren'i açar. Bu mor (#9966E6) bir Figma
+            // değişkenine bağlı değil, bu node'a özel sabit bir renk —
+            // KasifColor.accentTertiaryStrong (#9783BE) ile karıştırılmamalı.
+            GeometryReader { geo in
+                Button { path.append(Route.learnFlags) } label: {
+                    VStack(spacing: KasifSpacing.sm) {
+                        Circle()
+                            .fill(Color(hex: 0x9966E6))
+                            .frame(width: 56, height: 56)
+                            .overlay {
+                                Image(systemName: "flag.fill")
+                                    .font(.system(size: 22))
+                                    .foregroundStyle(.white)
+                            }
+                        Text("Öğren")
+                            .font(.custom(KasifFontName.balooBold, size: 14))
+                            .foregroundStyle(Color(hex: 0x9966E6))
                     }
-                } label: {
-                    KasifCategoryCard(
-                        title: "Harita Bilmece", icon: .system("map.fill"),
-                        state: mapUnlocked ? .unlocked : .locked,
-                        iconCircleColor: KasifColor.accentInfo, iconTintColor: KasifColor.accentInfoStrong
-                    )
                 }
-                .buttonStyle(.kasifCategoryCard)
-
-                let languagesUnlocked = progress.isMapPuzzleCategoryCompleted()
-                Button {
-                    if !languagesUnlocked {
-                        return
-                    } else if isGuest {
-                        onRequireSignIn()
-                    } else {
-                        path.append(Route.anaDillerHome)
-                    }
-                } label: {
-                    KasifCategoryCard(
-                        title: "Ana Diller", icon: .system("character.book.closed.fill"),
-                        state: languagesUnlocked ? .unlocked : .locked,
-                        iconCircleColor: KasifColor.accentTertiary, iconTintColor: KasifColor.accentTertiaryStrong
-                    )
-                }
-                .buttonStyle(.kasifCategoryCard)
+                .buttonStyle(.plain)
+                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
             }
+            .frame(height: 84)
+            .padding(.horizontal, KasifSpacing.xxxxl)
+
+            ContinentPathView(nodes: ContinentPathNode.flagGuessPath(progress: progress, tour: selectedTour(.flags))) { node in
+                guard node.state != .locked else { return }
+                if isGuest && node.name != "Avrupa" {
+                    onRequireSignIn()
+                } else {
+                    path.append(Route.etapMap(continent: node.name, tour: selectedTour(.flags)))
+                }
+            }
+            .padding(.horizontal, KasifSpacing.xxxxl)
+        }
+    }
+
+    private var anaDillerContent: some View {
+        Group {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Diller")
+                    .font(KasifTypography.headingL)
+                    .foregroundStyle(KasifColor.textPrimary)
+                Text("Kıtaları keşfet, ana dilleri öğren!")
+                    .font(KasifTypography.bodyBold)
+                    .foregroundStyle(KasifColor.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, KasifSpacing.xl)
+
+            tourSelector(for: .languages)
+
+            GeometryReader { geo in
+                Button { path.append(Route.learnLanguages) } label: {
+                    VStack(spacing: KasifSpacing.sm) {
+                        Circle()
+                            .fill(Color(hex: 0x9966E6))
+                            .frame(width: 56, height: 56)
+                            .overlay {
+                                Image(systemName: "character.book.closed.fill")
+                                    .font(.system(size: 22))
+                                    .foregroundStyle(.white)
+                            }
+                        Text("Öğren")
+                            .font(.custom(KasifFontName.balooBold, size: 14))
+                            .foregroundStyle(Color(hex: 0x9966E6))
+                    }
+                }
+                .buttonStyle(.plain)
+                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+            }
+            .frame(height: 84)
+            .padding(.horizontal, KasifSpacing.xxxxl)
+
+            ContinentPathView(nodes: ContinentPathNode.mainLanguagePath(progress: progress, tour: selectedTour(.languages))) { node in
+                guard node.state != .locked else { return }
+                path.append(Route.anaDillerEtapMap(continent: node.name, tour: selectedTour(.languages)))
+            }
+            .padding(.horizontal, KasifSpacing.xxxxl)
+        }
+    }
+
+    private var dunyaYemekleriContent: some View {
+        Group {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Lezzetler")
+                    .font(KasifTypography.headingL)
+                    .foregroundStyle(KasifColor.textPrimary)
+                Text("Yemekleri, içecekleri ve tatlıları öğren!")
+                    .font(KasifTypography.bodyBold)
+                    .foregroundStyle(KasifColor.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, KasifSpacing.xl)
+
+            tourSelector(for: .foods)
+
+            GeometryReader { geo in
+                Button { path.append(Route.learnFoods) } label: {
+                    VStack(spacing: KasifSpacing.sm) {
+                        Circle()
+                            .fill(KasifColor.accentSuccessStrong)
+                            .frame(width: 56, height: 56)
+                            .overlay {
+                                Image(systemName: "fork.knife")
+                                    .font(.system(size: 22))
+                                    .foregroundStyle(.white)
+                            }
+                        Text("Öğren")
+                            .font(.custom(KasifFontName.balooBold, size: 14))
+                            .foregroundStyle(KasifColor.accentSuccessStrong)
+                    }
+                }
+                .buttonStyle(.plain)
+                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+            }
+            .frame(height: 84)
+            .padding(.horizontal, KasifSpacing.xxxxl)
+
+            ContinentPathView(nodes: ContinentPathNode.worldFoodsSectionsPath(progress: progress, tour: selectedTour(.foods))) { node in
+                guard node.state != .locked else { return }
+                path.append(Route.worldFoodsEtapMap(continent: node.name, tour: selectedTour(.foods)))
+            }
+            .padding(.horizontal, KasifSpacing.xxxxl)
+        }
+    }
+
+    /// Diğer 3 kategoriyle birebir aynı iskelet (başlık + Öğren durağı + kıta yolu) —
+    /// kullanıcı kararı: eskiden burada Kıtalar/Ülkeler sekmeleri + galeri/liste vardı,
+    /// o içerik artık Öğren hedefine taşındı (bkz. LearnContinentsView). Altta yatan
+    /// MapPuzzleStructure gerçek 7 kıta değil TEK bir 8 etaplık düz havuz olduğu için
+    /// (bkz. ContinentPathNode.mapPuzzlePath'teki not) düğüme dokunmak, Bayrak Tahmin'deki
+    /// gibi ayrı bir Etap Haritası'na değil, doğrudan o sıradaki etabın sınavına açılıyor.
+    private var haritaBilmeceContent: some View {
+        Group {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Haritalar")
+                    .font(KasifTypography.headingL)
+                    .foregroundStyle(KasifColor.textPrimary)
+                Text("7 kıtayı keşfet, ülkeleri haritada bul")
+                    .font(KasifTypography.bodyBold)
+                    .foregroundStyle(KasifColor.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, KasifSpacing.xl)
+
+            tourSelector(for: .maps)
+
+            GeometryReader { geo in
+                Button { path.append(Route.learnContinents) } label: {
+                    VStack(spacing: KasifSpacing.sm) {
+                        Circle()
+                            .fill(KasifColor.accentInfoStrong)
+                            .frame(width: 56, height: 56)
+                            .overlay {
+                                Image(systemName: "map.fill")
+                                    .font(.system(size: 22))
+                                    .foregroundStyle(.white)
+                            }
+                        Text("Öğren")
+                            .font(.custom(KasifFontName.balooBold, size: 14))
+                            .foregroundStyle(KasifColor.accentInfoStrong)
+                    }
+                }
+                .buttonStyle(.plain)
+                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+            }
+            .frame(height: 84)
+            .padding(.horizontal, KasifSpacing.xxxxl)
+
+            ContinentPathView(nodes: ContinentPathNode.mapPuzzleTracksPath(progress: progress, tour: selectedTour(.maps))) { node in
+                guard node.state != .locked else { return }
+                if node.name == "Kıtalar" {
+                    path.append(Route.mapPuzzleEtapMap(tour: selectedTour(.maps)))
+                } else {
+                    path.append(Route.countryPuzzleEtapMap(tour: selectedTour(.maps)))
+                }
+            }
+            .padding(.horizontal, KasifSpacing.xxxxl)
+        }
+    }
+
+    /// Dünya Yemekleri artık kıta değil TÜR bazlı ilerlediği için (bkz.
+    /// WorldFoodStructure.sections) "X'deki ülkelerin..." kalıbı yerine bölüm adına
+    /// göre doğal bir kutlama metni üretir.
+    private func worldFoodsAchievementText(for section: String) -> String {
+        switch section {
+        case "Yemekler": return String(localized: "Dünyanın dört bir yanından meşhur yemekleri öğrendin. Yemekler Kupasını kazandın!")
+        case "İçecekler": return String(localized: "Dünyanın dört bir yanından meşhur içecekleri öğrendin. İçecekler Kupasını kazandın!")
+        case "Tatlılar": return String(localized: "Dünyanın dört bir yanından meşhur tatlıları öğrendin. Tatlılar Kupasını kazandın!")
+        default: return String(localized: "\(L(section)) bölümünü tamamladın!")
         }
     }
 }

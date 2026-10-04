@@ -1,0 +1,35 @@
+import Foundation
+import Security
+
+/// Apple userIdentifier gibi küçük kimlik dizgilerini Keychain'de tutar (UserDefaults yerine).
+enum KeychainStore {
+    private static let service = "com.aspurce.kasif.Kasif"
+
+    static func string(forKey key: String) -> String? {
+        var query = baseQuery(key)
+        query[kSecReturnData as String] = true
+        query[kSecMatchLimit as String] = kSecMatchLimitOne
+        var result: AnyObject?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
+              let data = result as? Data else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+
+    static func set(_ value: String, forKey key: String) {
+        remove(key)
+        var query = baseQuery(key)
+        query[kSecValueData as String] = Data(value.utf8)
+        query[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
+        SecItemAdd(query as CFDictionary, nil)
+    }
+
+    static func remove(_ key: String) {
+        SecItemDelete(baseQuery(key) as CFDictionary)
+    }
+
+    private static func baseQuery(_ key: String) -> [String: Any] {
+        [kSecClass as String: kSecClassGenericPassword,
+         kSecAttrService as String: service,
+         kSecAttrAccount as String: key]
+    }
+}

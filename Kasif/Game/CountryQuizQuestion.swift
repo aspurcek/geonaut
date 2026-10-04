@@ -10,15 +10,20 @@ struct CountryQuizQuestion {
 }
 
 enum CountryQuizGenerator {
-    static func makeQuestions(stageIndex: Int, count: Int = GameRules.questionsPerStage) -> [CountryQuizQuestion] {
+    static func makeQuestions(stageIndex: Int, count: Int = GameRules.questionsPerStage, tour: Int = 0) -> [CountryQuizQuestion] {
         // stageIndex 0 tabanlı (Etap 1 = 0); questionTypes(forStage:) 1 tabanlı bekliyor.
         let types = CountryPuzzleStructure.questionTypes(forStage: stageIndex + 1)
         // `.extended` (249 ülke) kullanılıyor, `.all` (17, Tip C'nin hassas dokunma
         // kutusuna ihtiyaç duyduğu havuz) değil — bkz. MapCountries.extended'daki not.
         guard !MapCountries.extended.isEmpty else { return [] }
+        // Aynı ülke bir etapta tekrar etmesin diye havuzdan çekerek (without
+        // replacement) seçiliyor — bkz. Countries.makeQuestions'daki aynı prensip.
+        let preferred = TourStructure.preferredCodes(MapCountries.extended.map(\.code), tour: tour, stageIndex: stageIndex, size: count)
+        var deck = TourStructure.deck(MapCountries.extended, code: \.code, preferred: preferred)
         return (0..<count).compactMap { _ -> CountryQuizQuestion? in
             let kind = types.randomElement() ?? .highlightMapSelectName
-            guard let country = MapCountries.extended.randomElement() else { return nil }
+            if deck.isEmpty { deck = TourStructure.deck(MapCountries.extended, code: \.code, preferred: preferred) }
+            let country = deck.removeFirst()
             let distractors = MapCountries.extended
                 .filter { $0.code != country.code }
                 .shuffled()

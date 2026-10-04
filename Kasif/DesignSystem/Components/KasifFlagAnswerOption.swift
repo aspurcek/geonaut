@@ -49,6 +49,7 @@ struct KasifFlagAnswerOption: View {
         }
         .buttonStyle(.plain)
         .disabled(action == nil)
+        .accessibilityLabel(Locale.current.localizedString(forRegionCode: countryCode) ?? countryCode)
     }
 
     static func flagEmoji(for countryCode: String) -> String {
