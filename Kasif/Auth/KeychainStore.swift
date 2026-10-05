@@ -3,7 +3,7 @@ import Security
 
 /// Apple userIdentifier gibi küçük kimlik dizgilerini Keychain'de tutar (UserDefaults yerine).
 enum KeychainStore {
-    private static let service = "com.aspurce.kasif.Kasif"
+    private static let service = "com.aspurce.globaut"
 
     static func string(forKey key: String) -> String? {
         var query = baseQuery(key)

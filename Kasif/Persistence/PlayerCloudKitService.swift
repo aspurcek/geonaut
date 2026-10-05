@@ -6,7 +6,7 @@ import Foundation
 /// + CloudKit, üçüncü parti bir kimlik/veri sağlayıcı kullanılmıyor).
 enum PlayerCloudKitService {
     private static let recordType = "PlayerProfile"
-    private static let container = CKContainer(identifier: "iCloud.com.aspurce.kasif.Kasif")
+    private static let container = CKContainer(identifier: "iCloud.com.aspurce.globaut")
 
     private static func recordID(for appleUserIdentifier: String) -> CKRecord.ID {
         CKRecord.ID(recordName: "player-\(appleUserIdentifier)")
