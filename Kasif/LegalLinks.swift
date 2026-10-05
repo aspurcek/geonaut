@@ -6,5 +6,5 @@ import Foundation
 enum LegalLinks {
     /// Notion'da herkese açık yayınlanan Gizlilik Politikası + Destek sayfası (TR/EN/DE/ES).
     /// App Store Connect'teki "Gizlilik Politikası URL" ve "Destek URL" alanlarına da AYNI adres yazılır.
-    static let privacyPolicy: URL? = URL(string: "https://app.notion.com/p/Globaut-Gizlilik-Politikas-Privacy-Policy-3f06c453bada81609b09d9348a95850b")
+    static let privacyPolicy: URL? = URL(string: "https://app.notion.com/p/Geonaut-Gizlilik-Politikas-Privacy-Policy-3f06c453bada81609b09d9348a95850b")
 }
