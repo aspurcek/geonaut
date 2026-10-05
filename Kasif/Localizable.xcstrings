@@ -2,35 +2,6 @@
   "sourceLanguage": "tr",
   "version": "1.0",
   "strings": {
-    "Geopal": {
-      "extractionState": "manual",
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geopal"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geopal"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geopal"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Geopal"
-          }
-        }
-      }
-    },
     "Oyna, öğren, dünyayı keşfet!": {
       "extractionState": "manual",
       "localizations": {
@@ -10645,35 +10616,6 @@
         }
       }
     },
-    "Bugün henüz Kaşif'te oynamadın. Serini korumak için bir etap tamamla!": {
-      "extractionState": "manual",
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bugün henüz Kaşif'te oynamadın. Serini korumak için bir etap tamamla!"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You haven't played Kaşif today. Finish a level to keep your streak!"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Du hast heute noch nicht Kaşif gespielt. Schließe ein Level ab, um deine Serie zu behalten!"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hoy todavía no has jugado a Kaşif. ¡Completa un nivel para mantener tu racha!"
-          }
-        }
-      }
-    },
     "Bugün yeni bir bayrak, ülke ya da lezzet öğrenmeye ne dersin?": {
       "extractionState": "manual",
       "localizations": {
@@ -10819,35 +10761,6 @@
         }
       }
     },
-    "Hatırlatma gönderebilmemiz için Ayarlar'dan Kaşif'e bildirim izni vermen gerekiyor.": {
-      "extractionState": "manual",
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hatırlatma gönderebilmemiz için Ayarlar'dan Kaşif'e bildirim izni vermen gerekiyor."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "To send reminders, allow notifications for Kaşif in Settings."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Damit wir Erinnerungen senden können, erlaube Kaşif in den Einstellungen Mitteilungen."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Para enviarte recordatorios, permite las notificaciones de Kaşif en Ajustes."
-          }
-        }
-      }
-    },
     "Kaynağı gör": {
       "extractionState": "manual",
       "localizations": {
@@ -10873,35 +10786,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ver fuente"
-          }
-        }
-      }
-    },
-    "Kaşif seni bekliyor!": {
-      "extractionState": "manual",
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaşif seni bekliyor!"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaşif is waiting for you!"
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kaşif wartet auf dich!"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "¡Kaşif te está esperando!"
           }
         }
       }
@@ -11051,35 +10935,6 @@
         }
       }
     },
-    "Çevrimdışısın — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak.": {
-      "extractionState": "manual",
-      "localizations": {
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Çevrimdışısın — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You're offline — your progress is saved on this device and will sync when you're back online."
-          }
-        },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Du bist offline – dein Fortschritt wird auf diesem Gerät gespeichert und synchronisiert, sobald du wieder online bist."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estás sin conexión: tu progreso se guarda en este dispositivo y se sincronizará cuando vuelvas a tener conexión."
-          }
-        }
-      }
-    },
     "Bildirim izni kapalı": {
       "extractionState": "manual",
       "localizations": {
@@ -11105,6 +10960,122 @@
           "stringUnit": {
             "state": "translated",
             "value": "Notificaciones desactivadas"
+          }
+        }
+      }
+    },
+    "Hatırlatma gönderebilmemiz için Ayarlar'dan bildirim izni vermen gerekiyor.": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hatırlatma gönderebilmemiz için Ayarlar'dan bildirim izni vermen gerekiyor."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To send reminders, allow notifications in Settings."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Damit wir Erinnerungen senden können, erlaube Mitteilungen in den Einstellungen."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para enviarte recordatorios, permite las notificaciones en Ajustes."
+          }
+        }
+      }
+    },
+    "Bugün henüz oynamadın. Serini korumak için bir etap tamamla!": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugün henüz oynamadın. Serini korumak için bir etap tamamla!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You haven't played yet today. Finish a level to keep your streak!"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du hast heute noch nicht gespielt. Schließe ein Level ab, um deine Serie zu behalten!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy todavía no has jugado. ¡Completa un nivel para mantener tu racha!"
+          }
+        }
+      }
+    },
+    "Dünya turu seni bekliyor!": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya turu seni bekliyor!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your world tour is waiting!"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Weltreise wartet auf dich!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Tu vuelta al mundo te espera!"
+          }
+        }
+      }
+    },
+    "İnternete ya da iCloud'a ulaşılamıyor — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak.": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İnternete ya da iCloud'a ulaşılamıyor — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Can't reach the internet or iCloud — your progress is saved on this device and will sync when you're back online."
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internet oder iCloud nicht erreichbar – dein Fortschritt wird auf diesem Gerät gespeichert und synchronisiert, sobald die Verbindung wieder steht."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay conexión a internet o iCloud: tu progreso se guarda en este dispositivo y se sincronizará cuando vuelva la conexión."
           }
         }
       }

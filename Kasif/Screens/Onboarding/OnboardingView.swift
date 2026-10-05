@@ -50,7 +50,7 @@ struct OnboardingView: View {
                     KasifBouncingMascot(size: 176)
 
                     VStack(spacing: KasifSpacing.xs) {
-                        Text("Geopal")
+                        Text(verbatim: AppBrand.name)
                             .font(KasifTypography.display)
                             .foregroundStyle(KasifColor.textPrimary)
                         Text("Oyna, öğren, dünyayı keşfet!")

@@ -232,7 +232,7 @@ struct SettingsView: View {
             }
             Button("Vazgeç", role: .cancel) {}
         } message: {
-            Text("Hatırlatma gönderebilmemiz için Ayarlar'dan Kaşif'e bildirim izni vermen gerekiyor.")
+            Text("Hatırlatma gönderebilmemiz için Ayarlar'dan bildirim izni vermen gerekiyor.")
         }
     }
 }

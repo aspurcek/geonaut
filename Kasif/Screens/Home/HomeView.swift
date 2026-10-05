@@ -117,7 +117,7 @@ struct HomeView: View {
                                 .padding(.horizontal, KasifSpacing.xl)
                         }
                         if !cloudReachable {
-                            KasifToast(message: "Çevrimdışısın — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak.", tone: .info)
+                            KasifToast(message: "İnternete ya da iCloud'a ulaşılamıyor — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak.", tone: .info)
                                 .padding(.horizontal, KasifSpacing.xl)
                         }
 

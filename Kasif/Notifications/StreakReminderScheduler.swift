@@ -46,9 +46,9 @@ enum StreakReminderScheduler {
         content.sound = .default
         if streakDays > 0 {
             content.title = String(localized: "\(streakDays) günlük serini kaybetme!")
-            content.body = String(localized: "Bugün henüz Kaşif'te oynamadın. Serini korumak için bir etap tamamla!")
+            content.body = String(localized: "Bugün henüz oynamadın. Serini korumak için bir etap tamamla!")
         } else {
-            content.title = String(localized: "Kaşif seni bekliyor!")
+            content.title = String(localized: "Dünya turu seni bekliyor!")
             content.body = String(localized: "Bugün yeni bir bayrak, ülke ya da lezzet öğrenmeye ne dersin?")
         }
 
