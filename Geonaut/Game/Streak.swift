@@ -23,3 +23,37 @@ enum StreakStatus {
         }
     }
 }
+
+/// Profil'deki "Bu haftaki serin" takviminin bir günü.
+enum StreakWeekDay: Equatable {
+    /// Seri kapsamındaki (oynanmış) gün.
+    case completed
+    /// Bugün ve henüz oynanmadı.
+    case active
+    /// Gelecek ya da seri dışındaki geçmiş gün.
+    case upcoming
+}
+
+extension StreakStatus {
+    /// Pazartesi'den Pazar'a, içinde bulunulan haftanın 7 günü. Günlük geçmişi tutmadığımız
+    /// için seri, `lastActiveDate`'te biten ardışık `streakDays` gün olarak yorumlanır;
+    /// seri bozulmuşsa (son oynama dünden eski) hiçbir gün "tamamlandı" sayılmaz.
+    static func weekDays(lastActiveDate: Date, streakDays: Int, now: Date = .now, calendar: Calendar = .current) -> [StreakWeekDay] {
+        var cal = calendar
+        cal.firstWeekday = 2 // Pazartesi
+        let today = cal.startOfDay(for: now)
+        guard let weekStart = cal.dateInterval(of: .weekOfYear, for: today)?.start else {
+            return Array(repeating: .upcoming, count: 7)
+        }
+        let last = cal.startOfDay(for: lastActiveDate)
+        let daysSinceLast = cal.dateComponents([.day], from: last, to: today).day ?? 0
+        let streakAlive = streakDays > 0 && daysSinceLast >= 0 && daysSinceLast <= 1
+        return (0..<7).map { index in
+            guard let day = cal.date(byAdding: .day, value: index, to: weekStart) else { return .upcoming }
+            if day > today { return .upcoming }
+            let daysBeforeLast = cal.dateComponents([.day], from: day, to: last).day ?? -1
+            if streakAlive && daysBeforeLast >= 0 && daysBeforeLast < streakDays { return .completed }
+            return day == today ? .active : .upcoming
+        }
+    }
+}

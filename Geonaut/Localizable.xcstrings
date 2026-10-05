@@ -593,35 +593,6 @@
         }
       }
     },
-    "☝️ Doğru kıtaya dokun": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "☝️ Tippe auf den richtigen Kontinent"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "☝️ Tap the right continent"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "☝️ Toca el continente correcto"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "☝️ Doğru kıtaya dokun"
-          }
-        }
-      }
-    },
     "✓ Doğru!": {
       "extractionState": "manual",
       "localizations": {
@@ -2476,35 +2447,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bu bayrak hangi kıtada?"
-          }
-        }
-      }
-    },
-    "Bu bayrak hangi kıtada? Harita'da işaretle": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Auf welchem Kontinent liegt dieses Land? Tippe es auf der Karte an"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Which continent is this flag from? Tap it on the map"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "¿En qué continente está esta bandera? Márcalo en el mapa"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bu bayrak hangi kıtada? Harita'da işaretle"
           }
         }
       }
@@ -11206,6 +11148,122 @@
           "stringUnit": {
             "state": "translated",
             "value": "Geonaut"
+          }
+        }
+      }
+    },
+    "Bu bayrak hangi ülkeye ait? Haritada yerini işaretle": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu bayrak hangi ülkeye ait? Haritada yerini işaretle"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Which country is this flag from? Tap its location on the map"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zu welchem Land gehört diese Flagge? Tippe auf der Karte auf seine Lage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿De qué país es esta bandera? Toca su ubicación en el mapa"
+          }
+        }
+      }
+    },
+    "☝️ Ülkenin bulunduğu yere dokun": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "☝️ Ülkenin bulunduğu yere dokun"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "☝️ Tap where the country is"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "☝️ Tippe auf die Lage des Landes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "☝️ Toca dónde está el país"
+          }
+        }
+      }
+    },
+    "Kilitli": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilitli"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesperrt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bloqueado"
+          }
+        }
+      }
+    },
+    "Tamamlandı": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamamlandı"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completed"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abgeschlossen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completado"
           }
         }
       }

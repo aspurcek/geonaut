@@ -7,6 +7,8 @@ struct ProfileView: View {
     let email: String?
     let points: Int
     let streak: Int
+    /// Haftalık seri takvimini gerçek veriden hesaplamak için (bkz. StreakStatus.weekDays).
+    var lastActiveDate: Date = .now
     let avatarColorHex: UInt32
     let character: AvatarCharacter
     let progress: GameProgress
@@ -28,7 +30,16 @@ struct ProfileView: View {
     // adları/puan eşikleri, içerik puan tavanlarına orantılı olarak burada karara bağlandı.
     private var level: GeoLevel { GeoLevel.level(forPoints: points) }
     private var levelTitle: String { String(localized: "Geonaut seviyesi: \(L(level.title))") }
-    let weekDayStates: [GeoDayChip.State] = [.completed, .completed, .completed, .active, .upcoming, .upcoming, .upcoming]
+    /// Önceden sabit/örnek veriydi (herkes için aynı 3 yeşil gün); artık gerçek seriden hesaplanıyor.
+    private var weekDayStates: [GeoDayChip.State] {
+        StreakStatus.weekDays(lastActiveDate: lastActiveDate, streakDays: streak).map { day in
+            switch day {
+            case .completed: .completed
+            case .active: .active
+            case .upcoming: .upcoming
+            }
+        }
+    }
 
     /// Gerçek GameProgress'ten ilk 3 kıta rozeti + kategori kupası (bkz. BadgeCatalog) —
     /// önceden sabit/örnek veriydi. Tam liste "Tümünü Gör" ile Kupalar sekmesinde.

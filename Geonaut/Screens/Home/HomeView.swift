@@ -12,7 +12,9 @@ struct HomeView: View {
     /// RootTabView'de tutulur (bkz. RootTabView.swift'teki mimari notu) — sekme
     /// değiştirince sıfırlanmaması için burada @State değil @Binding/referans.
     @Binding var points: Int
-    @State var streak: Int
+    /// Üst çubuktaki seri sayısı. Eskiden `@State` idi: @State ilk değeri sabitleyip ebeveynden gelen
+    /// güncellemeleri yok sayıyordu — bir seviye bitince seri artsa da sayaç sekme değişene kadar eski kalıyordu.
+    var streak: Int
     /// Dün oynanmış, bugün henüz oynanmamış — bkz. Streak.swift/StreakStatus.atRisk.
     var streakAtRisk: Bool = false
     /// iCloud/ağ şu an erişilemiyor — ilerleme cihazda saklanıyor ama buluta
@@ -179,12 +181,12 @@ struct HomeView: View {
                     QuizSessionView(
                         session: session,
                         points: $points,
-                        onFinished: { earnedPoints in
+                        onFinished: { earnedPoints, seenCodes in
                             let wasTourDone = progress.isCategoryCompleted(.flags, tour: tour)
                             let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
                             points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(session.questions.map(\.countryCode))
+                            progress.markCountriesSeen(seenCodes)
                             onStageCompleted()
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
@@ -247,11 +249,11 @@ struct HomeView: View {
                     MapQuizSessionView(
                         session: mapSession,
                         points: $points,
-                        onFinished: { earnedPoints in
+                        onFinished: { earnedPoints, seenCodes in
                             let wasTourDone = progress.isCategoryCompleted(.maps, tour: tour)
                             points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(mapSession.questions.map { $0.country.code })
+                            progress.markCountriesSeen(seenCodes)
                             onStageCompleted()
                             advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone)
                         },
@@ -276,11 +278,11 @@ struct HomeView: View {
                     CountryQuizSessionView(
                         session: countrySession,
                         points: $points,
-                        onFinished: { earnedPoints in
+                        onFinished: { earnedPoints, seenCodes in
                             let wasTourDone = progress.isCategoryCompleted(.maps, tour: tour)
                             points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(countrySession.questions.map { $0.country.code })
+                            progress.markCountriesSeen(seenCodes)
                             onStageCompleted()
                             advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone)
                         },
@@ -315,12 +317,12 @@ struct HomeView: View {
                     LanguageQuizSessionView(
                         session: languageSession,
                         points: $points,
-                        onFinished: { earnedPoints in
+                        onFinished: { earnedPoints, seenCodes in
                             let wasTourDone = progress.isCategoryCompleted(.languages, tour: tour)
                             let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
                             points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(languageSession.questions.map(\.countryCode))
+                            progress.markCountriesSeen(seenCodes)
                             onStageCompleted()
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
@@ -374,12 +376,12 @@ struct HomeView: View {
                     FoodQuizSessionView(
                         session: foodSession,
                         points: $points,
-                        onFinished: { earnedPoints in
+                        onFinished: { earnedPoints, seenCodes in
                             let wasTourDone = progress.isCategoryCompleted(.foods, tour: tour)
                             let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
                             points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(foodSession.questions.map(\.countryCode))
+                            progress.markCountriesSeen(seenCodes)
                             onStageCompleted()
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
@@ -628,6 +630,8 @@ struct HomeView: View {
             .animation(.easeOut(duration: 0.15), value: isSelected)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(Text("Tur \(tour + 1)"))
+        .accessibilityValue(!unlocked ? Text("Kilitli") : (done ? Text("Tamamlandı") : Text("")))
         .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 

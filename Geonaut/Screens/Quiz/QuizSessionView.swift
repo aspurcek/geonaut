@@ -8,7 +8,9 @@ struct QuizSessionView: View {
     /// GameRules.heartRefillCost). session.pointsEarnedThisSession bu oturuma özel ve
     /// harcanabilir bir bakiye değil, bu yüzden ayrı tutuluyor.
     @Binding var points: Int
-    var onFinished: (_ pointsEarned: Int) -> Void
+    /// Seviye bitince: kazanılan puan + bu oturumda GERÇEKTEN sorulan ülke kodları (öğrenilen ülke
+    /// istatistiği için — ebeveynin yeniden ürettiği ayrı bir soru listesi değil).
+    var onFinished: (_ pointsEarned: Int, _ countryCodes: [String]) -> Void
     var onExit: () -> Void
     /// Seviye yarıdayken çıkış onayı (bkz. GeoExitConfirmation).
     @State private var confirmingExit = false
@@ -53,7 +55,7 @@ struct QuizSessionView: View {
                 correctCount: session.correctCount,
                 pointsEarned: session.pointsEarnedThisSession,
                 heartsRemaining: session.hearts,
-                onContinue: { onFinished(session.pointsEarnedThisSession) }
+                onContinue: { onFinished(session.pointsEarnedThisSession, session.questions.map(\.countryCode)) }
             )
         }
     }
@@ -63,6 +65,6 @@ struct QuizSessionView: View {
     QuizSessionView(
         session: QuizSession(stageIndex: 0, questions: Countries.makeQuestions(from: Countries.europe, isRecall: false)),
         points: .constant(340),
-        onFinished: { _ in }, onExit: {}
+        onFinished: { _, _ in }, onExit: {}
     )
 }

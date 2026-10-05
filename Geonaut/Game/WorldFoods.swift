@@ -133,22 +133,31 @@ enum WorldFoods {
         return TourStructure.pick(fresh.isEmpty ? candidates : fresh, code: \.code, preferred: preferred)
     }
 
-    private static func distractorCountryNames(excluding correct: Country, pool: [Country], count: Int) -> [String]? {
+    /// Yanlış şık olarak, doğru ülkeyle AYNI yemek/içecek/tatlı adına sahip bir ülke seçilmez
+    /// (ör. "Kahve" Kanada, Brezilya ve Avustralya için ortak — aksi hâlde "Kahve hangi ülkeye
+    /// ait?" sorusunda birden çok doğru şık çıkardı).
+    private static func sharesItem(_ candidate: Country, with item: String, type: FoodType) -> Bool {
+        WorldFoods.item(for: candidate.code, type: type) == item
+    }
+
+    private static func distractorCountryNames(excluding correct: Country, pool: [Country], count: Int, type: FoodType, correctItem: String) -> [String]? {
         var seenNames: Set<String> = [correct.name]
         var distractors: [String] = []
         for candidate in pool.shuffled() {
-            guard candidate.code != correct.code, seenNames.insert(candidate.name).inserted else { continue }
+            guard candidate.code != correct.code, !sharesItem(candidate, with: correctItem, type: type),
+                  seenNames.insert(candidate.name).inserted else { continue }
             distractors.append(candidate.name)
             if distractors.count == count { break }
         }
         return distractors.count == count ? distractors : nil
     }
 
-    private static func distractorCountryCodes(excluding correct: Country, pool: [Country], count: Int) -> [String]? {
+    private static func distractorCountryCodes(excluding correct: Country, pool: [Country], count: Int, type: FoodType, correctItem: String) -> [String]? {
         var seenCodes: Set<String> = [correct.code]
         var distractors: [String] = []
         for candidate in pool.shuffled() {
-            guard seenCodes.insert(candidate.code).inserted else { continue }
+            guard !sharesItem(candidate, with: correctItem, type: type),
+                  seenCodes.insert(candidate.code).inserted else { continue }
             distractors.append(candidate.code)
             if distractors.count == count { break }
         }
@@ -174,7 +183,7 @@ enum WorldFoods {
         guard let correct = TourStructure.pick(imagePool, code: \.code, preferred: preferred),
               let correctItem = item(for: correct.code, type: type),
               let correctImage = image(for: correct.code, type: type),
-              let distractors = distractorCountryNames(excluding: correct, pool: pool, count: 3) else { return nil }
+              let distractors = distractorCountryNames(excluding: correct, pool: pool, count: 3, type: type, correctItem: correctItem) else { return nil }
         let options = ([correct.name] + distractors).shuffled()
         return FoodQuestion(
             style: .foodImageToCountry, foodType: type,
@@ -187,7 +196,7 @@ enum WorldFoods {
     private static func makeFoodNameToCountryFlagsQuestion(type: FoodType, pool: [Country], excluding used: Set<String>, preferred: Set<String>) -> FoodQuestion? {
         guard let correct = pickFresh(pool, excluding: used, preferred: preferred),
               let correctItem = item(for: correct.code, type: type),
-              let distractorCodes = distractorCountryCodes(excluding: correct, pool: pool, count: 3) else { return nil }
+              let distractorCodes = distractorCountryCodes(excluding: correct, pool: pool, count: 3, type: type, correctItem: correctItem) else { return nil }
         let flagOptions = ([correct.code] + distractorCodes).shuffled()
         return FoodQuestion(
             style: .foodNameToCountryFlags, foodType: type,
@@ -200,7 +209,7 @@ enum WorldFoods {
     private static func makeFoodNameToCountryTextQuestion(type: FoodType, pool: [Country], excluding used: Set<String>, preferred: Set<String>) -> FoodQuestion? {
         guard let correct = pickFresh(pool, excluding: used, preferred: preferred),
               let correctItem = item(for: correct.code, type: type),
-              let distractors = distractorCountryNames(excluding: correct, pool: pool, count: 3) else { return nil }
+              let distractors = distractorCountryNames(excluding: correct, pool: pool, count: 3, type: type, correctItem: correctItem) else { return nil }
         let options = ([correct.name] + distractors).shuffled()
         return FoodQuestion(
             style: .foodNameToCountryText, foodType: type,

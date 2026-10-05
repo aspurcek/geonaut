@@ -72,6 +72,9 @@ struct GeoCategoryCard: View {
         // Kullanıcı kararı: tüm kartlar AYNI genişlikte olsun (eskiden 106 yalnızca üst sınırdı,
         // yazı kısa olan kart daha dar çıkıyordu) — iPhone'da sabit 106, iPad'de eşit paylaşım.
         .modifier(CategoryCardWidth(fillWidth: fillWidth))
+        // VoiceOver: kart tek öğe olarak okunur; kilitliyse "Kilitli" söylenir.
+        .accessibilityElement(children: .combine)
+        .accessibilityValue(state == .locked ? Text("Kilitli") : Text(""))
         .background(GeoColor.bgSurface, in: RoundedRectangle(cornerRadius: GeoRadius.lg))
         .overlay {
             if isCurrentCategory {

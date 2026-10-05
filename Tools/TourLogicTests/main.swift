@@ -71,4 +71,16 @@ check(mp.bestPointsByStage.contains("Avrupa|0=80") && mp.bestPointsByStage.conta
 check(mp.hasCustomAvatar && mp.avatarColorHex == 0x123456, "Birleştirme: buluttaki özel avatar varsayılan yerel avatarla ezilmiyor")
 check(mp.displayName == "Ayşe", "Birleştirme: varsayılan yerel ad, buluttaki gerçek adı ezmiyor")
 check(mp.streakDays == 5, "Birleştirme: daha yeni aktif günün serisi alınıyor")
+
+// --- Haftalık seri takvimi (Profil) ---
+var utc = Calendar(identifier: .gregorian); utc.timeZone = TimeZone(identifier: "UTC")!
+func day(_ d: Int) -> Date { utc.date(from: DateComponents(year: 2026, month: 10, day: d, hour: 12))! }
+let U = StreakWeekDay.upcoming, C = StreakWeekDay.completed, A = StreakWeekDay.active
+// 7 Ekim 2026 = Çarşamba (hafta Pzt 5 Ekim'de başlar)
+check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 0, now: day(7), calendar: utc) == [U,U,A,U,U,U,U], "Seri yok: yalnızca bugün 'aktif'")
+check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 3, now: day(7), calendar: utc) == [C,C,C,U,U,U,U], "3 günlük seri, bugün oynandı: Pzt-Sal-Çar tamam")
+check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 5, now: day(7), calendar: utc) == [C,C,C,U,U,U,U], "Seri geçen haftaya taşsa da bu hafta yalnızca geçen günler")
+check(StreakStatus.weekDays(lastActiveDate: day(6), streakDays: 2, now: day(7), calendar: utc) == [C,C,A,U,U,U,U], "Dün oynandı, bugün henüz değil: bugün 'aktif'")
+check(StreakStatus.weekDays(lastActiveDate: day(3), streakDays: 4, now: day(7), calendar: utc) == [U,U,A,U,U,U,U], "Seri bozulduysa hiçbir gün 'tamam' sayılmaz")
+check(StreakStatus.weekDays(lastActiveDate: day(11), streakDays: 7, now: day(11), calendar: utc) == [C,C,C,C,C,C,C], "Pazar günü 7 günlük seri: hafta tamam")
 print(fails == 0 ? "TÜMÜ GEÇTİ" : "\(fails) HATA")

@@ -288,13 +288,11 @@ enum Countries {
         Country(code: "BG", name: "Bulgaristan"),
         Country(code: "GI", name: "Cebelitarık"),
         Country(code: "DK", name: "Danimarka"),
-        Country(code: "AM", name: "Ermenistan"),
         Country(code: "EE", name: "Estonya"),
         Country(code: "FO", name: "Faroe Adaları"),
         Country(code: "FI", name: "Finlandiya"),
         Country(code: "FR", name: "Fransa"),
         Country(code: "GG", name: "Guernsey"),
-        Country(code: "GE", name: "Gürcistan"),
         Country(code: "NL", name: "Hollanda"),
         Country(code: "HR", name: "Hırvatistan"),
         Country(code: "JE", name: "Jersey"),
@@ -383,7 +381,10 @@ enum Countries {
         Country(code: "UZ", name: "Özbekistan"),
         Country(code: "JO", name: "Ürdün"),
         Country(code: "IR", name: "İran"),
-        Country(code: "IL", name: "İsrail")
+        Country(code: "IL", name: "İsrail"),
+        Country(code: "IO", name: "Britanya Hint Okyanusu Toprağı"),
+        Country(code: "AM", name: "Ermenistan"),
+        Country(code: "GE", name: "Gürcistan")
     ]
 
     static let africa: [Country] = [
@@ -457,7 +458,6 @@ enum Countries {
         Country(code: "BB", name: "Barbados"),
         Country(code: "BZ", name: "Belize"),
         Country(code: "BM", name: "Bermuda"),
-        Country(code: "IO", name: "Britanya Hint Okyanusu Toprağı"),
         Country(code: "VG", name: "Britanya Virjin Adaları"),
         Country(code: "KY", name: "Cayman Adaları"),
         Country(code: "CW", name: "Curaçao"),

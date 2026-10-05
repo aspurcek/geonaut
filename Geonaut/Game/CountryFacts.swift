@@ -219,8 +219,8 @@ enum CountryData {
         "VA": CountryFacts(continent: "Avrupa", mainLanguage: "İtalyanca", isTrickyLanguage: true),
         // Finlandiya'ya bağlı ama nüfusun neredeyse tamamı İsveççe konuşur.
         "AX": CountryFacts(continent: "Avrupa", mainLanguage: "İsveççe", isTrickyLanguage: true),
-        "AM": CountryFacts(continent: "Avrupa", mainLanguage: "Ermenice", isTrickyLanguage: false),
-        "GE": CountryFacts(continent: "Avrupa", mainLanguage: "Gürcüce", isTrickyLanguage: false),
+        "AM": CountryFacts(continent: "Asya", mainLanguage: "Ermenice", isTrickyLanguage: false),
+        "GE": CountryFacts(continent: "Asya", mainLanguage: "Gürcüce", isTrickyLanguage: false),
         // Rumca resmi dil, adanın kuzeyinde Türkçe de konuşulur.
         "CY": CountryFacts(continent: "Avrupa", mainLanguage: "Rumca", isTrickyLanguage: true),
 
@@ -338,7 +338,7 @@ enum CountryData {
         // Danimarka'ya bağlı ama kendi Grönlandca dili var.
         "GL": CountryFacts(continent: "Kuzey Amerika", mainLanguage: "Grönlandca", isTrickyLanguage: true),
         "GP": CountryFacts(continent: "Kuzey Amerika", mainLanguage: "Fransızca", isTrickyLanguage: false),
-        "IO": CountryFacts(continent: "Kuzey Amerika", mainLanguage: "İngilizce", isTrickyLanguage: false),
+        "IO": CountryFacts(continent: "Asya", mainLanguage: "İngilizce", isTrickyLanguage: false),
         "KN": CountryFacts(continent: "Kuzey Amerika", mainLanguage: "İngilizce", isTrickyLanguage: false),
         "LC": CountryFacts(continent: "Kuzey Amerika", mainLanguage: "İngilizce", isTrickyLanguage: false),
         "MQ": CountryFacts(continent: "Kuzey Amerika", mainLanguage: "Fransızca", isTrickyLanguage: false),

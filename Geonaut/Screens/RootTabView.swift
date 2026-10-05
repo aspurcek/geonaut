@@ -101,7 +101,7 @@ struct RootTabView: View {
             } else {
                 ProfileView(
                     selectedTab: $selectedTab,
-                    displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays,
+                    displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays, lastActiveDate: profile.lastActiveDate,
                     avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
                     progress: progress,
                     onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { selectedTab = .cups },

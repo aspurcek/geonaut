@@ -71,11 +71,14 @@ enum Languages {
             usedCodes.insert(correct.code)
             let correctLanguage = language(for: correct.code)
 
-            var seenLanguages: Set<String> = [correctLanguage]
+            // Şıklar GÖSTERİLEN (yerelleştirilmiş) ada göre tekilleştirilir: Türkçe'de farklı olan
+            // Flamanca/Hollandaca, Rumca/Yunanca, Sırpça/Karadağca İngilizce/Almanca/İspanyolca'da
+            // aynı kelimeye dönüşüyor — iki aynı şıktan biri "yanlış" sayılırdı.
+            var seenLanguages: Set<String> = [D(correctLanguage)]
             var distractors: [String] = []
             for candidate in distractorSource.shuffled() {
                 let lang = language(for: candidate.code)
-                if seenLanguages.insert(lang).inserted {
+                if seenLanguages.insert(D(lang)).inserted {
                     distractors.append(lang)
                 }
                 if distractors.count == 3 { break }

@@ -5,7 +5,9 @@ import SwiftUI
 struct LanguageQuizSessionView: View {
     @State var session: LanguageQuizSession
     @Binding var points: Int
-    var onFinished: (_ pointsEarned: Int) -> Void
+    /// Seviye bitince: kazanılan puan + bu oturumda GERÇEKTEN sorulan ülke kodları (öğrenilen ülke
+    /// istatistiği için — ebeveynin yeniden ürettiği ayrı bir soru listesi değil).
+    var onFinished: (_ pointsEarned: Int, _ countryCodes: [String]) -> Void
     var onExit: () -> Void
     /// Seviye yarıdayken çıkış onayı (bkz. GeoExitConfirmation).
     @State private var confirmingExit = false
@@ -50,7 +52,7 @@ struct LanguageQuizSessionView: View {
                 correctCount: session.correctCount,
                 pointsEarned: session.pointsEarnedThisSession,
                 heartsRemaining: session.hearts,
-                onContinue: { onFinished(session.pointsEarnedThisSession) }
+                onContinue: { onFinished(session.pointsEarnedThisSession, session.questions.map(\.countryCode)) }
             )
         }
     }
@@ -60,6 +62,6 @@ struct LanguageQuizSessionView: View {
     LanguageQuizSessionView(
         session: LanguageQuizSession(stageIndex: 0, questions: Languages.makeQuestions(forContinent: "Avrupa", stageIndex: 0)),
         points: .constant(340),
-        onFinished: { _ in }, onExit: {}
+        onFinished: { _, _ in }, onExit: {}
     )
 }

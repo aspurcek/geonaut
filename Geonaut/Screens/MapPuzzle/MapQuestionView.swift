@@ -76,12 +76,12 @@ struct MapQuestionView: View {
         switch question.kind {
         case .highlightMapSelectName: "Bu kıta hangisi?"
         case .flagWithHintMap: "Bu bayrak hangi kıtada?"
-        case .flagTapMap: "Bu bayrak hangi kıtada? Harita'da işaretle"
+        case .flagTapMap: "Bu bayrak hangi ülkeye ait? Haritada yerini işaretle"
         }
     }
 
     private var tapHintText: String {
-        guard isAnswered else { return "☝️ Doğru kıtaya dokun" }
+        guard isAnswered else { return "☝️ Ülkenin bulunduğu yere dokun" }
         return tapWasCorrect ? "✓ Doğru!" : "✕ Doğru bölge işaretlendi"
     }
 

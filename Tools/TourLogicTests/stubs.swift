@@ -21,3 +21,4 @@ struct AvatarCharacter: Equatable {
     var accessory: AvatarAccessory? = nil
     var facialFeature: AvatarFacialFeature? = nil
 }
+
