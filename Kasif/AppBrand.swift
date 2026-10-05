@@ -6,5 +6,5 @@ import Foundation
 /// Not: "Kaşif" (kaşif/gezgin) oyun içi bir KAVRAM olarak kalır ("Kaşif seviyesi",
 /// "Kaşif Şapkası" gibi), marka adı değildir.
 enum AppBrand {
-    static let name = "Globaut"
+    static let name = "Geonaut"
 }
