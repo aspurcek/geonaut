@@ -1,7 +1,6 @@
 {
   "sourceLanguage": "tr",
   "strings": {
-    "": {},
     "\"%@\" bayrağı hangisi?": {
       "extractionState": "manual",
       "localizations": {
@@ -466,7 +465,35 @@
         }
       }
     },
-    "%lld günlük serini kaybetme!": {},
+    "%lld günlük serini kaybetme!": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld günlük serini kaybetme!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Don't lose your %lld-day streak!"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verliere deine %lld-Tage-Serie nicht!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡No pierdas tu racha de %lld días!"
+          }
+        }
+      }
+    },
     "%lld Puan ile Canlandır": {
       "extractionState": "manual",
       "localizations": {
@@ -711,35 +738,6 @@
         }
       }
     },
-    "5 rozet + kategori kupası": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 Abzeichen + Kategoriepokal"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 badges + category trophy"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 insignias + trofeo de categoría"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "5 rozet + kategori kupası"
-          }
-        }
-      }
-    },
     "7 kıtayı keşfet, ülkeleri haritada bul": {
       "extractionState": "manual",
       "localizations": {
@@ -765,35 +763,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "7 kıtayı keşfet, ülkeleri haritada bul"
-          }
-        }
-      }
-    },
-    "9 rozet + kategori kupası": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 Abzeichen + Kategoriepokal"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 badges + category trophy"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 insignias + trofeo de categoría"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "9 rozet + kategori kupası"
           }
         }
       }
@@ -11264,6 +11233,64 @@
           "stringUnit": {
             "state": "translated",
             "value": "Completado"
+          }
+        }
+      }
+    },
+    "8 rozet + kategori kupası": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 rozet + kategori kupası"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 badges + category trophy"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 Abzeichen + Kategoriepokal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8 insignias + trofeo de categoría"
+          }
+        }
+      }
+    },
+    "4 rozet + kategori kupası": {
+      "extractionState": "manual",
+      "localizations": {
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 rozet + kategori kupası"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 badges + category trophy"
+          }
+        },
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 Abzeichen + Kategoriepokal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 insignias + trofeo de categoría"
           }
         }
       }

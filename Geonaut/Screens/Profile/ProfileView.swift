@@ -28,7 +28,7 @@ struct ProfileView: View {
 
     // Bkz. GeoLevel.swift — Kural Kitabı böl. 07'nin tanımsız bıraktığı kademe
     // adları/puan eşikleri, içerik puan tavanlarına orantılı olarak burada karara bağlandı.
-    private var level: GeoLevel { GeoLevel.level(forPoints: points) }
+    private var level: GeoLevel { GeoLevel.level(forPoints: progress.lifetimePoints) }
     private var levelTitle: String { String(localized: "Geonaut seviyesi: \(L(level.title))") }
     /// Önceden sabit/örnek veriydi (herkes için aynı 3 yeşil gün); artık gerçek seriden hesaplanıyor.
     private var weekDayStates: [GeoDayChip.State] {

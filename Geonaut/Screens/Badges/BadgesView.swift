@@ -17,10 +17,10 @@ struct BadgesView: View {
     private var foodBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.dunyaYemekleriBadges(progress: progress) }
 
     private var totalUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges + foodBadges).filter(\.unlocked).count
+        (flagBadges + mapBadges + languageBadges + foodBadges).filter { $0.unlocked && !BadgeCatalog.isTrophy($0) }.count
     }
     private var totalTrophiesUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges + foodBadges).filter { $0.unlocked && BadgeCatalog.categoryTrophyName.values.contains($0.title) }.count
+        (flagBadges + mapBadges + languageBadges + foodBadges).filter { $0.unlocked && BadgeCatalog.isTrophy($0) }.count
     }
 
     var body: some View {
@@ -37,7 +37,7 @@ struct BadgesView: View {
                     }
 
                     badgeSection(
-                        title: "Bayraklar", subtitle: "9 rozet + kategori kupası",
+                        title: "Bayraklar", subtitle: "8 rozet + kategori kupası",
                         badges: flagBadges, displayTitle: Self.shortContinentName
                     )
 
@@ -47,12 +47,12 @@ struct BadgesView: View {
                     )
 
                     badgeSection(
-                        title: "Diller", subtitle: "9 rozet + kategori kupası",
+                        title: "Diller", subtitle: "8 rozet + kategori kupası",
                         badges: languageBadges, displayTitle: Self.shortContinentName
                     )
 
                     badgeSection(
-                        title: "Lezzetler", subtitle: "5 rozet + kategori kupası",
+                        title: "Lezzetler", subtitle: "4 rozet + kategori kupası",
                         badges: foodBadges, displayTitle: Self.shortContinentName
                     )
                 }

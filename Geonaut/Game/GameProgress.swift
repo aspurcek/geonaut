@@ -60,6 +60,13 @@ final class GameProgress {
         bestPointsByStage.map { "\($0.key)=\($0.value)" }
     }
 
+    /// Şimdiye kadar KAZANILAN toplam puan (başlangıç puanı + her etabın en iyi sonucu) —
+    /// harcamalardan ("Puanla Devam Et", seri canlandırma) etkilenmez, hiç azalmaz. Seviye
+    /// adı (GeoLevel) bakiyeye değil buna bağlı: aksi hâlde puan harcamak seviyeyi düşürürdü.
+    var lifetimePoints: Int {
+        GameRules.newPlayerStartingPoints + bestPointsByStage.values.reduce(0, +)
+    }
+
     func markStageCompleted(continent: String, stageIndex: Int) {
         completedStages[continent, default: []].insert(stageIndex)
     }

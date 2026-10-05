@@ -7,8 +7,14 @@ import SwiftUI
 /// Ekranda iki ayrı sayaç var: "rozet" (tüm kazanımlar) ve "kupa" (yalnız kategori
 /// kupaları — rozetlerin bir alt kümesi/özel olarak öne çıkarılan hali).
 enum BadgeCatalog {
-    static let totalRozet = 25
+    /// Kupalar HARİÇ rozet sayısı (7 kıta + Karışık ×2 kategori, Kıtalar/Ülkeler, 3 yemek türü + Karışık)
+    /// — elle yazılmış sabit yerine gerçek listeden hesaplanır ki içerik değişince sayı kaymasın.
+    static var totalRozet: Int { allBadges(progress: GameProgress()).filter { !isTrophy($0) }.count }
     static let totalKupa = 4
+
+    static func isTrophy(_ badge: BadgeInfo) -> Bool {
+        categoryTrophyName.values.contains(badge.title)
+    }
 
     enum Category {
         /// "9 rozet + kategori kupası": 7 kıta + Karışık + Bayrak Bilmece Kupası.
@@ -24,11 +30,12 @@ enum BadgeCatalog {
         case dunyaYemekleri
     }
 
+    /// Kupalar HARİÇ rozet sayısı (kupa her kategoride ayrıca +1) — gerçek listelerle aynı.
     static let rozetCount: [Category: Int] = [
-        .bayrakTahmin: 9,
+        .bayrakTahmin: 8,
         .haritaBilmece: 2,
-        .anaDiller: 9,
-        .dunyaYemekleri: 5
+        .anaDiller: 8,
+        .dunyaYemekleri: 4
     ]
 
     static let categoryTrophyName: [Category: String] = [

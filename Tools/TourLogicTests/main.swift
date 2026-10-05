@@ -83,4 +83,13 @@ check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 5, now: day(7), 
 check(StreakStatus.weekDays(lastActiveDate: day(6), streakDays: 2, now: day(7), calendar: utc) == [C,C,A,U,U,U,U], "Dün oynandı, bugün henüz değil: bugün 'aktif'")
 check(StreakStatus.weekDays(lastActiveDate: day(3), streakDays: 4, now: day(7), calendar: utc) == [U,U,A,U,U,U,U], "Seri bozulduysa hiçbir gün 'tamam' sayılmaz")
 check(StreakStatus.weekDays(lastActiveDate: day(11), streakDays: 7, now: day(11), calendar: utc) == [C,C,C,C,C,C,C], "Pazar günü 7 günlük seri: hafta tamam")
+
+// --- Seviye: kazanılan toplam puan harcamayla düşmez ---
+let lp = GameProgress()
+check(lp.lifetimePoints == GameRules.newPlayerStartingPoints, "Yeni oyuncu: toplam kazanılan = başlangıç puanı")
+_ = lp.pointsToAward(continent: "Avrupa", stageIndex: 0, earnedPoints: 80)
+_ = lp.pointsToAward(continent: "Avrupa", stageIndex: 1, earnedPoints: 100)
+check(lp.lifetimePoints == GameRules.newPlayerStartingPoints + 180, "Toplam kazanılan = başlangıç + etapların en iyileri")
+_ = lp.pointsToAward(continent: "Avrupa", stageIndex: 0, earnedPoints: 50) // daha düşük tekrar
+check(lp.lifetimePoints == GameRules.newPlayerStartingPoints + 180, "Daha düşük tekrar toplamı azaltmaz")
 print(fails == 0 ? "TÜMÜ GEÇTİ" : "\(fails) HATA")
