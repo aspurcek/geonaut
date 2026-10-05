@@ -1,6 +1,6 @@
 import Foundation
-struct KasifEtapNode { enum State { case completed, active, locked } }
-struct KasifContinentNode { enum State { case completed, active, locked } }
+struct GeoEtapNode { enum State { case completed, active, locked } }
+struct GeoContinentNode { enum State { case completed, active, locked } }
 struct FlagQuestion {
     enum Direction { case flagToName, nameToFlag }
     let direction: Direction

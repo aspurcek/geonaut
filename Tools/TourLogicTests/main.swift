@@ -61,7 +61,7 @@ cloudP.completedStageKeys = ["Avrupa|0", "Avrupa|1"]; cloudP.points = 300
 cloudP.hasCustomAvatar = true; cloudP.avatarColorHex = 0x123456
 cloudP.bestPointsByStage = ["Avrupa|0=80"]; cloudP.streakDays = 5
 cloudP.lastActiveDate = Date().addingTimeInterval(1000)
-var localP = PlayerProfile.newPlayer(appleUserIdentifier: "x", displayName: "Kaşif")
+var localP = PlayerProfile.newPlayer(appleUserIdentifier: "x", displayName: "Geonaut")
 localP.completedStageKeys = ["Tur2-Avrupa|0"]; localP.points = 120
 localP.bestPointsByStage = ["Avrupa|0=60", "Tur2-Avrupa|0=90"]
 let mp = localP.merging(cloud: cloudP)
