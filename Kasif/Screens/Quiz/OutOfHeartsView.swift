@@ -11,6 +11,8 @@ struct OutOfHeartsView: View {
     let currentPoints: Int
     var onContinueWithPoints: () -> Void
     var onRestartStage: () -> Void
+    /// Kullanıcı kararı: canlar bitince de seviyeden çıkılabilsin (ücretsiz, puan kaybı yok).
+    var onExit: () -> Void = {}
 
     private var canAffordRefill: Bool { currentPoints >= GameRules.heartRefillCost }
 
@@ -40,6 +42,11 @@ struct OutOfHeartsView: View {
                 Button("Seviyeyi Baştan Başla", action: onRestartStage)
                     .buttonStyle(.kasifSecondary)
                     .frame(maxWidth: .infinity)
+
+                Button("Seviyeden Çık", action: onExit)
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(KasifColor.textMuted)
+                    .padding(.top, KasifSpacing.xs)
             }
 
             Spacer()

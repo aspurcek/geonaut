@@ -45,7 +45,15 @@ final class LanguageQuizSession {
 
     func refillHeartsWithPoints() {
         hearts = GameRules.maxHearts
-        phase = .playing
+        // Az önce yanlış cevaplanan sorunun doğrusu zaten gösterildi — aynı soruyu tekrar
+        // sormak mantıksız (puanla "cevabı görüp tekrar yanıtlama") olurdu. Sıradaki soruya
+        // geçilir; yanlış cevaplanan soru son soruysa seviye tamamlanır.
+        if currentIndex + 1 >= questions.count {
+            phase = .completed
+        } else {
+            currentIndex += 1
+            phase = .playing
+        }
     }
 
     func restart() {

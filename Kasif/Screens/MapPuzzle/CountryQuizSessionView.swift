@@ -8,6 +8,8 @@ struct CountryQuizSessionView: View {
     @Binding var points: Int
     var onFinished: (_ pointsEarned: Int) -> Void
     var onExit: () -> Void
+    /// Seviye yarıdayken çıkış onayı (bkz. KasifExitConfirmation).
+    @State private var confirmingExit = false
 
     var body: some View {
         switch session.phase {
@@ -24,9 +26,13 @@ struct CountryQuizSessionView: View {
                         session.advance()
                     }
                 },
-                onBack: onExit
+                onBack: {
+                    // İlk sorudaysa (ilerleme yok) onaysız çık; değilse onay iste.
+                    if session.currentIndex > 0 { confirmingExit = true } else { onExit() }
+                }
             )
             .id(session.currentIndex)
+            .exitConfirmation(isPresented: $confirmingExit, onExit: onExit)
 
         case .outOfHearts:
             OutOfHeartsView(
@@ -35,7 +41,8 @@ struct CountryQuizSessionView: View {
                     points -= GameRules.heartRefillCost
                     session.refillHeartsWithPoints()
                 },
-                onRestartStage: { session.restart() }
+                onRestartStage: { session.restart() },
+                onExit: onExit
             )
 
         case .completed:
