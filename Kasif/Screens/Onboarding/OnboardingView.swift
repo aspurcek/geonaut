@@ -64,16 +64,23 @@ struct OnboardingView: View {
                         Button("Şimdi değil, önce deneyeyim", action: onTryAsGuest)
                             .font(KasifTypography.bodySemibold)
                             .foregroundStyle(KasifColor.textSecondary)
-                        if let privacyURL = LegalLinks.privacyPolicy {
-                            Link("Gizlilik Politikası", destination: privacyURL)
-                                .font(.system(size: 12, weight: .semibold))
-                                .foregroundStyle(KasifColor.textMuted)
-                        }
                     }
                     .padding(.horizontal, KasifSpacing.xl)
 
                     Spacer()
                     Spacer()
+                }
+
+                // Kullanıcı kararı: Gizlilik Politikası bağlantısı ekranın EN ALTINDA, diğer
+                // düğmelerden ayrı, sakin bir dipnot olarak durur.
+                if let privacyURL = LegalLinks.privacyPolicy {
+                    VStack {
+                        Spacer()
+                        Link("Gizlilik Politikası", destination: privacyURL)
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(KasifColor.textMuted)
+                            .padding(.bottom, KasifSpacing.lg)
+                    }
                 }
             }
         }
