@@ -20,6 +20,8 @@ struct ProfileView: View {
 
     private enum Route: Hashable { case settings, avatarBuilder, photoCredits }
     @State private var path = NavigationPath()
+    /// Rozet önizlemesine dokununca açılan bilgi penceresi (Rozetler sayfasındakiyle aynı bileşen).
+    @State private var selectedBadge: BadgeCardInfo?
 
     private var avatarColor: Color { Color(hex: avatarColorHex) }
     /// Kullanıcı kararı: bir soruda gösterilip cevaplanan (doğru/yanlış fark etmez)
@@ -76,6 +78,7 @@ struct ProfileView: View {
                 GeoNavBar(selection: $selectedTab)
             }
             .background(GeoColor.bgCanvas)
+            .badgeInfoSheet(selected: $selectedBadge)
             // ScrollView, alt view'ın kendi ignoresSafeArea'sını hiçe sayıp yine de
             // güvenli alan kadar üst boşluk bırakıyor — bu yüzden bleed işlemi
             // burada, en dıştaki container'da yapılmalı (NavBar'ın alt bleed'iyle aynı mantık).
@@ -194,7 +197,15 @@ struct ProfileView: View {
             }
             HStack(spacing: 14) {
                 ForEach(previewBadges, id: \.title) { badge in
-                    GeoAchievementBadge(title: badge.title, icon: badge.icon, accentColor: badge.accentColor, state: badge.unlocked ? .unlocked : .locked)
+                    Button {
+                        selectedBadge = BadgeCardInfo(
+                            title: badge.title, icon: badge.icon, accentColor: badge.accentColor,
+                            unlocked: badge.unlocked, description: badge.description
+                        )
+                    } label: {
+                        GeoAchievementBadge(title: badge.title, icon: badge.icon, accentColor: badge.accentColor, state: badge.unlocked ? .unlocked : .locked)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
         }
