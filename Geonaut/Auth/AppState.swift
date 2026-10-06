@@ -24,6 +24,8 @@ final class AppState {
     /// Yerel yedek gerçek oyuncu verisi taşıyorsa bulut tekrar denenebilir; yedek yoksa
     /// (boş varsayılan profil) buluttaki gerçek kaydın üzerine yazma riski nedeniyle denenmez.
     private var localIsAuthoritative = true
+    private var saveGeneration = 0
+    private var pendingSave: Task<Void, Never>?
     let appleSignIn = AppleSignInCoordinator()
 
     private static let userIdentifierKey = "geonaut.appleUserIdentifier"
@@ -100,7 +102,7 @@ final class AppState {
     /// seferinde 3 kategoriyi elle bitirmeden doğrudan test edilebilsin — Dünya
     /// Yemekleri'nin kendisi kasıtlı olarak bomboş bırakıldı, gerçek oynanışı test edilebilsin.
     func signInAsDebugGuest() {
-        var profile = PlayerProfile.newPlayer(appleUserIdentifier: "debug-guest", displayName: "Test Geonaut")
+        var profile = PlayerProfile.newPlayer(appleUserIdentifier: "debug-guest", displayName: UserDefaults.standard.string(forKey: "debugName") ?? "Test Geonaut")
         profile.completedStageKeys = Self.debugAllPriorCategoriesCompletedKeys
         phase = .signedIn(profile)
     }
@@ -162,9 +164,10 @@ final class AppState {
         let cached = LocalProfileCache.load(userIdentifier: userIdentifier)
         do {
             var profile = try await PlayerCloudKitService.fetchOrCreateProfile(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
-            if let cached, cached.dirty {
-                // Çevrimdışıyken yapılan değişiklikler gönderilmemiş — buluttakiyle BİRLEŞTİR
-                // (ezme yok, bkz. PlayerProfile.merging) ve gönder.
+            if let cached {
+                // Cihazdaki yedek varsa HER ZAMAN buluttakiyle BİRLEŞTİR (ezme yok, bkz.
+                // PlayerProfile.merging): bulut kaydı eskiyse ya da bir yazma kaybolduysa
+                // ilerleme yedekten geri gelir, sonra buluta yeniden gönderilir.
                 profile = cached.profile.merging(cloud: profile)
                 persist(profile)
             } else {
@@ -189,10 +192,19 @@ final class AppState {
     private func persist(_ profile: PlayerProfile) {
         LocalProfileCache.save(profile, dirty: true)
         guard cloudReachable || localIsAuthoritative else { return }
-        Task { @MainActor in
+        // Bulut yazmaları SIRAYLA yapılır ve her biri o anki EN GÜNCEL profili gönderir;
+        // aksi halde art arda iki kayıt yarışırsa eski profil sonradan bitip yeni ilerlemenin
+        // üzerine yazabilirdi. Yedek yalnızca arada yeni değişiklik olmadıysa "temiz" işaretlenir.
+        saveGeneration += 1
+        let generation = saveGeneration
+        let previous = pendingSave
+        pendingSave = Task { @MainActor in
+            await previous?.value
+            let latest: PlayerProfile
+            if case .signedIn(let current) = phase { latest = current } else { latest = profile }
             do {
-                try await PlayerCloudKitService.save(profile)
-                LocalProfileCache.save(profile, dirty: false)
+                try await PlayerCloudKitService.save(latest)
+                if generation == saveGeneration { LocalProfileCache.save(latest, dirty: false) }
                 cloudReachable = true
             } catch {
                 cloudReachable = false

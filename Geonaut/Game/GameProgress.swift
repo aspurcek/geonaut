@@ -136,6 +136,27 @@ final class GameProgress {
     }
 
     /// Tur 2/3, bir önceki tur bitince açılır; Tur 1 hep açık.
+    /// Demo/misafir modu için: tüm kategorilerin tüm turlarındaki tüm etapları "bitmiş"
+    /// işaretler — böylece her kilit açık olur ve her etap yeniden oynanabilir.
+    static var allStageKeys: Set<String> {
+        var keys = Set<String>()
+        for tour in 0..<TourStructure.count {
+            func add(_ base: String, _ count: Int) {
+                for stage in 0..<count { keys.insert("\(TourStructure.progressKey(base, tour: tour))|\(stage)") }
+            }
+            for entry in ContinentPathNode.order {
+                add(entry.name, FlagGuessStructure.stagesPerSection)
+                add(MainLanguageStructure.progressKey(for: entry.name), MainLanguageStructure.stagesPerSection)
+            }
+            add(MapPuzzleStructure.progressKey, MapPuzzleStructure.stageCount)
+            add(CountryPuzzleStructure.progressKey, CountryPuzzleStructure.stageCount)
+            for section in WorldFoodStructure.sections {
+                add(WorldFoodStructure.progressKey(for: section), WorldFoodStructure.stagesPerSection)
+            }
+        }
+        return keys
+    }
+
     func isTourUnlocked(_ category: TourCategory, tour: Int) -> Bool {
         tour <= 0 || isCategoryCompleted(category, tour: tour - 1)
     }

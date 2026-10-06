@@ -46,6 +46,9 @@ enum PlayerCloudKitService {
                 continue
             }
         }
+        // 3 denemede de çakışma sürdüyse sessizce "başarılı" sayma: çağıran yerel yedeği
+        // `dirty` bıraksın ki bir sonraki açılışta yeniden gönderilsin.
+        throw CKError(.serverRecordChanged)
     }
 
     private static func saveOnce(_ profile: PlayerProfile) async throws {

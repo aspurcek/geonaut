@@ -53,6 +53,10 @@ private struct RootView: View {
                 onTryAsGuest: { appState.enterGuestMode() }
             )
                 #if DEBUG
+                .onAppear {
+                    // `-debugSignIn 1` ile başlat: ekran görüntüsü almak için otomatik giriş.
+                    if UserDefaults.standard.bool(forKey: "debugSignIn") { appState.signInAsDebugGuest() }
+                }
                 .safeAreaInset(edge: .bottom) {
                     Button("DEBUG: Tam profille devam et") { appState.signInAsDebugGuest() }
                         .font(.system(size: 15, weight: .bold))
@@ -64,10 +68,19 @@ private struct RootView: View {
                 #endif
 
         case .guest:
+            // Demo/misafir modu: tüm özellikler ve kilitler açık (App Review dahil herkes
+            // uygulamanın tamamını görebilsin). İlerleme yalnızca bu oturumda tutulur,
+            // buluta yazılmaz; Apple ile giriş yapınca gerçek ilerleme senkronlanır.
+            let demoProfile: PlayerProfile = {
+                var p = PlayerProfile.newPlayer(appleUserIdentifier: "guest", displayName: String(localized: "Geonaut"))
+                p.completedStageKeys = GameProgress.allStageKeys
+                return p
+            }()
             RootTabView(
-                profile: .newPlayer(appleUserIdentifier: "guest", displayName: String(localized: "Geonaut")),
+                profile: demoProfile,
                 isGuest: true,
-                onRequireSignIn: { appState.signInWithApple() }
+                onRequireSignIn: { appState.signInWithApple() },
+                onSignOut: { appState.signOut() }
             )
 
         case .signedIn(let profile):

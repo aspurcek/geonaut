@@ -56,6 +56,14 @@ struct RootTabView: View {
         self.onStageCompleted = onStageCompleted
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
+        #if DEBUG
+        // `-debugTab cups|profile` ile başlat (ekran görüntüsü için).
+        switch UserDefaults.standard.string(forKey: "debugTab") {
+        case "cups": _selectedTab = State(initialValue: .cups)
+        case "profile": _selectedTab = State(initialValue: .profile)
+        default: break
+        }
+        #endif
         _progress = State(initialValue: GameProgress(
             completedStageKeys: profile.completedStageKeys,
             learnedCountryCodes: profile.learnedCountryCodes,
@@ -86,28 +94,20 @@ struct RootTabView: View {
                 streakAtRisk: streakAtRisk, cloudReachable: cloudReachable,
                 progress: progress,
                 avatarColorHex: profile.avatarColorHex, avatarCharacter: profile.avatarCharacter, hasCustomAvatar: hasCustomAvatar,
-                isGuest: isGuest, onRequireSignIn: onRequireSignIn,
+                isGuest: false, onRequireSignIn: onRequireSignIn,
                 onStageCompleted: { onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport) }
             )
         case .cups:
-            if isGuest {
-                GuestLockedView(selectedTab: $selectedTab, onSignIn: onRequireSignIn)
-            } else {
-                BadgesView(selectedTab: $selectedTab, progress: progress)
-            }
+            BadgesView(selectedTab: $selectedTab, progress: progress)
         case .profile:
-            if isGuest {
-                GuestLockedView(selectedTab: $selectedTab, onSignIn: onRequireSignIn)
-            } else {
-                ProfileView(
-                    selectedTab: $selectedTab,
-                    displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays, lastActiveDate: profile.lastActiveDate,
-                    avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
-                    progress: progress,
-                    onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { selectedTab = .cups },
-                    onSignOut: onSignOut, onDeleteAccount: onDeleteAccount
-                )
-            }
+            ProfileView(
+                selectedTab: $selectedTab,
+                displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays, lastActiveDate: profile.lastActiveDate,
+                avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
+                progress: progress,
+                onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { selectedTab = .cups },
+                onSignOut: onSignOut, onDeleteAccount: onDeleteAccount
+            )
         }
     }
 }
