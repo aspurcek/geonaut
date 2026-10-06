@@ -185,6 +185,12 @@ struct SettingsView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
+                    // Teknik teşhis: son iCloud/CloudKit durumu (dil bağımsız, yalnızca kod).
+                    Text(verbatim: "iCloud: \(UserDefaults.standard.string(forKey: "geonaut.cloudStatus") ?? "—")")
+                        .font(.system(size: 11, weight: .regular))
+                        .foregroundStyle(GeoColor.textMuted)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
                     // Yanlışlıkla basılmasın diye üsttekilerden bilerek büyük bir boşlukla
                     // ayrılmış, ekranın en altında (kullanıcı kararı: "aradaki boşluk çok olmalı").
                     Button("Hesabımı Sil") {

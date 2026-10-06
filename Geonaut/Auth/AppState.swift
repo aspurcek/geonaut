@@ -30,6 +30,18 @@ final class AppState {
 
     private static let userIdentifierKey = "geonaut.appleUserIdentifier"
 
+    /// Son CloudKit sonucunu Ayarlar'daki teknik satır için saklar ("ok" ya da hata kodu).
+    private static func recordCloudStatus(_ error: Error?) {
+        let text: String
+        if let error {
+            let ns = error as NSError
+            text = "\(ns.domain) \(ns.code)"
+        } else {
+            text = "ok"
+        }
+        UserDefaults.standard.set(text, forKey: "geonaut.cloudStatus")
+    }
+
     init() {
         appleSignIn.onSignedIn = { [weak self] userIdentifier, fullName, email in
             self?.handleSignedIn(userIdentifier: userIdentifier, fullName: fullName, email: email)
@@ -173,8 +185,10 @@ final class AppState {
             } else {
                 LocalProfileCache.save(profile, dirty: false)
             }
+            Self.recordCloudStatus(nil)
             phase = .signedIn(profile)
         } catch {
+            Self.recordCloudStatus(error)
             // CloudKit'e erişilemiyorsa (iCloud oturumu yok, ağ yok vb.) kullanıcıyı
             // uygulama dışında bırakmak yerine cihazdaki yedekle (yoksa yeni profille) devam
             // ettiriyoruz. Değişiklikler `dirty` işaretlenir; bulut kaydının üzerine boş
@@ -206,8 +220,10 @@ final class AppState {
                 try await PlayerCloudKitService.save(latest)
                 if generation == saveGeneration { LocalProfileCache.save(latest, dirty: false) }
                 cloudReachable = true
+                Self.recordCloudStatus(nil)
             } catch {
                 cloudReachable = false
+                Self.recordCloudStatus(error)
             }
         }
     }
