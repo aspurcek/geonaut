@@ -91,9 +91,13 @@ struct HomeView: View {
 
     /// Bir etap bitince: o tur (ya da kategori) YENİ tamamlandıysa kutlama ekranına, aksi
     /// hâlde köke (Ana Sayfa) döner. Kupa yalnızca 3 turun hepsi bitince (bkz. GameProgress).
-    private func advanceAfterStage(_ category: TourCategory, tour: Int, wasTourDone: Bool) {
+    ///
+    /// Kullanıcı kararı: bir seviye bitince Ana Sayfa'ya değil, o bölümün SEVİYE HARİTASINA dönülür
+    /// (`stayInSection`) — oyuncu doğrudan sonraki seviyeye geçebilsin. Bölümün son seviyesi
+    /// bittiyse (ya da kutlama gerekmiyorsa ve bölüm bittiyse) Ana Sayfa'ya dönülür.
+    private func advanceAfterStage(_ category: TourCategory, tour: Int, wasTourDone: Bool, stayInSection: Bool = false) {
         guard !wasTourDone, progress.isCategoryCompleted(category, tour: tour) else {
-            path.removeLast(path.count)
+            if stayInSection { path.removeLast() } else { path.removeLast(path.count) }
             return
         }
         if progress.isCategoryTrophyEarned(category) {
@@ -195,7 +199,7 @@ struct HomeView: View {
                             if tour == 0 && continentJustFinished && continent != "Karışık" {
                                 path.append(Route.continentComplete(continent: continent))
                             } else {
-                                advanceAfterStage(.flags, tour: tour, wasTourDone: wasTourDone)
+                                advanceAfterStage(.flags, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection))
                             }
                         },
                         onExit: { path.removeLast() }
@@ -255,7 +259,7 @@ struct HomeView: View {
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(seenCodes)
                             onStageCompleted()
-                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone)
+                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: MapPuzzleStructure.stageCount))
                         },
                         onExit: { path.removeLast() }
                     )
@@ -284,7 +288,7 @@ struct HomeView: View {
                             progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
                             progress.markCountriesSeen(seenCodes)
                             onStageCompleted()
-                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone)
+                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: CountryPuzzleStructure.stageCount))
                         },
                         onExit: { path.removeLast() }
                     )
@@ -330,7 +334,7 @@ struct HomeView: View {
                                 path.append(Route.anaDillerContinentComplete(continent: continent))
                             } else {
                                 // Her etap sonunda köke (Ana Sayfa) dönülür, ayrı bir Giriş'e değil.
-                                advanceAfterStage(.languages, tour: tour, wasTourDone: wasTourDone)
+                                advanceAfterStage(.languages, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection))
                             }
                         },
                         onExit: { path.removeLast() }
@@ -388,7 +392,7 @@ struct HomeView: View {
                             if tour == 0 && continentJustFinished && continent != "Karışık" {
                                 path.append(Route.worldFoodsContinentComplete(continent: continent))
                             } else {
-                                advanceAfterStage(.foods, tour: tour, wasTourDone: wasTourDone)
+                                advanceAfterStage(.foods, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection))
                             }
                         },
                         onExit: { path.removeLast() }
