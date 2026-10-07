@@ -80,7 +80,9 @@ private struct RootView: View {
                 profile: demoProfile,
                 isGuest: true,
                 onRequireSignIn: { appState.signInWithApple() },
-                onSignOut: { appState.signOut() }
+                onSignOut: { appState.signOut() },
+                // Misafirin silinecek bir hesabı yok; "Hesabımı Sil" ilk ekrana döndürür.
+                onDeleteAccount: { appState.signOut(); return true }
             )
 
         case .signedIn(let profile):
