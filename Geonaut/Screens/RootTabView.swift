@@ -36,6 +36,8 @@ struct RootTabView: View {
     var onDeleteAccount: () async -> Bool = { true }
 
     @State private var selectedTab: GeoTab = .home
+    /// Kupalar ekranına Profil'deki "Tümünü Gör" ile mi gelindi — geri okunu göstermek için.
+    @State private var cupsOpenedFromProfile = false
     @State private var progress: GameProgress
     @State private var points: Int
 
@@ -63,6 +65,7 @@ struct RootTabView: View {
         switch UserDefaults.standard.string(forKey: "debugTab") {
         case "cups": _selectedTab = State(initialValue: .cups)
         case "profile": _selectedTab = State(initialValue: .profile)
+        case "cupsback": _selectedTab = State(initialValue: .cups); _cupsOpenedFromProfile = State(initialValue: true)
         default: break
         }
         #endif
@@ -88,6 +91,14 @@ struct RootTabView: View {
     }
 
     var body: some View {
+        Group { tabContent }
+            .onChange(of: selectedTab) { _, newTab in
+                // Başka sekmeye geçilince "Profil'den geldim" bilgisi sıfırlanır.
+                if newTab != .cups { cupsOpenedFromProfile = false }
+            }
+    }
+
+    @ViewBuilder private var tabContent: some View {
         switch selectedTab {
         case .home:
             HomeView(
@@ -100,14 +111,17 @@ struct RootTabView: View {
                 onStageCompleted: { onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport) }
             )
         case .cups:
-            BadgesView(selectedTab: $selectedTab, progress: progress)
+            BadgesView(
+                selectedTab: $selectedTab, progress: progress,
+                onBack: cupsOpenedFromProfile ? { cupsOpenedFromProfile = false; selectedTab = .profile } : nil
+            )
         case .profile:
             ProfileView(
                 selectedTab: $selectedTab,
                 displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays, lastActiveDate: profile.lastActiveDate,
                 avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
                 progress: progress,
-                onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { selectedTab = .cups },
+                onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { cupsOpenedFromProfile = true; selectedTab = .cups },
                 onSignOut: onSignOut, onDeleteAccount: onDeleteAccount
             )
         }

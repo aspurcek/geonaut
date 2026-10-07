@@ -7,6 +7,8 @@ import SwiftUI
 struct BadgesView: View {
     @Binding var selectedTab: GeoTab
     let progress: GameProgress
+    /// Profil'deki "Tümünü Gör" ile gelindiyse geri dönüş (başlıkta geri oku gösterilir); sekmeden gelindiyse nil.
+    var onBack: (() -> Void)? = nil
     /// Kullanıcı kararı: rozete dokununca nasıl kazanılacağını (ve kazanıldıysa
     /// kazanıldığını) anlatan bir bottom sheet açılsın — bkz. badgeInfoSheet.
     @State private var selectedBadge: BadgeCardInfo?
@@ -27,6 +29,16 @@ struct BadgesView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: GeoSpacing.xxl) {
+                    if let onBack {
+                        Button(action: onBack) {
+                            Image(systemName: "chevron.left")
+                                .accessibilityLabel("Geri")
+                                .font(.system(size: 18, weight: .semibold))
+                                .foregroundStyle(GeoColor.textPrimary)
+                                .padding(GeoSpacing.sm)
+                        }
+                        .padding(.bottom, -GeoSpacing.lg)
+                    }
                     VStack(alignment: .leading, spacing: GeoSpacing.xs) {
                         Text("Rozetler & Kupalar")
                             .font(.custom(GeoFontName.balooExtraBold, size: 24))
