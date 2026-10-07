@@ -21,6 +21,7 @@ struct HomeView: View {
     /// gitmiyor (bkz. AppState.cloudReachable/LocalProfileCache). Kullanıcıya
     /// açık bilgi vermek için (bkz. yol haritası "kullanıcıya açık bilgi" maddesi).
     var cloudReachable: Bool = true
+    var cloudAccountMissing: Bool = false
     /// RootTabView'in sahip olduğu paylaşılan örnek — HomeView kendi kopyasını
     /// oluşturmuyor (bkz. RootTabView.swift'teki mimari notu).
     var progress: GameProgress
@@ -122,7 +123,10 @@ struct HomeView: View {
                             GeoToast(message: "Serini kaybetmek üzeresin! Bugün oyna, seriyi koru. 🔥", tone: .warning)
                                 .padding(.horizontal, GeoSpacing.xl)
                         }
-                        if !cloudReachable {
+                        if !cloudReachable && cloudAccountMissing {
+                            GeoToast(message: "iCloud'a giriş yapılmamış — ilerlemen yalnızca bu cihazda saklanıyor. Ayarlar > [adın] > iCloud'dan giriş yaparsan yedeklenir ve diğer cihazlarında da görünür.", tone: .warning)
+                                .padding(.horizontal, GeoSpacing.xl)
+                        } else if !cloudReachable {
                             GeoToast(message: "İnternete ya da iCloud'a ulaşılamıyor — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak.", tone: .info)
                                 .padding(.horizontal, GeoSpacing.xl)
                         }

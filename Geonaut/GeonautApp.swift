@@ -98,7 +98,7 @@ private struct RootView: View {
                 .onAppear { isHandlingStreakLoss = true }
             } else {
                 RootTabView(
-                    profile: profile, cloudReachable: appState.cloudReachable,
+                    profile: profile, cloudReachable: appState.cloudReachable, cloudAccountMissing: appState.cloudAccountMissing,
                     onSaveSettings: { displayName in
                         appState.updateProfile(displayName: displayName)
                     },

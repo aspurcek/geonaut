@@ -18,6 +18,7 @@ struct RootTabView: View {
     var isGuest: Bool = false
     /// bkz. AppState.cloudReachable — Ana Sayfa'da "çevrimdışı" bilgisi göstermek için.
     var cloudReachable: Bool = true
+    var cloudAccountMissing: Bool = false
     var onRequireSignIn: () -> Void = {}
     /// Ayarlar ekranında "Kaydet" (yalnızca ad) — AppState.updateProfile'a kadar iletilir.
     var onSaveSettings: (_ displayName: String) -> Void = { _ in }
@@ -39,7 +40,7 @@ struct RootTabView: View {
     @State private var points: Int
 
     init(
-        profile: PlayerProfile, isGuest: Bool = false, cloudReachable: Bool = true,
+        profile: PlayerProfile, isGuest: Bool = false, cloudReachable: Bool = true, cloudAccountMissing: Bool = false,
         onRequireSignIn: @escaping () -> Void = {},
         onSaveSettings: @escaping (_ displayName: String) -> Void = { _ in },
         onSaveAvatar: @escaping (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void = { _, _ in },
@@ -50,6 +51,7 @@ struct RootTabView: View {
         self.profile = profile
         self.isGuest = isGuest
         self.cloudReachable = cloudReachable
+        self.cloudAccountMissing = cloudAccountMissing
         self.onRequireSignIn = onRequireSignIn
         self.onSaveSettings = onSaveSettings
         self.onSaveAvatar = onSaveAvatar
@@ -91,7 +93,7 @@ struct RootTabView: View {
             HomeView(
                 selectedTab: $selectedTab,
                 points: $points, streak: profile.streakDays,
-                streakAtRisk: streakAtRisk, cloudReachable: cloudReachable,
+                streakAtRisk: streakAtRisk, cloudReachable: cloudReachable, cloudAccountMissing: cloudAccountMissing,
                 progress: progress,
                 avatarColorHex: profile.avatarColorHex, avatarCharacter: profile.avatarCharacter, hasCustomAvatar: hasCustomAvatar,
                 isGuest: false, onRequireSignIn: onRequireSignIn,

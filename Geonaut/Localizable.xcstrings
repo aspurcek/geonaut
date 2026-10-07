@@ -6084,6 +6084,35 @@
         }
       }
     },
+    "iCloud'a giriş yapılmamış — ilerlemen yalnızca bu cihazda saklanıyor. Ayarlar > [adın] > iCloud'dan giriş yaparsan yedeklenir ve diğer cihazlarında da görünür." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist nicht bei iCloud angemeldet – dein Fortschritt wird nur auf diesem Gerät gespeichert. Melde dich unter Einstellungen > [dein Name] > iCloud an, damit er gesichert wird und auch auf deinen anderen Geräten erscheint."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're not signed in to iCloud — your progress is only saved on this device. Sign in under Settings > [your name] > iCloud to back it up and see it on your other devices."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No has iniciado sesión en iCloud: tu progreso solo se guarda en este dispositivo. Inicia sesión en Ajustes > [tu nombre] > iCloud para guardarlo y verlo en tus otros dispositivos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud'a giriş yapılmamış — ilerlemen yalnızca bu cihazda saklanıyor. Ayarlar > [adın] > iCloud'dan giriş yaparsan yedeklenir ve diğer cihazlarında da görünür."
+          }
+        }
+      }
+    },
     "İnternete ya da iCloud'a ulaşılamıyor — ilerlemen cihazında saklanıyor, bağlantı gelince senkronlanacak." : {
       "extractionState" : "manual",
       "localizations" : {

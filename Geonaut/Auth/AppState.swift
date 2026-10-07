@@ -1,4 +1,5 @@
 import AuthenticationServices
+import CloudKit
 import SwiftUI
 
 /// Uygulamanın kimlik doğrulama + oyuncu profili durumu. Apple'ın verdiği
@@ -21,6 +22,9 @@ final class AppState {
     private(set) var phase: Phase = .checkingExistingSession
     /// Son CloudKit çağrısı başarısızsa false — yerel yedek kullanılıyor demektir.
     private(set) var cloudReachable = true
+    /// iCloud hesabı yok / giriş yapılmamış (CKError.notAuthenticated) — Ana Sayfa'da, ilerlemenin
+    /// yalnızca bu cihazda kalacağını açıkça söyleyen ayrı bir uyarı gösterilir.
+    private(set) var cloudAccountMissing = false
     /// Yerel yedek gerçek oyuncu verisi taşıyorsa bulut tekrar denenebilir; yedek yoksa
     /// (boş varsayılan profil) buluttaki gerçek kaydın üzerine yazma riski nedeniyle denenmez.
     private var localIsAuthoritative = true
@@ -31,6 +35,10 @@ final class AppState {
     private static let userIdentifierKey = "geonaut.appleUserIdentifier"
 
     /// Son CloudKit sonucunu Ayarlar'daki teknik satır için saklar ("ok" ya da hata kodu).
+    private func updateCloudAccountState(_ error: Error?) {
+        cloudAccountMissing = (error as? CKError)?.code == .notAuthenticated
+    }
+
     private static func recordCloudStatus(_ error: Error?) {
         let text: String
         if let error {
@@ -186,9 +194,11 @@ final class AppState {
                 LocalProfileCache.save(profile, dirty: false)
             }
             Self.recordCloudStatus(nil)
+            updateCloudAccountState(nil)
             phase = .signedIn(profile)
         } catch {
             Self.recordCloudStatus(error)
+            updateCloudAccountState(error)
             // CloudKit'e erişilemiyorsa (iCloud oturumu yok, ağ yok vb.) kullanıcıyı
             // uygulama dışında bırakmak yerine cihazdaki yedekle (yoksa yeni profille) devam
             // ettiriyoruz. Değişiklikler `dirty` işaretlenir; bulut kaydının üzerine boş
@@ -221,9 +231,11 @@ final class AppState {
                 if generation == saveGeneration { LocalProfileCache.save(latest, dirty: false) }
                 cloudReachable = true
                 Self.recordCloudStatus(nil)
+                updateCloudAccountState(nil)
             } catch {
                 cloudReachable = false
                 Self.recordCloudStatus(error)
+                updateCloudAccountState(error)
             }
         }
     }
