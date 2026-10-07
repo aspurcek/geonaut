@@ -37,7 +37,9 @@ struct ProfileView: View {
         StreakStatus.weekDays(lastActiveDate: lastActiveDate, streakDays: streak).map { day in
             switch day {
             case .completed: .completed
+            case .playedToday: .playedToday
             case .active: .active
+            case .missed: .missed
             case .upcoming: .upcoming
             }
         }

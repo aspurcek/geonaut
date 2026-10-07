@@ -124,6 +124,12 @@ final class AppState {
     func signInAsDebugGuest() {
         var profile = PlayerProfile.newPlayer(appleUserIdentifier: "debug-guest", displayName: UserDefaults.standard.string(forKey: "debugName") ?? "Test Geonaut")
         profile.completedStageKeys = Self.debugAllPriorCategoriesCompletedKeys
+        if UserDefaults.standard.object(forKey: "debugStreak") != nil {
+            // `-debugStreak N -debugStreakAgo D`: N günlük seri, son oynama D gün önce.
+            profile.streakDays = UserDefaults.standard.integer(forKey: "debugStreak")
+            let ago = UserDefaults.standard.integer(forKey: "debugStreakAgo")
+            profile.lastActiveDate = Calendar.current.date(byAdding: .day, value: -ago, to: .now) ?? .now
+        }
         phase = .signedIn(profile)
     }
 
