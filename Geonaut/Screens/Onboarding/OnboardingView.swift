@@ -61,11 +61,22 @@ struct OnboardingView: View {
 
                     VStack(spacing: GeoSpacing.md) {
                         GeoSocialButton(provider: .apple, action: onContinueWithApple)
-                        Button("Şimdi değil, önce deneyeyim", action: onTryAsGuest)
-                            .font(GeoTypography.bodySemibold)
-                            .foregroundStyle(GeoColor.textSecondary)
+                        // Demo modu: hesap gerektirmeden tüm özellikler açık (App Review dahil herkes
+                        // uygulamanın tamamını görebilsin) — bu yüzden soluk bir metin bağlantısı değil,
+                        // Apple düğmesiyle aynı boyda, çerçeveli belirgin bir düğme.
+                        Button(action: onTryAsGuest) {
+                            Text("Demo modunu dene — hesap gerekmez")
+                                .font(.custom(GeoFontName.balooBold, size: 14))
+                                .foregroundStyle(GeoColor.accentPrimary)
+                                .padding(.vertical, GeoSpacing.lg)
+                                .frame(maxWidth: .infinity)
+                                .background(GeoColor.bgSurface, in: Capsule())
+                                .overlay { Capsule().strokeBorder(GeoColor.accentPrimary, lineWidth: 1.5) }
+                        }
+                        .buttonStyle(.plain)
                     }
                     .padding(.horizontal, GeoSpacing.xl)
+                    .frame(maxWidth: 520) // iPad'de düğmeler ekran boyunca uzamasın
 
                     Spacer()
                     Spacer()

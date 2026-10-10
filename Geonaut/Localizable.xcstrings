@@ -9825,6 +9825,35 @@
         }
       }
     },
+    "Demo modunu dene — hesap gerekmez" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo-Modus testen – ohne Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try demo mode — no account needed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar modo demo: sin cuenta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo modunu dene — hesap gerekmez"
+          }
+        }
+      }
+    },
     "Şimdi değil, önce deneyeyim" : {
       "extractionState" : "manual",
       "localizations" : {
