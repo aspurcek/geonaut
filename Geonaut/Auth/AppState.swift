@@ -16,6 +16,8 @@ final class AppState {
         /// Hesap oluşturmadan önce deneme modu — bkz. enterGuestMode(). Yalnızca
         /// Bayrak Tahmin › Avrupa › Etap 1 oynanabilir, ilerleme kalıcı değildir.
         case guest
+        /// Demo girişi (kullanıcı adı + şifre, App Review/tanıtım için): tüm özellikler açık, ilerleme buluta yazılmaz.
+        case demo
         case error(String)
     }
 
@@ -112,6 +114,11 @@ final class AppState {
     /// geçer (bkz. Phase.guest).
     func enterGuestMode() {
         phase = .guest
+    }
+
+    /// Demo girişi başarılı olunca (bkz. DemoAccess) — tüm kilitler açık demo oturumu.
+    func enterDemoMode() {
+        phase = .demo
     }
 
     #if DEBUG

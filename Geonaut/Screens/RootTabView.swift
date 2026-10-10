@@ -107,23 +107,31 @@ struct RootTabView: View {
                 streakAtRisk: streakAtRisk, cloudReachable: cloudReachable, cloudAccountMissing: cloudAccountMissing,
                 progress: progress,
                 avatarColorHex: profile.avatarColorHex, avatarCharacter: profile.avatarCharacter, hasCustomAvatar: hasCustomAvatar,
-                isGuest: false, onRequireSignIn: onRequireSignIn,
+                isGuest: isGuest, onRequireSignIn: onRequireSignIn,
                 onStageCompleted: { onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport) }
             )
         case .cups:
-            BadgesView(
-                selectedTab: $selectedTab, progress: progress,
-                onBack: cupsOpenedFromProfile ? { cupsOpenedFromProfile = false; selectedTab = .profile } : nil
-            )
+            if isGuest {
+                GuestLockedView(selectedTab: $selectedTab, onSignIn: onRequireSignIn)
+            } else {
+                BadgesView(
+                    selectedTab: $selectedTab, progress: progress,
+                    onBack: cupsOpenedFromProfile ? { cupsOpenedFromProfile = false; selectedTab = .profile } : nil
+                )
+            }
         case .profile:
-            ProfileView(
-                selectedTab: $selectedTab,
-                displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays, lastActiveDate: profile.lastActiveDate,
-                avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
-                progress: progress,
-                onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { cupsOpenedFromProfile = true; selectedTab = .cups },
-                onSignOut: onSignOut, onDeleteAccount: onDeleteAccount
-            )
+            if isGuest {
+                GuestLockedView(selectedTab: $selectedTab, onSignIn: onRequireSignIn)
+            } else {
+                ProfileView(
+                    selectedTab: $selectedTab,
+                    displayName: profile.displayName, email: profile.email, points: points, streak: profile.streakDays, lastActiveDate: profile.lastActiveDate,
+                    avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter,
+                    progress: progress,
+                    onSaveSettings: onSaveSettings, onSaveAvatar: onSaveAvatar, onSeeAllBadges: { cupsOpenedFromProfile = true; selectedTab = .cups },
+                    onSignOut: onSignOut, onDeleteAccount: onDeleteAccount
+                )
+            }
         }
     }
 }

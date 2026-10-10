@@ -16,6 +16,13 @@ struct OnboardingView: View {
     /// imkânı — Figma'da bu bağlantı yok, hesap oluşturmadan önceki sürtünmeyi
     /// azaltmak için sonradan eklendi.
     var onTryAsGuest: () -> Void = {}
+    /// Demo girişi (kullanıcı adı + şifre) doğrulanınca çağrılır — bkz. DemoAccess.
+    var onDemoLogin: () -> Void = {}
+
+    @State private var showingDemoLogin = false
+    @State private var demoUsername = ""
+    @State private var demoPassword = ""
+    @State private var demoError = false
 
     var body: some View {
         GeometryReader { geo in
@@ -61,19 +68,9 @@ struct OnboardingView: View {
 
                     VStack(spacing: GeoSpacing.md) {
                         GeoSocialButton(provider: .apple, action: onContinueWithApple)
-                        // Demo modu: hesap gerektirmeden tüm özellikler açık (App Review dahil herkes
-                        // uygulamanın tamamını görebilsin) — bu yüzden soluk bir metin bağlantısı değil,
-                        // Apple düğmesiyle aynı boyda, çerçeveli belirgin bir düğme.
-                        Button(action: onTryAsGuest) {
-                            Text("Demo modunu dene — hesap gerekmez")
-                                .font(.custom(GeoFontName.balooBold, size: 14))
-                                .foregroundStyle(GeoColor.accentPrimary)
-                                .padding(.vertical, GeoSpacing.lg)
-                                .frame(maxWidth: .infinity)
-                                .background(GeoColor.bgSurface, in: Capsule())
-                                .overlay { Capsule().strokeBorder(GeoColor.accentPrimary, lineWidth: 1.5) }
-                        }
-                        .buttonStyle(.plain)
+                        Button("Şimdi değil, önce deneyeyim", action: onTryAsGuest)
+                            .font(GeoTypography.bodySemibold)
+                            .foregroundStyle(GeoColor.textSecondary)
                     }
                     .padding(.horizontal, GeoSpacing.xl)
                     .frame(maxWidth: 520) // iPad'de düğmeler ekran boyunca uzamasın
@@ -83,18 +80,65 @@ struct OnboardingView: View {
                 }
 
                 // Kullanıcı kararı: Gizlilik Politikası bağlantısı ekranın EN ALTINDA, diğer
-                // düğmelerden ayrı, sakin bir dipnot olarak durur.
-                if let privacyURL = LegalLinks.privacyPolicy {
-                    VStack {
-                        Spacer()
-                        Link("Gizlilik Politikası", destination: privacyURL)
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundStyle(GeoColor.textMuted)
-                            .padding(.bottom, GeoSpacing.lg)
+                // düğmelerden ayrı, sakin bir dipnot olarak durur. Yanında App Review/tanıtım için
+                // "Demo girişi" (kullanıcı adı + şifre) bağlantısı.
+                VStack {
+                    Spacer()
+                    HStack(spacing: GeoSpacing.xl) {
+                        if let privacyURL = LegalLinks.privacyPolicy {
+                            Link("Gizlilik Politikası", destination: privacyURL)
+                        }
+                        Button("Demo girişi") { showingDemoLogin = true }
                     }
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(GeoColor.textMuted)
+                    .padding(.bottom, GeoSpacing.lg)
                 }
             }
         }
+        .sheet(isPresented: $showingDemoLogin) { demoLoginSheet }
+    }
+
+    private var demoLoginSheet: some View {
+        VStack(alignment: .leading, spacing: GeoSpacing.lg) {
+            Text("Demo girişi")
+                .font(GeoTypography.title)
+                .foregroundStyle(GeoColor.textPrimary)
+            Text("İnceleme ve tanıtım için demo hesabı. Giriş yapınca tüm özellikler açılır.")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(GeoColor.textSecondary)
+            TextField("Kullanıcı adı", text: $demoUsername)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .textFieldStyle(.roundedBorder)
+            SecureField("Şifre", text: $demoPassword)
+                .textFieldStyle(.roundedBorder)
+            if demoError {
+                Text("Kullanıcı adı ya da şifre hatalı.")
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(GeoColor.accentPrimary)
+            }
+            Button {
+                if DemoAccess.isValid(username: demoUsername, password: demoPassword) {
+                    demoError = false
+                    showingDemoLogin = false
+                    onDemoLogin()
+                } else {
+                    demoError = true
+                }
+            } label: {
+                Text("Giriş yap")
+                    .font(.custom(GeoFontName.balooBold, size: 14))
+                    .foregroundStyle(.white)
+                    .padding(.vertical, GeoSpacing.lg)
+                    .frame(maxWidth: .infinity)
+                    .background(GeoColor.accentPrimary, in: Capsule())
+            }
+            .buttonStyle(.plain)
+            Spacer()
+        }
+        .padding(GeoSpacing.xl)
+        .presentationDetents([.medium])
     }
 }
 

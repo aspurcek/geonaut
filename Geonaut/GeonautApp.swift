@@ -50,7 +50,8 @@ private struct RootView: View {
         case .signedOut:
             OnboardingView(
                 onContinueWithApple: { appState.signInWithApple() },
-                onTryAsGuest: { appState.enterGuestMode() }
+                onTryAsGuest: { appState.enterGuestMode() },
+                onDemoLogin: { appState.enterDemoMode() }
             )
                 #if DEBUG
                 .onAppear {
@@ -68,20 +69,26 @@ private struct RootView: View {
                 #endif
 
         case .guest:
-            // Demo/misafir modu: tüm özellikler ve kilitler açık (App Review dahil herkes
-            // uygulamanın tamamını görebilsin). İlerleme yalnızca bu oturumda tutulur,
-            // buluta yazılmaz; Apple ile giriş yapınca gerçek ilerleme senkronlanır.
+            // Deneme modu: yalnızca Bayraklar › Avrupa › 1. seviye oynanır, Kupalar/Profil kilitli.
+            RootTabView(
+                profile: .newPlayer(appleUserIdentifier: "guest", displayName: String(localized: "Geonaut")),
+                isGuest: true,
+                onRequireSignIn: { appState.signInWithApple() },
+                onSignOut: { appState.signOut() },
+                onDeleteAccount: { appState.signOut(); return true }
+            )
+
+        case .demo:
+            // Demo girişi (App Review/tanıtım): tüm özellikler ve kilitler açık. İlerleme yalnızca bu
+            // oturumda tutulur, buluta yazılmaz.
             let demoProfile: PlayerProfile = {
-                var p = PlayerProfile.newPlayer(appleUserIdentifier: "guest", displayName: String(localized: "Geonaut"))
+                var p = PlayerProfile.newPlayer(appleUserIdentifier: "demo", displayName: String(localized: "Geonaut"))
                 p.completedStageKeys = GameProgress.allStageKeys
                 return p
             }()
             RootTabView(
                 profile: demoProfile,
-                isGuest: true,
-                onRequireSignIn: { appState.signInWithApple() },
                 onSignOut: { appState.signOut() },
-                // Misafirin silinecek bir hesabı yok; "Hesabımı Sil" ilk ekrana döndürür.
                 onDeleteAccount: { appState.signOut(); return true }
             )
 
