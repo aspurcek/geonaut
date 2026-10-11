@@ -57,6 +57,12 @@ private struct RootView: View {
                 .onAppear {
                     // `-debugSignIn 1` ile başlat: ekran görüntüsü almak için otomatik giriş.
                     if UserDefaults.standard.bool(forKey: "debugSignIn") { appState.signInAsDebugGuest() }
+                    // `-debugPhase demo|guest`: demo girişi / misafir deneme akışını doğrudan aç.
+                    switch UserDefaults.standard.string(forKey: "debugPhase") {
+                    case "demo": appState.enterDemoMode()
+                    case "guest": appState.enterGuestMode()
+                    default: break
+                    }
                 }
                 .safeAreaInset(edge: .bottom) {
                     Button("DEBUG: Tam profille devam et") { appState.signInAsDebugGuest() }
