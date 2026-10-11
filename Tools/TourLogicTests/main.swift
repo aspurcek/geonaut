@@ -75,14 +75,14 @@ check(mp.streakDays == 5, "Birleştirme: daha yeni aktif günün serisi alınıy
 // --- Haftalık seri takvimi (Profil) ---
 var utc = Calendar(identifier: .gregorian); utc.timeZone = TimeZone(identifier: "UTC")!
 func day(_ d: Int) -> Date { utc.date(from: DateComponents(year: 2026, month: 10, day: d, hour: 12))! }
-let U = StreakWeekDay.upcoming, C = StreakWeekDay.completed, A = StreakWeekDay.active
+let U = StreakWeekDay.upcoming, C = StreakWeekDay.completed, A = StreakWeekDay.active, P = StreakWeekDay.playedToday, M = StreakWeekDay.missed
 // 7 Ekim 2026 = Çarşamba (hafta Pzt 5 Ekim'de başlar)
 check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 0, now: day(7), calendar: utc) == [U,U,A,U,U,U,U], "Seri yok: yalnızca bugün 'aktif'")
-check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 3, now: day(7), calendar: utc) == [C,C,C,U,U,U,U], "3 günlük seri, bugün oynandı: Pzt-Sal-Çar tamam")
-check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 5, now: day(7), calendar: utc) == [C,C,C,U,U,U,U], "Seri geçen haftaya taşsa da bu hafta yalnızca geçen günler")
+check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 3, now: day(7), calendar: utc) == [C,C,P,U,U,U,U], "3 günlük seri, bugün oynandı: Pzt-Sal soluk yeşil, Çar canlı yeşil")
+check(StreakStatus.weekDays(lastActiveDate: day(7), streakDays: 5, now: day(7), calendar: utc) == [C,C,P,U,U,U,U], "Seri geçen haftaya taşsa da bu hafta yalnızca geçen günler")
 check(StreakStatus.weekDays(lastActiveDate: day(6), streakDays: 2, now: day(7), calendar: utc) == [C,C,A,U,U,U,U], "Dün oynandı, bugün henüz değil: bugün 'aktif'")
-check(StreakStatus.weekDays(lastActiveDate: day(3), streakDays: 4, now: day(7), calendar: utc) == [U,U,A,U,U,U,U], "Seri bozulduysa hiçbir gün 'tamam' sayılmaz")
-check(StreakStatus.weekDays(lastActiveDate: day(11), streakDays: 7, now: day(11), calendar: utc) == [C,C,C,C,C,C,C], "Pazar günü 7 günlük seri: hafta tamam")
+check(StreakStatus.weekDays(lastActiveDate: day(3), streakDays: 4, now: day(7), calendar: utc) == [M,M,A,U,U,U,U], "Seri bozulduysa: koptuktan sonra oynanmayan günler 'kaçırıldı', bugün 'aktif'")
+check(StreakStatus.weekDays(lastActiveDate: day(11), streakDays: 7, now: day(11), calendar: utc) == [C,C,C,C,C,C,P], "Pazar günü 7 günlük seri: Pzt-Cmt soluk yeşil, Pazar canlı yeşil")
 
 // --- Seviye: kazanılan toplam puan harcamayla düşmez ---
 let lp = GameProgress()
