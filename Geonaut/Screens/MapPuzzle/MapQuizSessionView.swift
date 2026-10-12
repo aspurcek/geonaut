@@ -8,10 +8,14 @@ struct MapQuizSessionView: View {
     @Binding var points: Int
     /// Seviye bitince: kazanılan puan + bu oturumda GERÇEKTEN sorulan ülke kodları (öğrenilen ülke
     /// istatistiği için — ebeveynin yeniden ürettiği ayrı bir soru listesi değil).
+    /// Seviye BİTTİĞİ AN (tamamlanma ekranı açılınca) bir kez çağrılır: puan/ilerleme burada kaydedilir,
+    /// böylece oyuncu \"Devam\"a basmadan uygulamayı kapatsa da kayıt kaybolmaz. `onFinished` yalnızca yönlendirir.
+    var onCompleted: (_ pointsEarned: Int, _ countryCodes: [String]) -> Void
     var onFinished: (_ pointsEarned: Int, _ countryCodes: [String]) -> Void
     var onExit: () -> Void
     /// Seviye yarıdayken çıkış onayı (bkz. GeoExitConfirmation).
     @State private var confirmingExit = false
+    @State private var didReportCompletion = false
 
     var body: some View {
         switch session.phase {
@@ -55,6 +59,11 @@ struct MapQuizSessionView: View {
                 heartsRemaining: session.hearts,
                 onContinue: { onFinished(session.pointsEarnedThisSession, session.questions.map { $0.country.code }) }
             )
+            .onAppear {
+                guard !didReportCompletion else { return }
+                didReportCompletion = true
+                onCompleted(session.pointsEarnedThisSession, session.questions.map { $0.country.code })
+            }
         }
     }
 }
@@ -63,6 +72,6 @@ struct MapQuizSessionView: View {
     MapQuizSessionView(
         session: MapQuizSession(stageIndex: 0, questions: MapQuizGenerator.makeQuestions(stageIndex: 0)),
         points: .constant(340),
-        onFinished: { _, _ in }, onExit: {}
+        onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
     )
 }

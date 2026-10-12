@@ -40,6 +40,10 @@ struct HomeView: View {
     /// üzerinde yarışıp biri diğerini sessizce geçersiz kılabilirdi.
     var onStageCompleted: () -> Void = {}
     @State private var path = NavigationPath()
+    /// Seviye BİTTİĞİ an alınan "önce" durumu: kayıt hemen yapılır, yönlendirme (kupa/rozet ekranı kararı)
+    /// oyuncu "Devam"a basınca bu anlık görüntüye göre verilir.
+    @State private var stageSnapshot: StageSnapshot?
+    private struct StageSnapshot { var tourDone: Bool; var continentDone: Bool }
 
     private enum HomeCategory {
         case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri
@@ -88,6 +92,19 @@ struct HomeView: View {
         let tour = selectedTours[category] ?? 0
         // Güvenlik ağı: seçili tur (ör. hesap değişince) kilitliyse Tur 1'e dön.
         return progress.isTourUnlocked(category, tour: tour) ? tour : 0
+    }
+
+    /// Bir seviye biter bitmez (tamamlanma ekranı açılırken) puanı ve ilerlemeyi kaydeder. Oyuncu "Devam"a
+    /// basmadan uygulamayı kapatsa ya da geri dönse bile kayıt (ve seri) kaybolmaz.
+    private func commitStage(_ category: TourCategory, tour: Int, progressKey: String, stageCount: Int, stageIndex: Int, earnedPoints: Int, seenCodes: [String]) {
+        stageSnapshot = StageSnapshot(
+            tourDone: progress.isCategoryCompleted(category, tour: tour),
+            continentDone: progress.isContinentCompleted(progressKey, stageCount: stageCount)
+        )
+        points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+        progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
+        progress.markCountriesSeen(seenCodes)
+        onStageCompleted()
     }
 
     /// Bir etap bitince: o tur (ya da kategori) YENİ tamamlandıysa kutlama ekranına, aksi
@@ -189,13 +206,13 @@ struct HomeView: View {
                     QuizSessionView(
                         session: session,
                         points: $points,
-                        onFinished: { earnedPoints, seenCodes in
-                            let wasTourDone = progress.isCategoryCompleted(.flags, tour: tour)
-                            let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
-                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(seenCodes)
-                            onStageCompleted()
+                        onCompleted: { earnedPoints, seenCodes in
+                            commitStage(.flags, tour: tour, progressKey: progressKey, stageCount: FlagGuessStructure.stagesPerSection, stageIndex: stageIndex, earnedPoints: earnedPoints, seenCodes: seenCodes)
+                        },
+                        onFinished: { _, _ in
+                            let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.flags, tour: tour)
+                            let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
+                            stageSnapshot = nil
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
                             // Kıta rozetleri Tur 1'e bağlı (kullanıcı kararı); Karışık'ın kendi
@@ -257,12 +274,13 @@ struct HomeView: View {
                     MapQuizSessionView(
                         session: mapSession,
                         points: $points,
-                        onFinished: { earnedPoints, seenCodes in
-                            let wasTourDone = progress.isCategoryCompleted(.maps, tour: tour)
-                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(seenCodes)
-                            onStageCompleted()
+                        onCompleted: { earnedPoints, seenCodes in
+                            commitStage(.maps, tour: tour, progressKey: progressKey, stageCount: MapPuzzleStructure.stageCount, stageIndex: stageIndex, earnedPoints: earnedPoints, seenCodes: seenCodes)
+                        },
+                        onFinished: { _, _ in
+                            let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.maps, tour: tour)
+                            let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: MapPuzzleStructure.stageCount)
+                            stageSnapshot = nil
                             advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: MapPuzzleStructure.stageCount))
                         },
                         onExit: { path.removeLast() }
@@ -286,12 +304,13 @@ struct HomeView: View {
                     CountryQuizSessionView(
                         session: countrySession,
                         points: $points,
-                        onFinished: { earnedPoints, seenCodes in
-                            let wasTourDone = progress.isCategoryCompleted(.maps, tour: tour)
-                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(seenCodes)
-                            onStageCompleted()
+                        onCompleted: { earnedPoints, seenCodes in
+                            commitStage(.maps, tour: tour, progressKey: progressKey, stageCount: CountryPuzzleStructure.stageCount, stageIndex: stageIndex, earnedPoints: earnedPoints, seenCodes: seenCodes)
+                        },
+                        onFinished: { _, _ in
+                            let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.maps, tour: tour)
+                            let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: CountryPuzzleStructure.stageCount)
+                            stageSnapshot = nil
                             advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: CountryPuzzleStructure.stageCount))
                         },
                         onExit: { path.removeLast() }
@@ -325,13 +344,13 @@ struct HomeView: View {
                     LanguageQuizSessionView(
                         session: languageSession,
                         points: $points,
-                        onFinished: { earnedPoints, seenCodes in
-                            let wasTourDone = progress.isCategoryCompleted(.languages, tour: tour)
-                            let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
-                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(seenCodes)
-                            onStageCompleted()
+                        onCompleted: { earnedPoints, seenCodes in
+                            commitStage(.languages, tour: tour, progressKey: progressKey, stageCount: MainLanguageStructure.stagesPerSection, stageIndex: stageIndex, earnedPoints: earnedPoints, seenCodes: seenCodes)
+                        },
+                        onFinished: { _, _ in
+                            let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.languages, tour: tour)
+                            let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
+                            stageSnapshot = nil
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
                             if tour == 0 && continentJustFinished && continent != "Karışık" {
@@ -384,13 +403,13 @@ struct HomeView: View {
                     FoodQuizSessionView(
                         session: foodSession,
                         points: $points,
-                        onFinished: { earnedPoints, seenCodes in
-                            let wasTourDone = progress.isCategoryCompleted(.foods, tour: tour)
-                            let wasContinentDone = progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
-                            points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
-                            progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
-                            progress.markCountriesSeen(seenCodes)
-                            onStageCompleted()
+                        onCompleted: { earnedPoints, seenCodes in
+                            commitStage(.foods, tour: tour, progressKey: progressKey, stageCount: WorldFoodStructure.stagesPerSection, stageIndex: stageIndex, earnedPoints: earnedPoints, seenCodes: seenCodes)
+                        },
+                        onFinished: { _, _ in
+                            let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.foods, tour: tour)
+                            let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
+                            stageSnapshot = nil
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
                             if tour == 0 && continentJustFinished && continent != "Karışık" {
