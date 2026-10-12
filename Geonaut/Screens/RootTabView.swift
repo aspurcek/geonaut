@@ -29,7 +29,7 @@ struct RootTabView: View {
     /// closure: seri güncellemesi ve ilerleme senkronizasyonu ayrı ayrı çağrılıp her biri
     /// kendi CloudKit save()'ini ateşleseydi, aynı kayıt üzerinde yarışan iki save
     /// doğardı (bkz. AppState.recordStageCompletion'daki not).
-    var onStageCompleted: (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in }
+    var onStageCompleted: (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Int = { _, _, _, _ in 0 }
     /// Ayarlar ekranındaki "Çıkış Yap" — AppState.signOut'a kadar iletilir.
     var onSignOut: () -> Void = {}
     /// Başarılıysa true — false ise Ayarlar'da hata gösterilir.
@@ -40,13 +40,15 @@ struct RootTabView: View {
     @State private var cupsOpenedFromProfile = false
     @State private var progress: GameProgress
     @State private var points: Int
+    /// Haftalık seri bonusu kazanıldıysa miktarı (kutlama uyarısını açar).
+    @State private var weeklyBonusAwarded: Int?
 
     init(
         profile: PlayerProfile, isGuest: Bool = false, cloudReachable: Bool = true, cloudAccountMissing: Bool = false,
         onRequireSignIn: @escaping () -> Void = {},
         onSaveSettings: @escaping (_ displayName: String) -> Void = { _ in },
         onSaveAvatar: @escaping (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void = { _, _ in },
-        onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Void = { _, _, _, _ in },
+        onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Int = { _, _, _, _ in 0 },
         onSignOut: @escaping () -> Void = {},
         onDeleteAccount: @escaping () async -> Bool = { true }
     ) {
@@ -96,6 +98,11 @@ struct RootTabView: View {
                 // Başka sekmeye geçilince "Profil'den geldim" bilgisi sıfırlanır.
                 if newTab != .cups { cupsOpenedFromProfile = false }
             }
+            .alert("Haftalık seri ödülü!", isPresented: Binding(get: { weeklyBonusAwarded != nil }, set: { if !$0 { weeklyBonusAwarded = nil } })) {
+                Button("Harika!", role: .cancel) {}
+            } message: {
+                Text("\(profile.streakDays) gün üst üste oynadın. Hediye: +\(weeklyBonusAwarded ?? 0) puan.")
+            }
     }
 
     @ViewBuilder private var tabContent: some View {
@@ -108,7 +115,13 @@ struct RootTabView: View {
                 progress: progress,
                 avatarColorHex: profile.avatarColorHex, avatarCharacter: profile.avatarCharacter, hasCustomAvatar: hasCustomAvatar,
                 isGuest: isGuest, onRequireSignIn: onRequireSignIn,
-                onStageCompleted: { onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport) }
+                onStageCompleted: {
+                    let bonus = onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport)
+                    if bonus > 0 {
+                        points += bonus // AppState bonusu profile'a zaten yazdı; ekrandaki bakiye de eşit kalsın
+                        weeklyBonusAwarded = bonus
+                    }
+                }
             )
         case .cups:
             if isGuest {

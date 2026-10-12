@@ -306,17 +306,21 @@ final class AppState {
     /// birbirinin üstüne yazmaya çalışınca kaybeden CKError.serverRecordChanged ile
     /// (try? tarafından sessizce) reddedilir — o çağrının taşıdığı güncelleme (seri YA DA
     /// puan/ilerleme) hiç CloudKit'e ulaşmadan kaybolabilirdi. Tek çağrı/tek save bunu ortadan kaldırır.
-    func recordStageCompletion(points: Int, completedStageKeys: Set<String>, learnedCountryCodes: Set<String>, bestPointsByStage: [String]) {
-        guard case .signedIn(var profile) = phase else { return }
+    /// Dönüş değeri: bu etapla seri 7'nin katına ulaştıysa verilen haftalık seri bonusu (yoksa 0).
+    @discardableResult
+    func recordStageCompletion(points: Int, completedStageKeys: Set<String>, learnedCountryCodes: Set<String>, bestPointsByStage: [String]) -> Int {
+        guard case .signedIn(var profile) = phase else { return 0 }
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
         let last = calendar.startOfDay(for: profile.lastActiveDate)
         let daysSince = calendar.dateComponents([.day], from: last, to: today).day ?? 0
 
+        var bonus = 0
         if profile.streakDays == 0 {
             profile.streakDays = 1 // ilk gün ya da restartStreak() sonrası yeni serinin başlangıcı
         } else if daysSince == 1 {
             profile.streakDays += 1
+            bonus = GameRules.streakBonus(forStreak: profile.streakDays) // yalnızca seri ARTTIĞI gün → çift ödül olmaz
         } else if daysSince > 1 {
             // Buraya normalde StreakLossFlowView'dan geçmeden gelinmemeli, ama savunma
             // amaçlı: aradan gün(ler) geçtiyse seriyi bugünden başlat.
@@ -325,7 +329,7 @@ final class AppState {
         // daysSince <= 0 ve streakDays > 0: bugün zaten oynanmış, sayı değişmez.
         profile.lastActiveDate = .now
 
-        profile.points = points
+        profile.points = points + bonus
         profile.completedStageKeys = completedStageKeys
         profile.learnedCountryCodes = learnedCountryCodes
         profile.bestPointsByStage = bestPointsByStage
@@ -337,5 +341,6 @@ final class AppState {
         // Ayarlar'dan açtıysa devam eder, kapalıysa reschedule zaten no-op (bkz. Scheduler).
         let reminderEnabled = UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey)
         StreakReminderScheduler.reschedule(streakDays: profile.streakDays, enabled: reminderEnabled)
+        return bonus
     }
 }

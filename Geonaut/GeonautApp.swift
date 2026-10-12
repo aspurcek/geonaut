@@ -126,7 +126,7 @@ private struct RootView: View {
                         appState.updateAvatar(avatarColorHex: avatarColorHex, character: character)
                     },
                     onStageCompleted: { points, completedStageKeys, learnedCountryCodes, bestPointsByStage in
-                        appState.recordStageCompletion(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)
+                        return appState.recordStageCompletion(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)
                     },
                     onSignOut: { appState.signOut() },
                     onDeleteAccount: { await appState.deleteAccount() }

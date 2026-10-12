@@ -92,4 +92,8 @@ _ = lp.pointsToAward(continent: "Avrupa", stageIndex: 1, earnedPoints: 100)
 check(lp.lifetimePoints == GameRules.newPlayerStartingPoints + 180, "Toplam kazanılan = başlangıç + etapların en iyileri")
 _ = lp.pointsToAward(continent: "Avrupa", stageIndex: 0, earnedPoints: 50) // daha düşük tekrar
 check(lp.lifetimePoints == GameRules.newPlayerStartingPoints + 180, "Daha düşük tekrar toplamı azaltmaz")
+check(GameRules.streakBonus(forStreak: 0) == 0 && GameRules.streakBonus(forStreak: 6) == 0, "Seri 0 ve 6: bonus yok")
+check(GameRules.streakBonus(forStreak: 7) == GameRules.weeklyStreakBonus, "Seri 7: haftalık bonus")
+check(GameRules.streakBonus(forStreak: 8) == 0 && GameRules.streakBonus(forStreak: 13) == 0, "Seri 8 ve 13: bonus yok")
+check(GameRules.streakBonus(forStreak: 14) == GameRules.weeklyStreakBonus && GameRules.streakBonus(forStreak: 21) == GameRules.weeklyStreakBonus, "Seri 14 ve 21: her hafta bonus")
 print(fails == 0 ? "TÜMÜ GEÇTİ" : "\(fails) HATA")

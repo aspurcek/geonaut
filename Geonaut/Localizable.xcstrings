@@ -4750,6 +4750,33 @@
         }
       }
     },
+    "Haftalık seri ödülü!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wochenserien-Belohnung!" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Weekly streak reward!" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Recompensa de racha semanal!" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Haftalık seri ödülü!" } }
+      }
+    },
+    "Harika!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Super!" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Awesome!" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Genial!" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Harika!" } }
+      }
+    },
+    "%lld gün üst üste oynadın. Hediye: +%lld puan." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast %lld Tage in Folge gespielt. Geschenk: +%lld Punkte." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You played %lld days in a row. Gift: +%lld points." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Has jugado %lld días seguidos. Regalo: +%lld puntos." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld gün üst üste oynadın. Hediye: +%lld puan." } }
+      }
+    },
     "Gizlilik Politikası" : {
       "extractionState" : "manual",
       "localizations" : {

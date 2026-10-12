@@ -17,6 +17,15 @@ enum GameRules {
     /// Seri kaybedildiğinde canlandırma bedeli — bkz. Figma "Serini Kaybettin" (node
     /// 508:12138): "50 puan harcayarak serini kaldığın yerden canlandırabilirsin."
     static let streakReviveCost = 50
+    /// Seri her 7. günü (7, 14, 21 …) eksiksiz doldurduğunda hediye edilen puan. Bir seviyenin tam puanı
+    /// 100 olduğu için "bir tam seviye değerinde" bir ödül; seri canlandırma bedelinin (50) iki katı.
+    static let weeklyStreakBonus = 100
+    static let streakBonusInterval = 7
+
+    /// Seri `streakDays`'e ulaştığı gün verilecek bonus (7'nin katı değilse 0).
+    static func streakBonus(forStreak streakDays: Int) -> Int {
+        streakDays > 0 && streakDays % streakBonusInterval == 0 ? weeklyStreakBonus : 0
+    }
 
     static let passiveHeartRegenInterval: TimeInterval = 30 * 60
     static let maxHearts = 5
