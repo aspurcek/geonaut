@@ -90,6 +90,11 @@ private struct RootView: View {
             let demoProfile: PlayerProfile = {
                 var p = PlayerProfile.newPlayer(appleUserIdentifier: "demo", displayName: String(localized: "Geonaut"))
                 p.completedStageKeys = GameProgress.allStageKeys
+                // Her etap tam puanla bitmiş sayılır — seviye (ömür boyu puandan) ve "öğrenilen ülke"
+                // sayısı tüm kilitlerin açık olduğuyla tutarlı görünsün (bkz. GeoLevel).
+                let fullStagePoints = GameRules.questionsPerStage * GameRules.pointsPerCorrectAnswer
+                p.bestPointsByStage = GameProgress.allStageKeys.sorted().map { "\($0)=\(fullStagePoints)" }
+                p.learnedCountryCodes = Set(Countries.all.map(\.code))
                 return p
             }()
             RootTabView(
