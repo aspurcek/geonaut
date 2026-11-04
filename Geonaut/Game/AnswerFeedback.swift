@@ -1,10 +1,11 @@
 import UIKit
 
-/// Doğru/yanlış cevapta dokunsal geri bildirim — tüm quiz oturumları buradan çağırır.
-/// Ses bilinçli olarak yok (sessiz modda/sınıfta rahatsız etmesin); titreşim yeterli.
+/// Doğru/yanlış cevapta dokunsal geri bildirim + kısa ses — tüm quiz oturumları buradan çağırır.
+/// Ses yalnızca Ayarlar'daki "Ses efektleri" açıksa ve telefon sessizde değilse çalar (bkz. SoundPlayer).
 enum AnswerFeedback {
     static func play(isCorrect: Bool) {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(isCorrect ? .success : .error)
+        SoundPlayer.play(isCorrect ? .correct : .wrong)
     }
 }

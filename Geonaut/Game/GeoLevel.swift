@@ -22,14 +22,9 @@ enum GeoLevel: CaseIterable {
     case caylak, gezgin, maceraci, yolUstasi, dunyaGezgini, efsanevi
 
     static func level(forPoints points: Int) -> GeoLevel {
-        switch points {
-        case ..<300: .caylak
-        case 300..<1000: .gezgin
-        case 1000..<2500: .maceraci
-        case 2500..<5500: .yolUstasi
-        case 5500..<9000: .dunyaGezgini
-        default: .efsanevi
-        }
+        // Eşikler tek yerde: GameRules.levelThresholds (ölçek gerekçesi orada).
+        let reached = GameRules.levelThresholds.filter { points >= $0 }.count
+        return allCases[min(reached, allCases.count - 1)]
     }
 
     var title: String {

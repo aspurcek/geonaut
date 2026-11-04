@@ -39,11 +39,15 @@ struct HomeView: View {
     /// çağırmamak bilinçli: ikisi de aynı anda ayrı CloudKit save() tetiklerse aynı kayıt
     /// üzerinde yarışıp biri diğerini sessizce geçersiz kılabilirdi.
     var onStageCompleted: () -> Void = {}
+    /// Canlar bitince (başarısız deneme) — seriyi korumak için, bkz. AppState.recordFailedAttempt.
+    var onSessionFailed: () -> Void = {}
     @State private var path = NavigationPath()
     /// Seviye BİTTİĞİ an alınan "önce" durumu: kayıt hemen yapılır, yönlendirme (kupa/rozet ekranı kararı)
     /// oyuncu "Devam"a basınca bu anlık görüntüye göre verilir.
     @State private var stageSnapshot: StageSnapshot?
-    private struct StageSnapshot { var tourDone: Bool; var continentDone: Bool }
+    private struct StageSnapshot { var tourDone: Bool; var continentDone: Bool; var level: GeoLevel }
+    /// Ünvan ekranı araya girerse, o ekran kapanınca çalıştırılacak asıl yönlendirme (rozet → kupa).
+    @State private var afterLevelUp: (() -> Void)?
 
     private enum HomeCategory {
         case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri
@@ -86,6 +90,9 @@ struct HomeView: View {
         case worldFoodsContinentComplete(continent: String)
         case worldFoodsCategoryComplete
         case learnFoods
+        case levelUp(from: GeoLevel, to: GeoLevel)
+        case mixedComplete(category: TourCategory)
+        case mapSectionBadge(isCountries: Bool)
     }
 
     private func selectedTour(_ category: TourCategory) -> Int {
@@ -99,12 +106,25 @@ struct HomeView: View {
     private func commitStage(_ category: TourCategory, tour: Int, progressKey: String, stageCount: Int, stageIndex: Int, earnedPoints: Int, seenCodes: [String]) {
         stageSnapshot = StageSnapshot(
             tourDone: progress.isCategoryCompleted(category, tour: tour),
-            continentDone: progress.isContinentCompleted(progressKey, stageCount: stageCount)
+            continentDone: progress.isContinentCompleted(progressKey, stageCount: stageCount),
+            level: GeoLevel.level(forPoints: progress.lifetimePoints)
         )
         points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
         progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
         progress.markCountriesSeen(seenCodes)
         onStageCompleted()
+    }
+
+    /// Etap sonrası sıra: ünvan yükseldiyse önce ÜNVAN ekranı, sonra asıl akış (rozet → kupa → ana sayfa).
+    /// `levelBefore` etap kaydedilmeden önceki ünvandır (bkz. commitStage'in StageSnapshot'ı).
+    private func finishStage(levelBefore: GeoLevel?, proceed: @escaping () -> Void) {
+        let levelAfter = GeoLevel.level(forPoints: progress.lifetimePoints)
+        if let levelBefore, levelAfter.rank > levelBefore.rank {
+            afterLevelUp = proceed
+            path.append(Route.levelUp(from: levelBefore, to: levelAfter))
+        } else {
+            proceed()
+        }
     }
 
     /// Bir etap bitince: o tur (ya da kategori) YENİ tamamlandıysa kutlama ekranına, aksi
@@ -175,6 +195,10 @@ struct HomeView: View {
                 case "continent": path.append(Route.continentComplete(continent: "Avrupa"))
                 case "trophy": path.append(Route.categoryComplete)
                 case "maptrophy": path.append(Route.mapCategoryComplete)
+                case "levelup": path.append(Route.levelUp(from: .caylak, to: .gezgin))
+                case "levelupmax": path.append(Route.levelUp(from: .dunyaGezgini, to: .efsanevi))
+                case "mapbadge": path.append(Route.mapSectionBadge(isCountries: false))
+                case "mixed": path.append(Route.mixedComplete(category: .flags))
                 default: break
                 }
             }
@@ -212,18 +236,22 @@ struct HomeView: View {
                         onFinished: { _, _ in
                             let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.flags, tour: tour)
                             let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
+                            let levelBefore = stageSnapshot?.level
                             stageSnapshot = nil
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection)
-                            // Kıta rozetleri Tur 1'e bağlı (kullanıcı kararı); Karışık'ın kendi
-                            // kupası/tamamlama ekranı yok (bkz. Bayrak Tahmin Kural Kitabı böl. 07).
-                            if tour == 0 && continentJustFinished && continent != "Karışık" {
-                                path.append(Route.continentComplete(continent: continent))
-                            } else {
-                                advanceAfterStage(.flags, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection))
+                            // Kıta rozetleri Tur 1'e bağlı (kullanıcı kararı). Rozet kazanılınca tebrik ekranı
+                            // HER ZAMAN gelir; Karışık'ın kupası yok ama rozeti var (bkz. BadgeCatalog).
+                            finishStage(levelBefore: levelBefore) {
+                                if tour == 0 && continentJustFinished {
+                                    path.append(continent == "Karışık" ? Route.mixedComplete(category: .flags) : Route.continentComplete(continent: continent))
+                                } else {
+                                    advanceAfterStage(.flags, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: FlagGuessStructure.stagesPerSection))
+                                }
                             }
                         },
-                        onExit: { path.removeLast() }
+                        onExit: { path.removeLast() },
+                        onFailed: onSessionFailed
                     )
                     .toolbar(.hidden, for: .navigationBar)
 
@@ -280,10 +308,21 @@ struct HomeView: View {
                         onFinished: { _, _ in
                             let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.maps, tour: tour)
                             let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: MapPuzzleStructure.stageCount)
+                            let levelBefore = stageSnapshot?.level
                             stageSnapshot = nil
-                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: MapPuzzleStructure.stageCount))
+
+                            // Haritalar'da kıta ekranı yok: Kıtalar / Ülkeler bölümü ilk kez bitince rozet tebriği (Tur 1).
+                            let sectionJustFinished = tour == 0 && !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: MapPuzzleStructure.stageCount)
+                            finishStage(levelBefore: levelBefore) {
+                                if sectionJustFinished {
+                                    path.append(Route.mapSectionBadge(isCountries: false))
+                                } else {
+                                    advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: MapPuzzleStructure.stageCount))
+                                }
+                            }
                         },
-                        onExit: { path.removeLast() }
+                        onExit: { path.removeLast() },
+                        onFailed: onSessionFailed
                     )
                     .toolbar(.hidden, for: .navigationBar)
 
@@ -310,10 +349,21 @@ struct HomeView: View {
                         onFinished: { _, _ in
                             let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.maps, tour: tour)
                             let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: CountryPuzzleStructure.stageCount)
+                            let levelBefore = stageSnapshot?.level
                             stageSnapshot = nil
-                            advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: CountryPuzzleStructure.stageCount))
+
+                            // Haritalar'da kıta ekranı yok: Kıtalar / Ülkeler bölümü ilk kez bitince rozet tebriği (Tur 1).
+                            let sectionJustFinished = tour == 0 && !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: CountryPuzzleStructure.stageCount)
+                            finishStage(levelBefore: levelBefore) {
+                                if sectionJustFinished {
+                                    path.append(Route.mapSectionBadge(isCountries: true))
+                                } else {
+                                    advanceAfterStage(.maps, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: CountryPuzzleStructure.stageCount))
+                                }
+                            }
                         },
-                        onExit: { path.removeLast() }
+                        onExit: { path.removeLast() },
+                        onFailed: onSessionFailed
                     )
                     .toolbar(.hidden, for: .navigationBar)
 
@@ -350,17 +400,21 @@ struct HomeView: View {
                         onFinished: { _, _ in
                             let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.languages, tour: tour)
                             let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
+                            let levelBefore = stageSnapshot?.level
                             stageSnapshot = nil
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection)
-                            if tour == 0 && continentJustFinished && continent != "Karışık" {
-                                path.append(Route.anaDillerContinentComplete(continent: continent))
-                            } else {
-                                // Her etap sonunda köke (Ana Sayfa) dönülür, ayrı bir Giriş'e değil.
-                                advanceAfterStage(.languages, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection))
+                            finishStage(levelBefore: levelBefore) {
+                                if tour == 0 && continentJustFinished {
+                                    path.append(continent == "Karışık" ? Route.mixedComplete(category: .languages) : Route.anaDillerContinentComplete(continent: continent))
+                                } else {
+                                    // Her etap sonunda köke (Ana Sayfa) dönülür, ayrı bir Giriş'e değil.
+                                    advanceAfterStage(.languages, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: MainLanguageStructure.stagesPerSection))
+                                }
                             }
                         },
-                        onExit: { path.removeLast() }
+                        onExit: { path.removeLast() },
+                        onFailed: onSessionFailed
                     )
                     .toolbar(.hidden, for: .navigationBar)
 
@@ -409,16 +463,20 @@ struct HomeView: View {
                         onFinished: { _, _ in
                             let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.foods, tour: tour)
                             let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
+                            let levelBefore = stageSnapshot?.level
                             stageSnapshot = nil
 
                             let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection)
-                            if tour == 0 && continentJustFinished && continent != "Karışık" {
-                                path.append(Route.worldFoodsContinentComplete(continent: continent))
-                            } else {
-                                advanceAfterStage(.foods, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection))
+                            finishStage(levelBefore: levelBefore) {
+                                if tour == 0 && continentJustFinished {
+                                    path.append(continent == "Karışık" ? Route.mixedComplete(category: .foods) : Route.worldFoodsContinentComplete(continent: continent))
+                                } else {
+                                    advanceAfterStage(.foods, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: WorldFoodStructure.stagesPerSection))
+                                }
                             }
                         },
-                        onExit: { path.removeLast() }
+                        onExit: { path.removeLast() },
+                        onFailed: onSessionFailed
                     )
                     .toolbar(.hidden, for: .navigationBar)
 
@@ -437,6 +495,44 @@ struct HomeView: View {
                 case .learnFoods:
                     LearnFoodsView(onBack: { path.removeLast() })
                         .toolbar(.hidden, for: .navigationBar)
+
+                case .levelUp(let from, let to):
+                    LevelUpView(
+                        from: from,
+                        to: to,
+                        onContinue: {
+                            // Ünvan ekranını kapat, sonra bekleyen asıl akışı (rozet → kupa → ana sayfa) çalıştır.
+                            path.removeLast()
+                            let next = afterLevelUp
+                            afterLevelUp = nil
+                            next?()
+                        }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .mixedComplete(let category):
+                    BadgeEarnedView(
+                        title: "Karışık",
+                        icon: "🔀",
+                        accentColor: GeoColor.textSecondary,
+                        headline: "Karışık Bölüm Tamamlandı!",
+                        message: mixedBadgeMessage(for: category),
+                        onContinue: { advanceAfterStage(category, tour: 0, wasTourDone: false) }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .mapSectionBadge(let isCountries):
+                    BadgeEarnedView(
+                        title: isCountries ? "Ülkeler Rozeti" : "Kıtalar Rozeti",
+                        icon: isCountries ? "📍" : "🌍",
+                        accentColor: isCountries ? GeoColor.accentInfoStrong : GeoColor.accentInfo,
+                        headline: "Yeni rozet kazandın!",
+                        message: isCountries
+                            ? "Haritalar'da Ülkeler bölümünün 8 seviyesini tamamladın."
+                            : "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladın.",
+                        onContinue: { advanceAfterStage(.maps, tour: 0, wasTourDone: false) }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
                 }
             }
         }
@@ -876,6 +972,15 @@ struct HomeView: View {
     /// Dünya Yemekleri artık kıta değil TÜR bazlı ilerlediği için (bkz.
     /// WorldFoodStructure.sections) "X'deki ülkelerin..." kalıbı yerine bölüm adına
     /// göre doğal bir kutlama metni üretir.
+    private func mixedBadgeMessage(for category: TourCategory) -> LocalizedStringKey {
+        switch category {
+        case .flags: "Bayraklar'da Karışık bölümünün 8 seviyesini tamamladın."
+        case .languages: "Diller'de Karışık bölümünün 8 seviyesini tamamladın."
+        case .foods: "Lezzetler'de Karışık bölümünün 8 seviyesini tamamladın."
+        case .maps: "Haritalar'da Karışık bölümünün 8 seviyesini tamamladın."
+        }
+    }
+
     private func worldFoodsAchievementText(for section: String) -> String {
         switch section {
         case "Yemekler": return String(localized: "Dünyanın dört bir yanından meşhur yemekleri öğrendin. Yemekler Kupasını kazandın!")

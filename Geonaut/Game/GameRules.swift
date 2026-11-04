@@ -27,6 +27,12 @@ enum GameRules {
         streakDays > 0 && streakDays % streakBonusInterval == 0 ? weeklyStreakBonus : 0
     }
 
+    /// Kaşif Seviyesi (GeoLevel) eşikleri: Gezgin, Maceracı, Yol Ustası, Dünya Gezgini, Efsanevi'ye geçiş puanları.
+    /// Ölçek: 3 tur × (Bayraklar 64 + Diller 64 + Lezzetler 32 + Haritalar 16 = 176 etap) × 100 puan ≈ 52.800 tavan.
+    /// İlk ünvan hızlı gelsin (≈2-3 etap), Dünya Gezgini ≈ tüm kategorilerin Tur 1'i, Efsanevi ≈ iki tur. (Önceki
+    /// eşikler 14.500 tavana göreydi: Efsanevi içeriğin yalnızca ~%17'sinde alınıyordu.)
+    static let levelThresholds = [300, 2_000, 6_000, 14_000, 35_000]
+
     static let passiveHeartRegenInterval: TimeInterval = 30 * 60
     static let maxHearts = 5
 

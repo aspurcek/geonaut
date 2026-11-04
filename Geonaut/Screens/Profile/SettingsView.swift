@@ -28,6 +28,7 @@ struct SettingsView: View {
     @State private var deleteFailed = false
     /// Varsayılan kapalı: ebeveyn dostu — izin isteği yalnızca kullanıcı bilerek açtığında gelir.
     @AppStorage(StreakReminderScheduler.enabledDefaultsKey) private var dailyReminderEnabled = false
+    @AppStorage(SoundPlayer.enabledDefaultsKey) private var soundEffectsEnabled = true
     @State private var showNotificationDeniedAlert = false
 
     init(
@@ -162,6 +163,24 @@ struct SettingsView: View {
                                 StreakReminderScheduler.cancelAll()
                             }
                         }
+                    }
+
+                    VStack(alignment: .leading, spacing: GeoSpacing.lg) {
+                        Text("Ses")
+                            .font(GeoTypography.title)
+                            .foregroundStyle(GeoColor.textPrimary)
+
+                        Toggle(isOn: $soundEffectsEnabled) {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Ses efektleri")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .foregroundStyle(GeoColor.textPrimary)
+                                Text("Doğru ve yanlış cevaplarda, ayrıca ünvan, rozet ve kupa kazandığında kısa sesler çalar.")
+                                    .font(.system(size: 13))
+                                    .foregroundStyle(GeoColor.textMuted)
+                            }
+                        }
+                        .tint(GeoColor.accentPrimary)
                     }
 
                     // Kullanıcı kararı: Gizlilik/Görsel Kaynakları gibi yasal/hukuki

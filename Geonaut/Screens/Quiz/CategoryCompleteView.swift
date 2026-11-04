@@ -9,6 +9,8 @@ struct CategoryCompleteView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: GeoSpacing.lg) {
+                AchievementChip(text: "YENİ KUPA", color: GeoColor.accentHighlight)
+
                 GeoAuthIllustration(type: .trophy)
                     .kasifWinGlow()
 
@@ -53,6 +55,7 @@ struct CategoryCompleteView: View {
             .padding(.bottom, GeoSpacing.xxxl)
         }
         .background { GeoColor.bgCanvas.ignoresSafeArea() }
+        .achievementCelebration()
     }
 }
 

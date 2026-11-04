@@ -310,6 +310,43 @@ final class AppState {
     @discardableResult
     func recordStageCompletion(points: Int, completedStageKeys: Set<String>, learnedCountryCodes: Set<String>, bestPointsByStage: [String]) -> Int {
         guard case .signedIn(var profile) = phase else { return 0 }
+        let bonus = advanceStreakForToday(&profile)
+
+        profile.points = points + bonus
+        profile.completedStageKeys = completedStageKeys
+        profile.learnedCountryCodes = learnedCountryCodes
+        profile.bestPointsByStage = bestPointsByStage
+
+        phase = .signedIn(profile)
+        persist(profile)
+
+        // Bugün oynandığı için "yarın 19:00" hatırlatmasını yeniden planla — kullanıcı
+        // Ayarlar'dan açtıysa devam eder, kapalıysa reschedule zaten no-op (bkz. Scheduler).
+        let reminderEnabled = UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey)
+        StreakReminderScheduler.reschedule(streakDays: profile.streakDays, enabled: reminderEnabled)
+        return bonus
+    }
+
+    /// Canlar bitip seviye başarısız olsa da o gün "oynandı" sayılır: seri artar/korunur. Kullanıcının en
+    /// moral bozuk anında seriyi de kaybetmesi geri dönüşü zorlaştırırdı. Puan/ilerleme ETKİLENMEZ.
+    /// Bugün zaten sayılmışsa hiçbir şey yazılmaz (gereksiz CloudKit save yok). Haftalık bonus çıktıysa miktarı döner.
+    @discardableResult
+    func recordFailedAttempt() -> Int {
+        guard case .signedIn(var profile) = phase else { return 0 }
+        let alreadyCountedToday = profile.streakDays > 0 && Calendar.current.isDate(profile.lastActiveDate, inSameDayAs: .now)
+        guard !alreadyCountedToday else { return 0 }
+        let bonus = advanceStreakForToday(&profile)
+        profile.points += bonus
+        phase = .signedIn(profile)
+        persist(profile)
+        let reminderEnabled = UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey)
+        StreakReminderScheduler.reschedule(streakDays: profile.streakDays, enabled: reminderEnabled)
+        return bonus
+    }
+
+    /// Günlük seriyi "bugün oynandı" olarak ilerletir (recordStageCompletion ve recordFailedAttempt ortak kullanır).
+    /// Seri bu çağrıyla 7'nin katına ulaştıysa haftalık bonus miktarını döner, yoksa 0.
+    private func advanceStreakForToday(_ profile: inout PlayerProfile) -> Int {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: .now)
         let last = calendar.startOfDay(for: profile.lastActiveDate)
@@ -328,19 +365,6 @@ final class AppState {
         }
         // daysSince <= 0 ve streakDays > 0: bugün zaten oynanmış, sayı değişmez.
         profile.lastActiveDate = .now
-
-        profile.points = points + bonus
-        profile.completedStageKeys = completedStageKeys
-        profile.learnedCountryCodes = learnedCountryCodes
-        profile.bestPointsByStage = bestPointsByStage
-
-        phase = .signedIn(profile)
-        persist(profile)
-
-        // Bugün oynandığı için "yarın 19:00" hatırlatmasını yeniden planla — kullanıcı
-        // Ayarlar'dan açtıysa devam eder, kapalıysa reschedule zaten no-op (bkz. Scheduler).
-        let reminderEnabled = UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey)
-        StreakReminderScheduler.reschedule(streakDays: profile.streakDays, enabled: reminderEnabled)
         return bonus
     }
 }

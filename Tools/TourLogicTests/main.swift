@@ -96,4 +96,16 @@ check(GameRules.streakBonus(forStreak: 0) == 0 && GameRules.streakBonus(forStrea
 check(GameRules.streakBonus(forStreak: 7) == GameRules.weeklyStreakBonus, "Seri 7: haftalık bonus")
 check(GameRules.streakBonus(forStreak: 8) == 0 && GameRules.streakBonus(forStreak: 13) == 0, "Seri 8 ve 13: bonus yok")
 check(GameRules.streakBonus(forStreak: 14) == GameRules.weeklyStreakBonus && GameRules.streakBonus(forStreak: 21) == GameRules.weeklyStreakBonus, "Seri 14 ve 21: her hafta bonus")
+
+// --- Kaşif Seviyesi eşikleri (GameRules.levelThresholds) ---
+let totalStages = TourStructure.count * (FlagGuessStructure.sectionCount * FlagGuessStructure.stagesPerSection * 2
+    + WorldFoodStructure.sectionCount * WorldFoodStructure.stagesPerSection
+    + MapPuzzleStructure.stageCount + CountryPuzzleStructure.stageCount)
+let contentCap = GameRules.newPlayerStartingPoints + totalStages * GameRules.questionsPerStage * GameRules.pointsPerCorrectAnswer
+check(zip(GameRules.levelThresholds, GameRules.levelThresholds.dropFirst()).allSatisfy { $0 < $1 }, "Seviye eşikleri artan sırada")
+check(GameRules.levelThresholds.count == 5, "5 eşik = 6 ünvan")
+check(GameRules.levelThresholds.last! <= contentCap * 7 / 10, "Efsanevi eşiği içerik tavanının %70'ini aşmıyor (erişilebilir)")
+check(GameRules.levelThresholds.last! >= contentCap / 2, "Efsanevi eşiği içerik tavanının yarısından az değil (çok erken alınmıyor)")
+check(GameRules.levelThresholds.first! <= GameRules.newPlayerStartingPoints + 3 * 100, "İlk ünvan ilk 3 etap içinde (hızlı ilk ödül)")
+
 print(fails == 0 ? "TÜMÜ GEÇTİ" : "\(fails) HATA")

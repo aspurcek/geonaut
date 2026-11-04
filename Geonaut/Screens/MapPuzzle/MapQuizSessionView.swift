@@ -13,6 +13,8 @@ struct MapQuizSessionView: View {
     var onCompleted: (_ pointsEarned: Int, _ countryCodes: [String]) -> Void
     var onFinished: (_ pointsEarned: Int, _ countryCodes: [String]) -> Void
     var onExit: () -> Void
+    /// Canlar bitince (seviye başarısız) çağrılır — o gün yine de "oynandı" sayılsın, seri bozulmasın.
+    var onFailed: () -> Void = {}
     /// Seviye yarıdayken çıkış onayı (bkz. GeoExitConfirmation).
     @State private var confirmingExit = false
     @State private var didReportCompletion = false
@@ -50,6 +52,7 @@ struct MapQuizSessionView: View {
                 onRestartStage: { session.restart() },
                 onExit: onExit
             )
+            .onAppear(perform: onFailed)
 
         case .completed:
             StageCompleteView(

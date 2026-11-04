@@ -38,6 +38,8 @@ private struct RootView: View {
     // "lost" dönmese bile, kullanıcı "Devam Et"/"Yeniden Başla"ya basana kadar akışı
     // ekranda tutar — bkz. StreakLossFlowView'ın kendi @State'iyle dondurduğu sayılar.
     @State private var isHandlingStreakLoss = false
+    /// İlk açılışta 3 sayfalık tanıtım (IntroView) bir kez gösterilir; sonra doğrudan giriş ekranı.
+    @AppStorage("geonaut.hasSeenIntro") private var hasSeenIntro = false
 
     var body: some View {
         switch appState.phase {
@@ -48,13 +50,34 @@ private struct RootView: View {
             }
 
         case .signedOut:
-            OnboardingView(
-                onContinueWithApple: { appState.signInWithApple() },
-                onTryAsGuest: { appState.enterGuestMode() },
-                onDemoLogin: { appState.enterDemoMode() }
-            )
+            Group {
+                if hasSeenIntro {
+                    OnboardingView(
+                        onContinueWithApple: { appState.signInWithApple() },
+                        onTryAsGuest: { appState.enterGuestMode() },
+                        onDemoLogin: { appState.enterDemoMode() }
+                    )
+                    #if DEBUG
+                    .safeAreaInset(edge: .bottom) {
+                        Button("DEBUG: Tam profille devam et") { appState.signInAsDebugGuest() }
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, GeoSpacing.lg)
+                            .background(Color.red)
+                    }
+                    #endif
+                } else {
+                    IntroView(
+                        onFinish: { hasSeenIntro = true },
+                        onTryAsGuest: { hasSeenIntro = true; appState.enterGuestMode() }
+                    )
+                }
+            }
                 #if DEBUG
                 .onAppear {
+                    // `-debugIntro 1`: tanıtımı (IntroView) yeniden göster.
+                    if UserDefaults.standard.bool(forKey: "debugIntro") { hasSeenIntro = false }
                     // `-debugSignIn 1` ile başlat: ekran görüntüsü almak için otomatik giriş.
                     if UserDefaults.standard.bool(forKey: "debugSignIn") { appState.signInAsDebugGuest() }
                     // `-debugPhase demo|guest`: demo girişi / misafir deneme akışını doğrudan aç.
@@ -63,14 +86,6 @@ private struct RootView: View {
                     case "guest": appState.enterGuestMode()
                     default: break
                     }
-                }
-                .safeAreaInset(edge: .bottom) {
-                    Button("DEBUG: Tam profille devam et") { appState.signInAsDebugGuest() }
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, GeoSpacing.lg)
-                        .background(Color.red)
                 }
                 #endif
 
@@ -128,6 +143,7 @@ private struct RootView: View {
                     onStageCompleted: { points, completedStageKeys, learnedCountryCodes, bestPointsByStage in
                         return appState.recordStageCompletion(points: points, completedStageKeys: completedStageKeys, learnedCountryCodes: learnedCountryCodes, bestPointsByStage: bestPointsByStage)
                     },
+                    onSessionFailed: { appState.recordFailedAttempt() },
                     onSignOut: { appState.signOut() },
                     onDeleteAccount: { await appState.deleteAccount() }
                 )

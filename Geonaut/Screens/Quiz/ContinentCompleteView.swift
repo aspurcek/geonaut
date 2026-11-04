@@ -18,6 +18,8 @@ struct ContinentCompleteView: View {
         VStack(spacing: GeoSpacing.lg) {
             Spacer()
 
+            AchievementChip(text: "YENİ ROZET", color: icon.color)
+
             GeoAchievementBadge(title: continentName, icon: icon.icon, accentColor: icon.color, state: .unlocked)
                 .scaleEffect(1.1)
                 .kasifWinGlow(color: icon.color)
@@ -42,6 +44,7 @@ struct ContinentCompleteView: View {
         .padding(.horizontal, GeoSpacing.xxl)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background { GeoColor.bgCanvas.ignoresSafeArea() }
+        .achievementCelebration()
     }
 }
 

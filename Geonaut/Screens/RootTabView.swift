@@ -30,6 +30,8 @@ struct RootTabView: View {
     /// kendi CloudKit save()'ini ateşleseydi, aynı kayıt üzerinde yarışan iki save
     /// doğardı (bkz. AppState.recordStageCompletion'daki not).
     var onStageCompleted: (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Int = { _, _, _, _ in 0 }
+    /// Canlar bitince (seviye başarısız) çağrılır: o gün yine de oynandı sayılır. Haftalık seri bonusu çıktıysa miktarı döner.
+    var onSessionFailed: () -> Int = { 0 }
     /// Ayarlar ekranındaki "Çıkış Yap" — AppState.signOut'a kadar iletilir.
     var onSignOut: () -> Void = {}
     /// Başarılıysa true — false ise Ayarlar'da hata gösterilir.
@@ -49,6 +51,7 @@ struct RootTabView: View {
         onSaveSettings: @escaping (_ displayName: String) -> Void = { _ in },
         onSaveAvatar: @escaping (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void = { _, _ in },
         onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Int = { _, _, _, _ in 0 },
+        onSessionFailed: @escaping () -> Int = { 0 },
         onSignOut: @escaping () -> Void = {},
         onDeleteAccount: @escaping () async -> Bool = { true }
     ) {
@@ -60,6 +63,7 @@ struct RootTabView: View {
         self.onSaveSettings = onSaveSettings
         self.onSaveAvatar = onSaveAvatar
         self.onStageCompleted = onStageCompleted
+        self.onSessionFailed = onSessionFailed
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
         #if DEBUG
@@ -119,6 +123,13 @@ struct RootTabView: View {
                     let bonus = onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport)
                     if bonus > 0 {
                         points += bonus // AppState bonusu profile'a zaten yazdı; ekrandaki bakiye de eşit kalsın
+                        weeklyBonusAwarded = bonus
+                    }
+                },
+                onSessionFailed: {
+                    let bonus = onSessionFailed()
+                    if bonus > 0 {
+                        points += bonus
                         weeklyBonusAwarded = bonus
                     }
                 }
