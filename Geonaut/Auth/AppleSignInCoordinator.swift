@@ -21,6 +21,24 @@ final class AppleSignInCoordinator: NSObject {
     /// kullanıcı iptal etti (hata mesajı gösterilmemeli), dolu ise gerçek hata mesajı.
     var onFailed: ((_ message: String?) -> Void)?
 
+    /// Hesap silinirken: Apple'a verilen Sign in with Apple izninin iptali (token revocation) için taze bir
+    /// `authorizationCode` ister. Kod yalnızca birkaç dakika geçerli olduğu için giriş anında saklanamaz;
+    /// silme sırasında kullanıcı Apple'la yeniden onaylar. Vazgeçilir/başarısız olursa nil döner.
+    @MainActor
+    func requestAuthorizationCode() async -> String? {
+        await withCheckedContinuation { continuation in
+            codeContinuation = continuation
+            let request = ASAuthorizationAppleIDProvider().createRequest()
+            request.requestedScopes = []
+            let controller = ASAuthorizationController(authorizationRequests: [request])
+            controller.delegate = self
+            controller.presentationContextProvider = self
+            controller.performRequests()
+        }
+    }
+
+    private var codeContinuation: CheckedContinuation<String?, Never>?
+
     func signIn() {
         state = .authorizing
         let request = ASAuthorizationAppleIDProvider().createRequest()
@@ -34,6 +52,12 @@ final class AppleSignInCoordinator: NSObject {
 
 extension AppleSignInCoordinator: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        if let continuation = codeContinuation {
+            codeContinuation = nil
+            let credential = authorization.credential as? ASAuthorizationAppleIDCredential
+            continuation.resume(returning: credential?.authorizationCode.flatMap { String(data: $0, encoding: .utf8) })
+            return
+        }
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
             let message = String(localized: "Beklenmeyen kimlik bilgisi türü")
             state = .failed(message)
@@ -45,6 +69,11 @@ extension AppleSignInCoordinator: ASAuthorizationControllerDelegate {
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        if let continuation = codeContinuation {
+            codeContinuation = nil
+            continuation.resume(returning: nil)
+            return
+        }
         if let authError = error as? ASAuthorizationError, authError.code == .canceled {
             state = .idle // kullanıcı vazgeçti — hata değil
             onFailed?(nil)

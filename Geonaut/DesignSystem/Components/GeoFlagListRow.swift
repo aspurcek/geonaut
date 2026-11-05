@@ -31,7 +31,9 @@ struct GeoFlagListRow: View {
                 Text(D(continentName))
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(GeoColor.textMuted)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.trailing)
+                    .minimumScaleFactor(0.85)
             } else {
                 Spacer(minLength: 0)
             }
