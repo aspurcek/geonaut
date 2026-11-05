@@ -21,6 +21,9 @@ final class GameProgress {
 
     private static let keySeparator = "|"
 
+    /// Uygulama içeriğinden çıkarılan ülke kodları — eski kayıtlardaki izleri sayımlardan düşülür.
+    static let removedCountryCodes: Set<String> = ["IL"]
+
     init() {}
 
     /// PlayerProfile'dan geri yükler (bkz. "kıta|etapIndex" biçimi completedStageKeys için).
@@ -30,7 +33,8 @@ final class GameProgress {
             guard parts.count == 2, let index = Int(parts[1]) else { continue }
             completedStages[parts[0], default: []].insert(index)
         }
-        self.learnedCountryCodes = learnedCountryCodes
+        // İçerikten çıkarılan ülkeler (bkz. removedCountryCodes) eski kayıtlarda kalmış olabilir; sayıma girmesin.
+        self.learnedCountryCodes = learnedCountryCodes.subtracting(Self.removedCountryCodes)
         for entry in bestPointsByStage {
             let parts = entry.components(separatedBy: "=")
             guard parts.count == 2, let value = Int(parts[1]) else { continue }
@@ -42,6 +46,7 @@ final class GameProgress {
     /// bkz. HomeView'in onFinished handler'ları: `session.questions` üzerinden.
     func markCountriesSeen(_ codes: [String]) {
         learnedCountryCodes.formUnion(codes)
+        learnedCountryCodes.subtract(Self.removedCountryCodes)
     }
 
     /// CloudKit'e yazılmak üzere düz bir küme hâline getirir — bkz. PlayerProfile.completedStageKeys.

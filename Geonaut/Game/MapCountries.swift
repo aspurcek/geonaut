@@ -292,7 +292,6 @@ enum MapCountries {
         .init(code: "JO", name: "Ürdün", continent: "Asya", mapCenter: CGPoint(x: 0.5, y: 0.5), mapHalfSize: CGSize(width: 0.05, height: 0.05)),
         .init(code: "IR", name: "İran", continent: "Asya", mapCenter: CGPoint(x: 0.5, y: 0.5), mapHalfSize: CGSize(width: 0.05, height: 0.05)),
         .init(code: "IE", name: "İrlanda", continent: "Avrupa", mapCenter: CGPoint(x: 0.5, y: 0.5), mapHalfSize: CGSize(width: 0.05, height: 0.05)),
-        .init(code: "IL", name: "İsrail", continent: "Asya", mapCenter: CGPoint(x: 0.5, y: 0.5), mapHalfSize: CGSize(width: 0.05, height: 0.05)),
         .init(code: "SE", name: "İsveç", continent: "Avrupa", mapCenter: CGPoint(x: 0.5, y: 0.5), mapHalfSize: CGSize(width: 0.05, height: 0.05)),
         .init(code: "CH", name: "İsviçre", continent: "Avrupa", mapCenter: CGPoint(x: 0.5, y: 0.5), mapHalfSize: CGSize(width: 0.05, height: 0.05)),
         .init(code: "IS", name: "İzlanda", continent: "Avrupa", mapCenter: CGPoint(x: 0.5, y: 0.5), mapHalfSize: CGSize(width: 0.05, height: 0.05)),

@@ -77,7 +77,6 @@ enum FoodData {
         "ID": FoodFacts(dish: "Nasi Goreng", dessert: "Klepon", drink: "Buzlu Çay"),
         "LB": FoodFacts(dish: "Humus", dessert: "Künefe", drink: "Arap Kahvesi"),
         "SA": FoodFacts(dish: "Kabsa", dessert: "Hurma Tatlısı", drink: "Kahve (Kahwa)"),
-        "IL": FoodFacts(dish: "Falafel", dessert: "Halva", drink: "Limonana"),
 
         // MARK: Afrika — görseli olan 5 ülke: EG, MA, ET, NG, ZA
         "EG": FoodFacts(dish: "Ful Medames", dessert: "Basbousa", drink: "Karkade", dishImage: "Food-EG", dessertImage: "Dessert-EG", drinkImage: "Drink-EG"),

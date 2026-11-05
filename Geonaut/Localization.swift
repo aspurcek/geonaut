@@ -30,7 +30,7 @@ enum DisplayName {
         "İngilizce": "en", "Fransızca": "fr", "İspanyolca": "es", "Arapça": "ar", "Portekizce": "pt",
         "Hollandaca": "nl", "Çince": "zh", "Almanca": "de", "İtalyanca": "it", "Norveççe": "no",
         "Malayca": "ms", "İsveççe": "sv", "Samoaca": "sm", "Rumence": "ro", "Korece": "ko",
-        "Kiswahili": "sw", "Arnavutça": "sq", "İzlandaca": "is", "İrlandaca": "ga", "İbranice": "he",
+        "Kiswahili": "sw", "Arnavutça": "sq", "İzlandaca": "is", "İrlandaca": "ga",
         "Özbekçe": "uz", "Çekçe": "cs", "Zuluca": "zu", "Yunanca": "el", "Vietnamca": "vi",
         "Urduca": "ur", "Ukraynaca": "uk", "Türkçe": "tr", "Türkmence": "tk", "Tuvaluca": "tvl",
         "Tongaca": "to", "Tigrinya": "ti", "Tetum": "tet", "Tayca": "th", "Tacikçe": "tg",

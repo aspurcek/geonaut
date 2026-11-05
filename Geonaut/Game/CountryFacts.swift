@@ -62,7 +62,6 @@ enum CountryData {
         "PH": CountryFacts(continent: "Asya", mainLanguage: "Filipince", isTrickyLanguage: true),
         "SA": CountryFacts(continent: "Asya", mainLanguage: "Arapça", isTrickyLanguage: false),
         "AE": CountryFacts(continent: "Asya", mainLanguage: "Arapça", isTrickyLanguage: false),
-        "IL": CountryFacts(continent: "Asya", mainLanguage: "İbranice", isTrickyLanguage: false),
         // Sıkça Hintçe/Arapça ile karıştırılır — resmi dili Urduca.
         "PK": CountryFacts(continent: "Asya", mainLanguage: "Urduca", isTrickyLanguage: true),
         "BD": CountryFacts(continent: "Asya", mainLanguage: "Bengalce", isTrickyLanguage: false),

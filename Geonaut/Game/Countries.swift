@@ -130,7 +130,6 @@ enum Countries {
         Country(code: "IR", name: "İran"),
         Country(code: "IE", name: "İrlanda"),
         Country(code: "ES", name: "İspanya"),
-        Country(code: "IL", name: "İsrail"),
         Country(code: "SE", name: "İsveç"),
         Country(code: "CH", name: "İsviçre"),
         Country(code: "IT", name: "İtalya"),
@@ -381,7 +380,6 @@ enum Countries {
         Country(code: "UZ", name: "Özbekistan"),
         Country(code: "JO", name: "Ürdün"),
         Country(code: "IR", name: "İran"),
-        Country(code: "IL", name: "İsrail"),
         Country(code: "IO", name: "Britanya Hint Okyanusu Toprağı"),
         Country(code: "AM", name: "Ermenistan"),
         Country(code: "GE", name: "Gürcistan")

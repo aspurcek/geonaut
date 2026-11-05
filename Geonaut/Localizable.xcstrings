@@ -4341,35 +4341,6 @@
         }
       }
     },
-    "Falafel" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Falafel"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Falafel"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Falafel"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Falafel"
-          }
-        }
-      }
-    },
     "Farklı bir ülke veya kelime denemeyi dene." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6130,35 +6101,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haiti Kahvesi"
-          }
-        }
-      }
-    },
-    "Halva" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halva"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halva"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halva"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halva"
           }
         }
       }
@@ -8566,35 +8508,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lezzetleri Öğren"
-          }
-        }
-      }
-    },
-    "Limonana" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limonana"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limonana"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limonana"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Limonana"
           }
         }
       }
