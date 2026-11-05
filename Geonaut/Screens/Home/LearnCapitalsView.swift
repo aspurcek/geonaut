@@ -52,7 +52,8 @@ struct LearnCapitalsView: View {
                         } label: {
                             GeoFlagListRow(
                                 countryCode: country.code, countryName: country.name,
-                                continentName: Capitals.name(for: country.code)
+                                continentName: Capitals.name(for: country.code),
+                                prioritizesTrailing: true
                             )
                         }
                         .buttonStyle(.plain)

@@ -13,6 +13,8 @@ struct GeoFlagListRow: View {
     /// (node 341:44855) örneklerde bu dolgu kaldırılmış — satırlar şeffaf, krem
     /// bgCanvas zemin arkadan görünüyor. Varsayılan true iki mevcut kullanımı korur.
     var showsWhiteBackground: Bool = true
+    /// Sağdaki metin uzun olabiliyorsa (ör. "Washington, D.C.") onu bölmek yerine ülke adı daralır/kısalır.
+    var prioritizesTrailing: Bool = false
 
     var body: some View {
         HStack(spacing: 14) {
@@ -24,16 +26,18 @@ struct GeoFlagListRow: View {
                 .font(.system(size: 15, weight: .semibold, design: .rounded))
                 .foregroundStyle(.black)
                 .lineLimit(1)
-                .layoutPriority(1)
+                .layoutPriority(prioritizesTrailing ? 0 : 1)
 
             if let continentName {
                 Spacer(minLength: GeoSpacing.sm)
                 Text(D(continentName))
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(GeoColor.textMuted)
-                    .lineLimit(2)
+                    .lineLimit(prioritizesTrailing ? 1 : 2)
                     .multilineTextAlignment(.trailing)
                     .minimumScaleFactor(0.85)
+                    .fixedSize(horizontal: prioritizesTrailing, vertical: false)
+                    .layoutPriority(prioritizesTrailing ? 1 : 0)
             } else {
                 Spacer(minLength: 0)
             }
