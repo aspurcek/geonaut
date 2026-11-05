@@ -11,7 +11,7 @@ enum StreakReminderScheduler {
     /// SettingsView'daki Toggle ile aynı anahtar (@AppStorage) — kullanıcı tercihi.
     static let enabledDefaultsKey = "geonaut.dailyReminderEnabled"
     private static let requestIdentifier = "geonaut.streakReminder"
-    /// Hatırlatmanın gönderileceği yerel saat (19:00) — okul sonrası/akşam, ebeveyn dostu.
+    /// Hatırlatmanın gönderileceği yerel saat (19:00) — akşam saati.
     private static let reminderHour = 19
 
     static func requestAuthorization() async -> Bool {

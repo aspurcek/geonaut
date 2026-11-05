@@ -5705,6 +5705,87 @@
         }
       }
     },
+    "Serin yarım kaldı…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Deine Serie wurde unterbrochen…" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your streak was cut short…" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tu racha se quedó a medias…" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Serin yarım kaldı…" } }
+      }
+    },
+    "%lld günlük serin yarıda kaldı. %lld puanla kaldığın yerden devam edebilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Deine %1$lld-Tage-Serie ist unterbrochen. Mit %2$lld Punkten machst du dort weiter, wo du aufgehört hast." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your %1$lld-day streak stopped halfway. Pick up where you left off for %2$lld points." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tu racha de %1$lld días se quedó a medias. Retómala donde la dejaste por %2$lld puntos." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld günlük serin yarıda kaldı. %lld puanla kaldığın yerden devam edebilirsin." } }
+      }
+    },
+    "%lld / %lld doğru" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld richtig" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld correct" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld correctas" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld doğru" } }
+      }
+    },
+    "Bir dahaki sefere daha iyi olacak! Canlarını doldurabilir ya da seviyeyi baştan deneyebilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Beim nächsten Mal klappt es besser! Fülle deine Leben auf oder versuche das Level von vorn." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You'll do better next time! Refill your hearts or try the level again from the start." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡La próxima será mejor! Recarga tus vidas o intenta el nivel desde el principio." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bir dahaki sefere daha iyi olacak! Canlarını doldurabilir ya da seviyeyi baştan deneyebilirsin." } }
+      }
+    },
+    "En yüksek ünvandasın" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast den höchsten Titel erreicht" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You've reached the top title" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Has alcanzado el título más alto" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "En yüksek ünvandasın" } }
+      }
+    },
+    "Serini korumak ister misin?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Möchtest du deine Serie schützen?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Want to protect your streak?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Quieres proteger tu racha?" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Serini korumak ister misin?" } }
+      }
+    },
+    "Her akşam 19.00'da küçük bir hatırlatma gönderelim, serin yarım kalmasın. İstediğin zaman Ayarlar'dan kapatabilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wir schicken dir jeden Abend um 19 Uhr eine kleine Erinnerung, damit deine Serie nicht abreißt. Du kannst sie jederzeit in den Einstellungen ausschalten." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Let us send a small reminder every evening at 7 PM so your streak doesn't slip away. You can turn it off anytime in Settings." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Te enviaremos un pequeño recordatorio cada tarde a las 19:00 para que no pierdas tu racha. Puedes desactivarlo cuando quieras en Ajustes." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Her akşam 19.00'da küçük bir hatırlatma gönderelim, serin yarım kalmasın. İstediğin zaman Ayarlar'dan kapatabilirsin." } }
+      }
+    },
+    "Hatırlat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erinnere mich" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remind me" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Recuérdamelo" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Hatırlat" } }
+      }
+    },
+    "Şimdi değil" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Jetzt nicht" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Not now" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ahora no" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Şimdi değil" } }
+      }
+    },
     "Gizlilik Politikası" : {
       "extractionState" : "manual",
       "localizations" : {

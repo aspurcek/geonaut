@@ -44,6 +44,8 @@ struct LanguageQuizSessionView: View {
         case .outOfHearts:
             OutOfHeartsView(
                 currentPoints: points,
+                correctCount: session.correctCount,
+                totalQuestions: session.questions.count,
                 onContinueWithPoints: {
                     points -= GameRules.heartRefillCost
                     session.refillHeartsWithPoints()

@@ -25,7 +25,7 @@ struct MapCategoryCompleteView: View {
                     .foregroundStyle(GeoColor.textSecondary)
                     .multilineTextAlignment(.center)
 
-                Button("Başlayalım", action: onContinue)
+                Button("Harika!", action: onContinue)
                     .buttonStyle(.kasifPrimary)
                     .frame(maxWidth: .infinity)
                     .padding(.top, GeoSpacing.sm)

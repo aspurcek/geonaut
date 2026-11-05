@@ -10,7 +10,8 @@ struct ContinentPathView: View {
     private let nodeSlotHeight: CGFloat = 112
 
     var body: some View {
-        GeoZigzagPath(count: nodes.count) { index in
+        // Sağ kolon ekranın tam ortasında: "Tur 2" etiketi ve "Öğren" durağıyla aynı eksende.
+        GeoZigzagPath(count: nodes.count, trailingFraction: 0.5) { index in
             let node = nodes[index]
             // Düğüm dairesi active durumda daha büyük (84pt vs 72pt) ve altında
             // "Hadi başlayalım!"/"BAŞLA" balonu VARDIR; bu içerik eskiden aynı VStack

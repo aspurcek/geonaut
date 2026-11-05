@@ -20,7 +20,7 @@ struct GeoButtonStyle: ButtonStyle {
             .padding(.vertical, GeoSpacing.sm)
             .background {
                 Capsule()
-                    .fill(variant == .primary ? GeoColor.accentPrimary : GeoColor.bgSurface)
+                    .fill(variant == .primary ? GeoColor.accentPrimaryStrong : GeoColor.bgSurface)
             }
             .overlay {
                 if variant == .secondary {
@@ -28,7 +28,7 @@ struct GeoButtonStyle: ButtonStyle {
                 }
             }
             .shadow(
-                color: variant == .primary ? GeoColor.accentPrimary.opacity(0.35) : .clear,
+                color: variant == .primary ? GeoColor.accentPrimaryStrong.opacity(0.35) : .clear,
                 radius: 9, x: 0, y: 8
             )
             .opacity(isEnabled ? 1 : 0.4)

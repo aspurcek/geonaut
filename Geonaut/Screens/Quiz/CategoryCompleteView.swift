@@ -45,7 +45,7 @@ struct CategoryCompleteView: View {
                 }
                 .padding(.top, GeoSpacing.sm)
 
-                Button("Başlayalım", action: onContinue)
+                Button("Harika!", action: onContinue)
                     .buttonStyle(.kasifPrimary)
                     .frame(maxWidth: .infinity)
                     .padding(.top, GeoSpacing.sm)

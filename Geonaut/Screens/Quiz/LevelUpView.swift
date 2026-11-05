@@ -33,7 +33,7 @@ struct LevelUpView: View {
 
             levelPath
 
-            Button("Başlayalım", action: onContinue)
+            Button("Harika!", action: onContinue)
                 .buttonStyle(.kasifPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.top, GeoSpacing.sm)

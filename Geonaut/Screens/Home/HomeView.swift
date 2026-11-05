@@ -48,6 +48,9 @@ struct HomeView: View {
     private struct StageSnapshot { var tourDone: Bool; var continentDone: Bool; var level: GeoLevel }
     /// Ünvan ekranı araya girerse, o ekran kapanınca çalıştırılacak asıl yönlendirme (rozet → kupa).
     @State private var afterLevelUp: (() -> Void)?
+    /// İlk seviye sonrası bir kez sorulan hatırlatma izni sayfası (bkz. ReminderPromptSheet).
+    @AppStorage("geonaut.reminderPromptShown") private var reminderPromptShown = false
+    @State private var showReminderPrompt = false
 
     private enum HomeCategory {
         case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri
@@ -182,10 +185,32 @@ struct HomeView: View {
                 }
                 GeoNavBar(selection: $selectedTab)
             }
-            .background(GeoColor.bgCanvas)
+            .background { ZStack { GeoColor.bgCanvas; GeoStarfield() }.ignoresSafeArea() }
             .ignoresSafeArea(edges: .bottom)
             .toolbar(.hidden, for: .navigationBar)
             .onChange(of: selectedCategory) { _, _ in lockedTourHint = nil }
+            .onChange(of: path.count) { _, count in
+                // Tüm kutlama ekranları kapanıp Ana Sayfa'ya dönülünce, ilk tamamlanan seviyeden sonra bir kez sor.
+                guard count == 0, !isGuest, !reminderPromptShown, !progress.completedStageKeysExport.isEmpty,
+                      !UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey) else { return }
+                reminderPromptShown = true
+                showReminderPrompt = true
+            }
+            .sheet(isPresented: $showReminderPrompt) {
+                ReminderPromptSheet(
+                    streakDays: streak,
+                    onAccept: {
+                        showReminderPrompt = false
+                        Task {
+                            if await StreakReminderScheduler.requestAuthorization() {
+                                UserDefaults.standard.set(true, forKey: StreakReminderScheduler.enabledDefaultsKey)
+                                StreakReminderScheduler.reschedule(streakDays: streak, enabled: true)
+                            }
+                        }
+                    },
+                    onDecline: { showReminderPrompt = false }
+                )
+            }
             #if DEBUG
             // Yalnızca geliştirme: kazanma ekranlarını hızlı görmek için, ör. uygulamayı
             // `-debugRoute tour|continent|trophy|maptrophy` argümanıyla başlat.
@@ -807,7 +832,7 @@ struct HomeView: View {
                     }
                 }
                 .buttonStyle(.plain)
-                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+                .position(x: geo.size.width * 0.5, y: geo.size.height / 2)
             }
             .frame(height: 84)
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -856,7 +881,7 @@ struct HomeView: View {
                     }
                 }
                 .buttonStyle(.plain)
-                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+                .position(x: geo.size.width * 0.5, y: geo.size.height / 2)
             }
             .frame(height: 84)
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -901,7 +926,7 @@ struct HomeView: View {
                     }
                 }
                 .buttonStyle(.plain)
-                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+                .position(x: geo.size.width * 0.5, y: geo.size.height / 2)
             }
             .frame(height: 84)
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -952,7 +977,7 @@ struct HomeView: View {
                     }
                 }
                 .buttonStyle(.plain)
-                .position(x: geo.size.width * 0.62, y: geo.size.height / 2)
+                .position(x: geo.size.width * 0.5, y: geo.size.height / 2)
             }
             .frame(height: 84)
             .padding(.horizontal, GeoSpacing.xxxxl)

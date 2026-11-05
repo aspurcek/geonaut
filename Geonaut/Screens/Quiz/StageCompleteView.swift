@@ -46,7 +46,7 @@ struct StageCompleteView: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(GeoColor.textMuted)
 
-            Button("Başlayalım", action: onContinue)
+            Button("Devam Et", action: onContinue)
                 .buttonStyle(.kasifPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.top, GeoSpacing.sm)

@@ -19,11 +19,11 @@ struct StreakLostView: View {
 
             GeoAuthIllustration(type: .streak)
 
-            Text("Serini Kaybettin!")
+            Text("Serin yarım kaldı…")
                 .font(.custom(GeoFontName.balooBold, size: 24))
                 .foregroundStyle(GeoColor.textPrimary)
 
-            Text("\(streakDays) günlük serin sona erdi. \(GameRules.streakReviveCost) puan harcayarak serini kaldığın yerden canlandırabilirsin.")
+            Text("\(streakDays) günlük serin yarıda kaldı. \(GameRules.streakReviveCost) puanla kaldığın yerden devam edebilirsin.")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(GeoColor.textSecondary)
                 .multilineTextAlignment(.center)

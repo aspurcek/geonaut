@@ -14,6 +14,8 @@ enum GeoColor {
 
     static let accentPrimary = Color(hex: 0xEC785B)
     static let accentPrimarySoft = Color(hex: 0xFF987E)
+    /// Beyaz metin taşıyan dolgular (birincil düğme) için koyu mercan: #EC785B beyazla yalnızca 2.8:1, bu ~4.7:1 (WCAG AA).
+    static let accentPrimaryStrong = Color(hex: 0xC74C30)
 
     static let accentSuccess = Color(hex: 0x97E4C2)
     static let accentSuccessStrong = Color(hex: 0x32A67D)

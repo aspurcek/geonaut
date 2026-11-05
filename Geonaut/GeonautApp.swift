@@ -11,9 +11,23 @@ import SwiftUI
 struct GeonautApp: App {
     @State private var appState = AppState()
 
+    @ViewBuilder private var debugOrRoot: some View {
+        #if DEBUG
+        // `-debugScreen hearts|streaklost|reminder`: tek tek ekranları doğrudan göster (ekran görüntüsü/test için).
+        switch UserDefaults.standard.string(forKey: "debugScreen") {
+        case "hearts": OutOfHeartsView(currentPoints: 340, correctCount: 6, onContinueWithPoints: {}, onRestartStage: {})
+        case "streaklost": StreakLostView(streakDays: 12, points: 340, onRevive: {}, onGiveUp: {})
+        case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
+        default: RootView(appState: appState)
+        }
+        #else
+        RootView(appState: appState)
+        #endif
+    }
+
     var body: some Scene {
         WindowGroup {
-            RootView(appState: appState)
+            debugOrRoot
                 // iPad: arayüz telefon genişliğinde tasarlandı, o yüzden geniş ekranda
                 // uzayıp bozulmaması için ortalanmış bir sütun olarak gösteriliyor —
                 // ama artık iPad'de iPhone'dan daha geniş bir sütun (bkz.

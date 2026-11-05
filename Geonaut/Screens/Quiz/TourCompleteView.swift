@@ -51,7 +51,7 @@ struct TourCompleteView: View {
                     .multilineTextAlignment(.center)
             }
 
-            Button("Başlayalım", action: onContinue)
+            Button("Devam Et", action: onContinue)
                 .buttonStyle(.kasifPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.top, GeoSpacing.sm)

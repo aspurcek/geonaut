@@ -12,6 +12,7 @@ struct ProfileView: View {
     let avatarColorHex: UInt32
     let character: AvatarCharacter
     let progress: GameProgress
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var onSaveSettings: (_ displayName: String) -> Void
     var onSaveAvatar: (_ avatarColorHex: UInt32, _ character: AvatarCharacter) -> Void
     var onSeeAllBadges: () -> Void
@@ -161,7 +162,37 @@ struct ProfileView: View {
                     .font(GeoTypography.headingL)
                     .foregroundStyle(GeoColor.textPrimary)
                 GeoBadge(text: levelTitle, tone: level.badgeTone)
+                levelProgress
+                    .padding(.top, GeoSpacing.xs)
             }
+        }
+    }
+
+    /// Sıradaki ünvana kalan yol: ünvan renginde simli çubuk + "puan / hedef". En üst ünvandaysa kısa bir not.
+    @ViewBuilder private var levelProgress: some View {
+        let points = progress.lifetimePoints
+        let thresholds = GameRules.levelThresholds
+        let levels = GeoLevel.allCases
+        if let index = levels.firstIndex(of: level), index < thresholds.count {
+            let lower = index == 0 ? 0 : thresholds[index - 1]
+            let upper = thresholds[index]
+            let fraction = min(1, max(0, Double(points - lower) / Double(upper - lower)))
+            VStack(spacing: 6) {
+                Text("Sıradaki ünvan: \(L(levels[index + 1].title))")
+                    .font(.system(size: 12, weight: .regular))
+                    .foregroundStyle(GeoColor.textMuted)
+                GlitterBar(progress: fraction, color: level.accentColor, animated: !reduceMotion)
+                    .frame(width: 200, height: 10)
+                Text("\(points) / \(upper) puan")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(GeoColor.textSecondary)
+                    .monospacedDigit()
+            }
+            .accessibilityElement(children: .combine)
+        } else {
+            Text("En yüksek ünvandasın")
+                .font(.system(size: 12, weight: .regular))
+                .foregroundStyle(GeoColor.textMuted)
         }
     }
 

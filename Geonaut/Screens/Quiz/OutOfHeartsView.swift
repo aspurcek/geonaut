@@ -9,6 +9,9 @@ import SwiftUI
 /// bir içerik boşluğu, yeni bir görsel karar değil).
 struct OutOfHeartsView: View {
     let currentPoints: Int
+    /// Bu denemede kaç soru doğru bilindi / seviyede kaç soru var — sonuç özeti için.
+    var correctCount: Int = 0
+    var totalQuestions: Int = GameRules.questionsPerStage
     var onContinueWithPoints: () -> Void
     var onRestartStage: () -> Void
     /// Kullanıcı kararı: canlar bitince de seviyeden çıkılabilsin (ücretsiz, puan kaybı yok).
@@ -26,7 +29,11 @@ struct OutOfHeartsView: View {
                 .font(.custom(GeoFontName.balooBold, size: 24))
                 .foregroundStyle(GeoColor.textPrimary)
 
-            Text("Devam etmek için canlarını doldurabilir ya da daha sonra tekrar dönebilirsin.")
+            Text("\(correctCount) / \(totalQuestions) doğru")
+                .font(.custom(GeoFontName.balooBold, size: 18))
+                .foregroundStyle(GeoColor.accentPrimaryStrong)
+
+            Text("Bir dahaki sefere daha iyi olacak! Canlarını doldurabilir ya da seviyeyi baştan deneyebilirsin.")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(GeoColor.textSecondary)
                 .multilineTextAlignment(.center)

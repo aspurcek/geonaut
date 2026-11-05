@@ -349,7 +349,7 @@ private struct AnimatedPointsText: View, Animatable {
 }
 
 /// Simli ilerleme çubuğu: ünvanın renginde dolgu, üstünde kayan ışık şeridi ve göz kırpan küçük parıltılar.
-private struct GlitterBar: View {
+struct GlitterBar: View {
     var progress: Double
     var color: Color
     var animated: Bool
