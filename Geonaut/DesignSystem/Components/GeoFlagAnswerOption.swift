@@ -49,6 +49,7 @@ struct GeoFlagAnswerOption: View {
         }
         .buttonStyle(.plain)
         .disabled(action == nil)
+        .answerStateEffect(isCorrect: state == .correct, isWrong: state == .wrong)
         .accessibilityLabel(Locale.current.localizedString(forRegionCode: countryCode) ?? countryCode)
     }
 

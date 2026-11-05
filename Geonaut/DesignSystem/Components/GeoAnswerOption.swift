@@ -47,6 +47,7 @@ struct GeoAnswerOption: View {
         .buttonStyle(.plain)
         .disabled(action == nil)
         .animation(.easeOut(duration: 0.15), value: state)
+        .answerStateEffect(isCorrect: state == .correct, isWrong: state == .wrong)
     }
 }
 

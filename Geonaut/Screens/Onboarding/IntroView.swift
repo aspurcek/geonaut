@@ -197,7 +197,7 @@ private struct IntroPageQuiz: View {
         }
         .onTapGesture {
             guard picked == nil else { return }
-            AnswerFeedback.play(isCorrect: option.correct)
+            AnswerFeedback.play(isCorrect: option.correct, showsReward: false)
             if option.correct {
                 withAnimation(.spring(response: 0.4, dampingFraction: 0.55)) { picked = index }
             } else {

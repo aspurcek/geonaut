@@ -40,6 +40,7 @@ struct GeonautApp: App {
                 // Tasarım yalnızca açık (krem) tema için hazırlandı: sabit renkli zeminlerde
                 // koyu moddaki sistem metin renkleri okunmaz hâle gelirdi — her zaman açık tema.
                 .preferredColorScheme(.light)
+                .overlay { RewardFloatOverlay() }
                 .task { appState.start() }
         }
     }

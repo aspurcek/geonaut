@@ -144,3 +144,84 @@ private struct GeoFloatModifier: ViewModifier {
     .padding(40)
     .background(GeoColor.bgCanvas)
 }
+
+// MARK: - Cevap geri bildirimi animasyonları
+
+extension View {
+    /// Şık cevaplandığında: doğruysa küçük "pop" (yaylanarak büyüyüp oturur), yanlışsa kısa yatay sallanma.
+    /// "Hareketi azalt" açıksa hiçbir şey oynamaz (renk değişimi yine var).
+    func answerStateEffect(isCorrect: Bool, isWrong: Bool) -> some View {
+        modifier(AnswerStateEffect(isCorrect: isCorrect, isWrong: isWrong))
+    }
+}
+
+private struct AnswerStateEffect: ViewModifier {
+    let isCorrect: Bool
+    let isWrong: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var scale: CGFloat = 1
+    @State private var shakeX: CGFloat = 0
+
+    func body(content: Content) -> some View {
+        content
+            .scaleEffect(scale)
+            .offset(x: shakeX)
+            .onChange(of: isCorrect) { _, correct in
+                guard correct, !reduceMotion else { return }
+                withAnimation(.spring(response: 0.18, dampingFraction: 0.45)) { scale = 1.07 }
+                Task {
+                    try? await Task.sleep(for: .milliseconds(160))
+                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { scale = 1 }
+                }
+            }
+            .onChange(of: isWrong) { _, wrong in
+                guard wrong, !reduceMotion else { return }
+                Task {
+                    for x: CGFloat in [-9, 9, -6, 6, -3, 0] {
+                        withAnimation(.easeInOut(duration: 0.06)) { shakeX = x }
+                        try? await Task.sleep(for: .milliseconds(60))
+                    }
+                }
+            }
+    }
+}
+
+/// Doğru cevapta "✓ +10" rozetinin yukarı süzülüp kaybolması. AnswerFeedback.play tetikler; tek bir
+/// kaplama (bkz. GeonautApp) tüm quiz ekranlarını kapsar.
+@Observable
+final class RewardFlash {
+    static let shared = RewardFlash()
+    private(set) var counter = 0
+    func trigger() { counter += 1 }
+}
+
+struct RewardFloatOverlay: View {
+    var flash = RewardFlash.shared
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var visible = false
+    @State private var lift: CGFloat = 0
+
+    var body: some View {
+        Text("✓ +\(GameRules.pointsPerCorrectAnswer)")
+            .font(.custom(GeoFontName.balooBold, size: 20))
+            .foregroundStyle(GeoColor.accentSuccessText)
+            .padding(.horizontal, 16).padding(.vertical, 6)
+            .background(GeoColor.accentSuccess, in: Capsule())
+            .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+            .opacity(visible ? 1 : 0)
+            .offset(y: lift)
+            .padding(.top, 138)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+            .onChange(of: flash.counter) { _, _ in
+                guard !reduceMotion else { return }
+                lift = 12
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) { visible = true; lift = 0 }
+                Task {
+                    try? await Task.sleep(for: .milliseconds(500))
+                    withAnimation(.easeIn(duration: 0.4)) { visible = false; lift = -26 }
+                }
+            }
+    }
+}

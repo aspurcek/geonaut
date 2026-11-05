@@ -31,6 +31,8 @@ struct GeoStatPill: View {
             Image(systemName: icon.systemImage)
                 .font(.system(size: 18))
                 .foregroundStyle(icon.tint)
+                .symbolEffect(.bounce, options: .nonRepeating, value: icon == .hearts ? value : "")
+                .overlay { fallingHeart }
             Text(value)
                 .font(GeoTypography.bodyBoldL)
                 .foregroundStyle(GeoColor.textPrimary)
@@ -42,6 +44,28 @@ struct GeoStatPill: View {
         .shadow(color: .black.opacity(0.08), radius: 3, x: 0, y: 2)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityText)
+    }
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var dropped = false
+    @State private var dropTrigger = 0
+
+    /// Can azalınca kalbin bir kopyası aşağı düşüp sönerek kaybolur.
+    @ViewBuilder private var fallingHeart: some View {
+        if icon == .hearts {
+            Image(systemName: "heart.slash.fill")
+                .font(.system(size: 18))
+                .foregroundStyle(icon.tint)
+                .offset(y: dropped ? 30 : 0)
+                .opacity(dropped ? 0 : (dropTrigger > 0 ? 1 : 0))
+                .rotationEffect(.degrees(dropped ? 25 : 0))
+                .onChange(of: value) { old, new in
+                    guard !reduceMotion, let o = Int(old), let n = Int(new), n < o else { return }
+                    dropTrigger += 1
+                    dropped = false
+                    withAnimation(.easeIn(duration: 0.6)) { dropped = true }
+                }
+        }
     }
 
     private var accessibilityText: String {
