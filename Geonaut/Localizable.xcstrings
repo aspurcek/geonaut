@@ -5757,6 +5757,141 @@
         "tr" : { "stringUnit" : { "state" : "translated", "value" : "Şimdi değil" } }
       }
     },
+    "Başkentler" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstädte" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capitals" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Capitales" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler" } }
+      }
+    },
+    "Kıtaları keşfet, başkentleri öğren!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entdecke die Kontinente, lerne die Hauptstädte!" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Explore the continents, learn the capitals!" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Explora los continentes y aprende las capitales!" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Kıtaları keşfet, başkentleri öğren!" } }
+      }
+    },
+    "Bu ülkenin başkenti neresidir?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Was ist die Hauptstadt dieses Landes?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "What is this country's capital?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Cuál es la capital de este país?" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bu ülkenin başkenti neresidir?" } }
+      }
+    },
+    "Haritadaki ülkenin başkenti neresidir?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Was ist die Hauptstadt des Landes auf der Karte?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "What is the capital of the country on the map?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Cuál es la capital del país del mapa?" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Haritadaki ülkenin başkenti neresidir?" } }
+      }
+    },
+    "Başkentleri Öğren" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstädte lernen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Learn the Capitals" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aprende las capitales" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentleri Öğren" } }
+      }
+    },
+    "%lld ülkenin başkentini keşfet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entdecke die Hauptstädte von %lld Ländern" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Discover the capitals of %lld countries" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descubre las capitales de %lld países" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld ülkenin başkentini keşfet" } }
+      }
+    },
+    "Ülke veya başkent ara..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Land oder Hauptstadt suchen..." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Search country or capital..." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar país o capital..." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ülke veya başkent ara..." } }
+      }
+    },
+    "Başkenti" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstadt" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capital" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Capital" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkenti" } }
+      }
+    },
+    "Başkent Ustası" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstadt-Meister" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capital Master" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Maestro de las capitales" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkent Ustası" } }
+      }
+    },
+    "Başkent Ustası!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstadt-Meister!" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capital Master!" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Maestro de las capitales!" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkent Ustası!" } }
+      }
+    },
+    "Başkentler kategorisinin 3 turunu da bitirdin! Dünyanın ülkelerinin başkentlerini öğrendin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast alle 3 Runden der Hauptstädte geschafft! Du kennst die Hauptstädte der Länder der Welt." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You finished all 3 rounds of Capitals! You learned the capitals of the world's countries." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Terminaste las 3 rondas de Capitales! Aprendiste las capitales de los países del mundo." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler kategorisinin 3 turunu da bitirdin! Dünyanın ülkelerinin başkentlerini öğrendin." } }
+      }
+    },
+    "%@'daki ülkelerin başkentlerini öğrendin. %@ rozetini kazandın!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast die Hauptstädte der Länder in %1$@ gelernt. Du hast das %2$@-Abzeichen verdient!" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You learned the capitals of the countries in %1$@. You earned the %2$@ badge!" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aprendiste las capitales de los países de %1$@. ¡Ganaste la insignia de %2$@!" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@'daki ülkelerin başkentlerini öğrendin. %2$@ rozetini kazandın!" } }
+      }
+    },
+    "Başkentler'de Karışık bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast alle 8 Level des Misch-Abschnitts bei den Hauptstädten abgeschlossen." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You completed all 8 levels of the Mixed section in Capitals." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Completaste los 8 niveles de la sección Mixta de Capitales." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler'de Karışık bölümünün 8 seviyesini tamamladın." } }
+      }
+    },
+    "Başkentler'de %@ bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du erhältst dieses Abzeichen, wenn du alle 8 Level des Abschnitts %@ bei den Hauptstädten abschließt." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You earn this badge when you complete all 8 levels of the %@ section in Capitals." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ganas esta insignia al completar los 8 niveles de la sección %@ en Capitales." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler'de %@ bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın." } }
+      }
+    },
+    "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du erhältst diesen Pokal, wenn du alle 3 Runden (Runde 1, 2, 3) der Hauptstädte abschließt." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You earn this trophy when you complete all 3 rounds (Round 1, 2 and 3) of the Capitals category." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ganas este trofeo al completar las 3 rondas (Ronda 1, 2 y 3) de la categoría Capitales." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın." } }
+      }
+    },
     "Gizlilik Politikası" : {
       "extractionState" : "manual",
       "localizations" : {

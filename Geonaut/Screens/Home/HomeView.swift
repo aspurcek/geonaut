@@ -53,7 +53,7 @@ struct HomeView: View {
     @State private var showReminderPrompt = false
 
     private enum HomeCategory {
-        case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri
+        case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri, baskentler
 
         var tourCategory: TourCategory {
             switch self {
@@ -61,6 +61,7 @@ struct HomeView: View {
             case .haritaBilmece: .maps
             case .anaDiller: .languages
             case .dunyaYemekleri: .foods
+            case .baskentler: .capitals
             }
         }
     }
@@ -93,6 +94,11 @@ struct HomeView: View {
         case worldFoodsContinentComplete(continent: String)
         case worldFoodsCategoryComplete
         case learnFoods
+        case capitalsEtapMap(continent: String, tour: Int)
+        case capitalsQuiz(continent: String, stageIndex: Int, tour: Int)
+        case capitalsContinentComplete(continent: String)
+        case capitalsCategoryComplete
+        case learnCapitals
         case levelUp(from: GeoLevel, to: GeoLevel)
         case mixedComplete(category: TourCategory)
         case mapSectionBadge(isCountries: Bool)
@@ -147,6 +153,7 @@ struct HomeView: View {
             case .maps: path.append(Route.mapCategoryComplete)
             case .languages: path.append(Route.anaDillerCategoryComplete)
             case .foods: path.append(Route.worldFoodsCategoryComplete)
+            case .capitals: path.append(Route.capitalsCategoryComplete)
             }
         } else {
             path.append(Route.tourComplete(category: category, tour: tour))
@@ -178,6 +185,7 @@ struct HomeView: View {
                         case .haritaBilmece: haritaBilmeceContent
                         case .anaDiller: anaDillerContent
                         case .dunyaYemekleri: dunyaYemekleriContent
+                        case .baskentler: baskentlerContent
                         }
                     }
                     .padding(.top, GeoSpacing.md)
@@ -220,6 +228,9 @@ struct HomeView: View {
                 case "continent": path.append(Route.continentComplete(continent: "Avrupa"))
                 case "trophy": path.append(Route.categoryComplete)
                 case "maptrophy": path.append(Route.mapCategoryComplete)
+                case "capitalstrophy": path.append(Route.capitalsCategoryComplete)
+                case "capitalscontinent": path.append(Route.capitalsContinentComplete(continent: "Avrupa"))
+                case "learncapitals": path.append(Route.learnCapitals)
                 case "levelup": path.append(Route.levelUp(from: .caylak, to: .gezgin))
                 case "levelupmax": path.append(Route.levelUp(from: .dunyaGezgini, to: .efsanevi))
                 case "mapbadge": path.append(Route.mapSectionBadge(isCountries: false))
@@ -457,6 +468,68 @@ struct HomeView: View {
 
                 case .learnLanguages:
                     LearnLanguagesView(onBack: { path.removeLast() })
+                        .toolbar(.hidden, for: .navigationBar)
+
+                case .capitalsEtapMap(let continent, let tour):
+                    EtapMapView(
+                        sectionName: continent,
+                        categoryName: "Başkentler",
+                        tour: tour,
+                        etapStates: progress.etapStates(
+                            continent: TourStructure.progressKey(CapitalStructure.progressKey(for: continent), tour: tour),
+                            stageCount: CapitalStructure.stagesPerSection
+                        ),
+                        onSelectEtap: { stageIndex in path.append(Route.capitalsQuiz(continent: continent, stageIndex: stageIndex, tour: tour)) },
+                        onBack: { path.removeLast() }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .capitalsQuiz(let continent, let stageIndex, let tour):
+                    let progressKey = TourStructure.progressKey(CapitalStructure.progressKey(for: continent), tour: tour)
+                    let capitalSession = LanguageQuizSession(
+                        stageIndex: stageIndex,
+                        questions: Capitals.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
+                    )
+                    LanguageQuizSessionView(
+                        session: capitalSession,
+                        points: $points,
+                        onCompleted: { earnedPoints, seenCodes in
+                            commitStage(.capitals, tour: tour, progressKey: progressKey, stageCount: CapitalStructure.stagesPerSection, stageIndex: stageIndex, earnedPoints: earnedPoints, seenCodes: seenCodes)
+                        },
+                        onFinished: { _, _ in
+                            let wasTourDone = stageSnapshot?.tourDone ?? progress.isCategoryCompleted(.capitals, tour: tour)
+                            let wasContinentDone = stageSnapshot?.continentDone ?? progress.isContinentCompleted(progressKey, stageCount: CapitalStructure.stagesPerSection)
+                            let levelBefore = stageSnapshot?.level
+                            stageSnapshot = nil
+
+                            let continentJustFinished = !wasContinentDone && progress.isContinentCompleted(progressKey, stageCount: CapitalStructure.stagesPerSection)
+                            finishStage(levelBefore: levelBefore) {
+                                if tour == 0 && continentJustFinished {
+                                    path.append(continent == "Karışık" ? Route.mixedComplete(category: .capitals) : Route.capitalsContinentComplete(continent: continent))
+                                } else {
+                                    advanceAfterStage(.capitals, tour: tour, wasTourDone: wasTourDone, stayInSection: !progress.isContinentCompleted(progressKey, stageCount: CapitalStructure.stagesPerSection))
+                                }
+                            }
+                        },
+                        onExit: { path.removeLast() },
+                        onFailed: onSessionFailed
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .capitalsContinentComplete(let continent):
+                    ContinentCompleteView(
+                        continentName: continent,
+                        achievementText: String(localized: "\(L(continent))'daki ülkelerin başkentlerini öğrendin. \(L(continent)) rozetini kazandın!"),
+                        onContinue: { advanceAfterStage(.capitals, tour: 0, wasTourDone: false) }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .capitalsCategoryComplete:
+                    CapitalsCategoryCompleteView(onContinue: { path.removeLast(path.count) })
+                        .toolbar(.hidden, for: .navigationBar)
+
+                case .learnCapitals:
+                    LearnCapitalsView(onBack: { path.removeLast() })
                         .toolbar(.hidden, for: .navigationBar)
 
                 case .worldFoodsEtapMap(let continent, let tour):
@@ -715,6 +788,26 @@ struct HomeView: View {
                         )
                     }
                     .buttonStyle(.kasifCategoryCard)
+
+                    let capitalsUnlocked = progress.isWorldFoodCategoryCompleted()
+                    Button {
+                        if !capitalsUnlocked {
+                            return
+                        } else if isGuest {
+                            onRequireSignIn()
+                        } else {
+                            selectedCategory = .baskentler
+                        }
+                    } label: {
+                        GeoCategoryCard(
+                            title: "Başkentler", icon: .system("building.columns.fill"),
+                            state: capitalsUnlocked ? .unlocked : .locked,
+                            iconCircleColor: GeoColor.accentHighlight, iconTintColor: GeoColor.accentHighlightStrong,
+                            isCurrentCategory: selectedCategory == .baskentler,
+                            fillWidth: fillWidth
+                        )
+                    }
+                    .buttonStyle(.kasifCategoryCard)
     }
 
     /// Kategori başlığının altındaki Tur 1 / Tur 2 / Tur 3 seçici — kullanıcı kararı: modern,
@@ -894,6 +987,51 @@ struct HomeView: View {
         }
     }
 
+    private var baskentlerContent: some View {
+        Group {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Başkentler")
+                    .font(GeoTypography.headingL)
+                    .foregroundStyle(GeoColor.textPrimary)
+                Text("Kıtaları keşfet, başkentleri öğren!")
+                    .font(GeoTypography.bodyBold)
+                    .foregroundStyle(GeoColor.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, GeoSpacing.xl)
+
+            tourSelector(for: .capitals)
+
+            GeometryReader { geo in
+                Button { path.append(Route.learnCapitals) } label: {
+                    VStack(spacing: GeoSpacing.sm) {
+                        Circle()
+                            .fill(Color(hex: 0x9966E6))
+                            .frame(width: 56, height: 56)
+                            .overlay {
+                                Image(systemName: "building.columns.fill")
+                                    .font(.system(size: 22))
+                                    .foregroundStyle(.white)
+                            }
+                        Text("Öğren")
+                            .font(.custom(GeoFontName.balooBold, size: 14))
+                            .foregroundStyle(Color(hex: 0x9966E6))
+                    }
+                }
+                .buttonStyle(.plain)
+                .position(x: geo.size.width * 0.5, y: geo.size.height / 2)
+            }
+            .frame(height: 84)
+            .padding(.horizontal, GeoSpacing.xxxxl)
+
+            ContinentPathView(nodes: ContinentPathNode.capitalsPath(progress: progress, tour: selectedTour(.capitals))) { node in
+                guard node.state != .locked else { return }
+                path.append(Route.capitalsEtapMap(continent: node.name, tour: selectedTour(.capitals)))
+            }
+            .padding(.horizontal, GeoSpacing.xxxxl)
+        }
+    }
+
     private var dunyaYemekleriContent: some View {
         Group {
             VStack(alignment: .leading, spacing: 2) {
@@ -1003,6 +1141,7 @@ struct HomeView: View {
         case .languages: "Diller'de Karışık bölümünün 8 seviyesini tamamladın."
         case .foods: "Lezzetler'de Karışık bölümünün 8 seviyesini tamamladın."
         case .maps: "Haritalar'da Karışık bölümünün 8 seviyesini tamamladın."
+        case .capitals: "Başkentler'de Karışık bölümünün 8 seviyesini tamamladın."
         }
     }
 

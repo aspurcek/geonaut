@@ -10,7 +10,7 @@ enum BadgeCatalog {
     /// Kupalar HARİÇ rozet sayısı (7 kıta + Karışık ×2 kategori, Kıtalar/Ülkeler, 3 yemek türü + Karışık)
     /// — elle yazılmış sabit yerine gerçek listeden hesaplanır ki içerik değişince sayı kaymasın.
     static var totalRozet: Int { allBadges(progress: GameProgress()).filter { !isTrophy($0) }.count }
-    static let totalKupa = 4
+    static let totalKupa = 5
 
     static func isTrophy(_ badge: BadgeInfo) -> Bool {
         categoryTrophyName.values.contains(badge.title)
@@ -28,6 +28,8 @@ enum BadgeCatalog {
         /// Yemekler + İçecekler + Tatlılar + Karışık + Dünya Yemekleri Kupası —
         /// bkz. WorldFoodStructure.sections.
         case dunyaYemekleri
+        /// "8 rozet + kategori kupası": anaDiller ile aynı yapı — bkz. CapitalStructure.
+        case baskentler
     }
 
     /// Kupalar HARİÇ rozet sayısı (kupa her kategoride ayrıca +1) — gerçek listelerle aynı.
@@ -35,14 +37,16 @@ enum BadgeCatalog {
         .bayrakTahmin: 8,
         .haritaBilmece: 2,
         .anaDiller: 8,
-        .dunyaYemekleri: 4
+        .dunyaYemekleri: 4,
+        .baskentler: 8
     ]
 
     static let categoryTrophyName: [Category: String] = [
         .bayrakTahmin: "Bayrak Ustası",
         .haritaBilmece: "Harita Ustası",
         .anaDiller: "Dil Ustası",
-        .dunyaYemekleri: "Lezzet Ustası"
+        .dunyaYemekleri: "Lezzet Ustası",
+        .baskentler: "Başkent Ustası"
     ]
 
     /// Rozet simgesi (emoji) ve kilit açıkken gösterilen daire rengi — Figma'nın
@@ -178,7 +182,29 @@ enum BadgeCatalog {
         ]
     }
 
+    /// anaDillerBadges ile aynı desen — CapitalStructure'ın ad-alanlı anahtarlarından okur.
+    static func baskentlerBadges(progress: GameProgress) -> [BadgeInfo] {
+        zip(CapitalStructure.continents, continentIcons).map { continent, iconInfo in
+            BadgeInfo(
+                title: continent, icon: iconInfo.icon, accentColor: iconInfo.color,
+                unlocked: progress.isContinentCompleted(CapitalStructure.progressKey(for: continent), stageCount: CapitalStructure.stagesPerSection),
+                description: String(localized: "Başkentler'de \(L(continent)) bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
+            )
+        } + [
+            BadgeInfo(
+                title: "Karışık", icon: "🔀", accentColor: GeoColor.textSecondary,
+                unlocked: progress.isContinentCompleted(CapitalStructure.progressKey(for: "Karışık"), stageCount: CapitalStructure.stagesPerSection),
+                description: String(localized: "Diğer 7 kıtayı bitirince açılan Karışık bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
+            ),
+            BadgeInfo(
+                title: "Başkent Ustası", icon: "🏆", accentColor: GeoColor.accentHighlightStrong,
+                unlocked: progress.isCategoryTrophyEarned(.capitals),
+                description: String(localized: "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın.")
+            )
+        ]
+    }
+
     static func allBadges(progress: GameProgress) -> [BadgeInfo] {
-        bayrakTahminBadges(progress: progress) + haritaBilmeceBadges(progress: progress) + anaDillerBadges(progress: progress) + dunyaYemekleriBadges(progress: progress)
+        bayrakTahminBadges(progress: progress) + haritaBilmeceBadges(progress: progress) + anaDillerBadges(progress: progress) + dunyaYemekleriBadges(progress: progress) + baskentlerBadges(progress: progress)
     }
 }

@@ -67,6 +67,27 @@ struct ContinentPathNode: Identifiable {
         }
     }
 
+    /// Başkentler'in kıta yolu — mainLanguagePath ile aynı mantık, Başkentler'in ad-alanlı anahtarlarından okur.
+    static func capitalsPath(progress: GameProgress, tour: Int = 0) -> [ContinentPathNode] {
+        var activeAssigned = false
+        return order.map { entry in
+            let isCompleted = progress.isContinentCompleted(
+                TourStructure.progressKey(CapitalStructure.progressKey(for: entry.name), tour: tour),
+                stageCount: CapitalStructure.stagesPerSection
+            )
+            let state: GeoContinentNode.State
+            if isCompleted {
+                state = .completed
+            } else if !activeAssigned {
+                state = .active
+                activeAssigned = true
+            } else {
+                state = .locked
+            }
+            return ContinentPathNode(name: entry.name, systemImage: entry.systemImage, state: state)
+        }
+    }
+
     /// Dünya Yemekleri'nin bölüm adları/simgeleri — kullanıcı kararıyla kıta yerine
     /// yemek TÜRÜ bazlı: "Yemekler"/"İçecekler"/"Tatlılar" + "Karışık" (bkz.
     /// WorldFoodStructure.sections).

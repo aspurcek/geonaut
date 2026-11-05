@@ -137,6 +137,8 @@ final class GameProgress {
             return ContinentPathNode.order.allSatisfy { done(MainLanguageStructure.progressKey(for: $0.name), MainLanguageStructure.stagesPerSection) }
         case .foods:
             return WorldFoodStructure.sections.allSatisfy { done(WorldFoodStructure.progressKey(for: $0), WorldFoodStructure.stagesPerSection) }
+        case .capitals:
+            return ContinentPathNode.order.allSatisfy { done(CapitalStructure.progressKey(for: $0.name), CapitalStructure.stagesPerSection) }
         }
     }
 
@@ -152,6 +154,7 @@ final class GameProgress {
             for entry in ContinentPathNode.order {
                 add(entry.name, FlagGuessStructure.stagesPerSection)
                 add(MainLanguageStructure.progressKey(for: entry.name), MainLanguageStructure.stagesPerSection)
+                add(CapitalStructure.progressKey(for: entry.name), CapitalStructure.stagesPerSection)
             }
             add(MapPuzzleStructure.progressKey, MapPuzzleStructure.stageCount)
             add(CountryPuzzleStructure.progressKey, CountryPuzzleStructure.stageCount)
@@ -192,4 +195,7 @@ final class GameProgress {
 
     /// Lezzetler Tur 1 (Yemekler/İçecekler/Tatlılar + Karışık) bitti mi.
     func isWorldFoodCategoryCompleted() -> Bool { isCategoryCompleted(.foods, tour: 0) }
+
+    /// Başkentler Tur 1 (7 kıta + Karışık) bitti mi.
+    func isCapitalsCategoryCompleted() -> Bool { isCategoryCompleted(.capitals, tour: 0) }
 }

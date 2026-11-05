@@ -15,6 +15,7 @@ struct TourCompleteView: View {
         case .maps: "Haritalar"
         case .languages: "Diller"
         case .foods: "Lezzetler"
+        case .capitals: "Başkentler"
         }
     }
 
@@ -23,7 +24,8 @@ struct TourCompleteView: View {
         case .flags: "Haritalar"
         case .maps: "Diller"
         case .languages: "Lezzetler"
-        case .foods: nil
+        case .foods: "Başkentler"
+        case .capitals: nil
         }
     }
 

@@ -6,11 +6,16 @@ import Foundation
 /// tutulmuyor, tek kaynak Countries + CountryFacts.
 struct LanguageQuestion {
     enum Stimulus { case flag, map }
+    /// Aynı soru kalıbı iki kategoride kullanılır: Ana Diller ("ana dili nedir?") ve Başkentler
+    /// ("başkenti neresidir?") — ikisi de bayrak/harita uyarımı + 4 metin şıkkı. `correctLanguage` ve
+    /// `options` ekranda gösterilecek (yerelleştirilmiş) metinlerdir.
+    enum Kind { case language, capital }
     let stimulus: Stimulus
     let countryCode: String
     let countryName: String
     let correctLanguage: String
     let options: [String] // 4 dil adı, karışık sırada
+    var kind: Kind = .language
 }
 
 enum Languages {

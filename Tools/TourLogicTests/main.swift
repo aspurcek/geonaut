@@ -98,7 +98,7 @@ check(GameRules.streakBonus(forStreak: 8) == 0 && GameRules.streakBonus(forStrea
 check(GameRules.streakBonus(forStreak: 14) == GameRules.weeklyStreakBonus && GameRules.streakBonus(forStreak: 21) == GameRules.weeklyStreakBonus, "Seri 14 ve 21: her hafta bonus")
 
 // --- Kaşif Seviyesi eşikleri (GameRules.levelThresholds) ---
-let totalStages = TourStructure.count * (FlagGuessStructure.sectionCount * FlagGuessStructure.stagesPerSection * 2
+let totalStages = TourStructure.count * (FlagGuessStructure.sectionCount * FlagGuessStructure.stagesPerSection * 3 // Bayraklar + Diller + Başkentler
     + WorldFoodStructure.sectionCount * WorldFoodStructure.stagesPerSection
     + MapPuzzleStructure.stageCount + CountryPuzzleStructure.stageCount)
 let contentCap = GameRules.newPlayerStartingPoints + totalStages * GameRules.questionsPerStage * GameRules.pointsPerCorrectAnswer
@@ -107,5 +107,17 @@ check(GameRules.levelThresholds.count == 5, "5 eşik = 6 ünvan")
 check(GameRules.levelThresholds.last! <= contentCap * 7 / 10, "Efsanevi eşiği içerik tavanının %70'ini aşmıyor (erişilebilir)")
 check(GameRules.levelThresholds.last! >= contentCap / 2, "Efsanevi eşiği içerik tavanının yarısından az değil (çok erken alınmıyor)")
 check(GameRules.levelThresholds.first! <= GameRules.newPlayerStartingPoints + 3 * 100, "İlk ünvan ilk 3 etap içinde (hızlı ilk ödül)")
+
+// --- Başkentler (5. kategori) ---
+let cp = GameProgress()
+check(!cp.isCapitalsCategoryCompleted(), "Başkentler başta bitmemiş")
+for tour in 0..<TourStructure.count {
+    for e in ContinentPathNode.order { for i in 0..<CapitalStructure.stagesPerSection { cp.markStageCompleted(continent: TourStructure.progressKey(CapitalStructure.progressKey(for: e.name), tour: tour), stageIndex: i) } }
+    if tour == 0 { check(cp.isCapitalsCategoryCompleted() && !cp.isCategoryTrophyEarned(.capitals), "Başkentler Tur 1 bitti, kupa henüz yok") }
+}
+check(cp.isCategoryTrophyEarned(.capitals), "Başkentler 3 tur bitince kupa")
+check(!GameProgress().isCategoryCompleted(.capitals, tour: 0) && !GameProgress().isCategoryCompleted(.languages, tour: 0), "Başkentler ilerlemesi Diller'le karışmaz")
+let allKeysProgress = GameProgress(completedStageKeys: GameProgress.allStageKeys)
+check(TourCategory.allCases.allSatisfy { allKeysProgress.isCategoryTrophyEarned($0) }, "Demo anahtarlarıyla tüm kategorilerin kupası açık (Başkentler dahil)")
 
 print(fails == 0 ? "TÜMÜ GEÇTİ" : "\(fails) HATA")

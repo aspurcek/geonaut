@@ -5,7 +5,7 @@ import Foundation
 /// anahtarlar (mevcut ilerleme bozulmaz, CloudKit şeması değişmez); Tur 2/3 anahtarın
 /// önüne "Tur2-"/"Tur3-" eklenir.
 enum TourCategory: Hashable, CaseIterable {
-    case flags, maps, languages, foods
+    case flags, maps, languages, foods, capitals
 }
 
 enum TourStructure {

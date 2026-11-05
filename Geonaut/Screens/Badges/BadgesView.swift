@@ -17,12 +17,13 @@ struct BadgesView: View {
     private var mapBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.haritaBilmeceBadges(progress: progress) }
     private var languageBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.anaDillerBadges(progress: progress) }
     private var foodBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.dunyaYemekleriBadges(progress: progress) }
+    private var capitalBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.baskentlerBadges(progress: progress) }
 
     private var totalUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges + foodBadges).filter { $0.unlocked && !BadgeCatalog.isTrophy($0) }.count
+        (flagBadges + mapBadges + languageBadges + foodBadges + capitalBadges).filter { $0.unlocked && !BadgeCatalog.isTrophy($0) }.count
     }
     private var totalTrophiesUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges + foodBadges).filter { $0.unlocked && BadgeCatalog.isTrophy($0) }.count
+        (flagBadges + mapBadges + languageBadges + foodBadges + capitalBadges).filter { $0.unlocked && BadgeCatalog.isTrophy($0) }.count
     }
 
     var body: some View {
@@ -66,6 +67,11 @@ struct BadgesView: View {
                     badgeSection(
                         title: "Lezzetler", subtitle: "4 rozet + kategori kupası",
                         badges: foodBadges, displayTitle: Self.shortContinentName
+                    )
+
+                    badgeSection(
+                        title: "Başkentler", subtitle: "8 rozet + kategori kupası",
+                        badges: capitalBadges, displayTitle: Self.shortContinentName
                     )
                 }
                 .padding(.horizontal, GeoSpacing.xl)

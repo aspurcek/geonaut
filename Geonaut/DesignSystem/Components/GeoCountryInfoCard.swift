@@ -12,6 +12,8 @@ struct CountryCardInfo: Identifiable, Equatable {
     let name: String
     let language: String
     let continent: String
+    /// Doluysa kartta "Dili" yerine "Başkenti" gösterilir (Başkentler kategorisinin Öğren ekranı).
+    var capital: String? = nil
     var id: String { code }
 }
 
@@ -30,7 +32,11 @@ struct GeoCountryInfoCard: View {
                 .multilineTextAlignment(.center)
 
             HStack(spacing: GeoSpacing.md) {
-                chip(icon: "🗣️", value: info.language, label: "Dili")
+                if let capital = info.capital {
+                    chip(icon: "🏛️", value: capital, label: "Başkenti")
+                } else {
+                    chip(icon: "🗣️", value: info.language, label: "Dili")
+                }
                 chip(icon: "🌍", value: info.continent, label: "Kıtası")
             }
             // Kutular aynı yükseklikte olsun (kullanıcı kararı) — en uzun kutuya eşitlenir.

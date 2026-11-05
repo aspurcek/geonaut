@@ -28,10 +28,10 @@ enum GameRules {
     }
 
     /// Kaşif Seviyesi (GeoLevel) eşikleri: Gezgin, Maceracı, Yol Ustası, Dünya Gezgini, Efsanevi'ye geçiş puanları.
-    /// Ölçek: 3 tur × (Bayraklar 64 + Diller 64 + Lezzetler 32 + Haritalar 16 = 176 etap) × 100 puan ≈ 52.800 tavan.
+    /// Ölçek: 3 tur × (Bayraklar 64 + Diller 64 + Başkentler 64 + Lezzetler 32 + Haritalar 16 = 240 etap) × 100 puan ≈ 72.000 tavan.
     /// İlk ünvan hızlı gelsin (≈2-3 etap), Dünya Gezgini ≈ tüm kategorilerin Tur 1'i, Efsanevi ≈ iki tur. (Önceki
     /// eşikler 14.500 tavana göreydi: Efsanevi içeriğin yalnızca ~%17'sinde alınıyordu.)
-    static let levelThresholds = [300, 2_000, 6_000, 14_000, 35_000]
+    static let levelThresholds = [300, 2_000, 6_000, 18_000, 40_000]
 
     static let passiveHeartRegenInterval: TimeInterval = 30 * 60
     static let maxHearts = 5
@@ -89,6 +89,18 @@ enum MainLanguageStructure {
     /// paylaşmamak için ad alanı öneki — aksi hâlde "Avrupa" anahtarı iki kategori
     /// arasında çakışıp ilerlemeyi birbirine karıştırırdı.
     static func progressKey(for continent: String) -> String { "AnaDiller-\(continent)" }
+}
+
+/// Başkentler — Ana Diller ile birebir aynı 7 kıta + Karışık / 8 etap / 10 soru iskeleti ve etap
+/// üslubu (1-4 standart, 5-6 "zor" = başkenti şaşırtıcı ülkeler, 7-8 bayrak ya da harita karışık).
+enum CapitalStructure {
+    static let continents = FlagGuessStructure.continents
+    static let sectionCount = FlagGuessStructure.sectionCount
+    static let stagesPerSection = FlagGuessStructure.stagesPerSection
+    static let questionsPerStage = GameRules.questionsPerStage
+
+    /// Diğer kategorilerin kıta adlarıyla (ör. "Avrupa") ilerleme anahtarı çakışmasın diye ad alanı öneki.
+    static func progressKey(for continent: String) -> String { "Baskent-\(continent)" }
 }
 
 /// Dünya Yemekleri — diğer 3 kategori kıta bazlı ilerlerken, Dünya Yemekleri TÜR

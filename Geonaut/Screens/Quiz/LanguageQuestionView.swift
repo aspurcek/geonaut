@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Figma "Soru - Bayrak → Dil" / "Soru - Harita → Dil" (Ana Diller bölümü, FLOW5).
+/// Figma "Soru - Bayrak → Dil" / "Soru - Harita → Dil" (Ana Diller bölümü, FLOW5); Başkentler (FLOW9) aynı görünümü kullanır.
 /// Her iki uyarımda da (bayrak/harita) 4 dil adı şıkkı var — bkz. LanguageQuestion.
 struct LanguageQuestionView: View {
     let question: LanguageQuestion
@@ -12,6 +12,15 @@ struct LanguageQuestionView: View {
 
     @State private var selectedOption: String?
     @State private var isAnswered = false
+
+    private var promptText: LocalizedStringKey {
+        switch (question.kind, question.stimulus) {
+        case (.language, .flag): "Bu ülkenin ana dili nedir?"
+        case (.language, .map): "Haritadaki ülkenin ana dili nedir?"
+        case (.capital, .flag): "Bu ülkenin başkenti neresidir?"
+        case (.capital, .map): "Haritadaki ülkenin başkenti neresidir?"
+        }
+    }
 
     var body: some View {
         VStack(spacing: GeoSpacing.xxl) {
@@ -26,7 +35,7 @@ struct LanguageQuestionView: View {
                 GeoStatPill(icon: .hearts, value: "\(hearts)")
             }
 
-            Text(question.stimulus == .flag ? LocalizedStringKey("Bu ülkenin ana dili nedir?") : LocalizedStringKey("Haritadaki ülkenin ana dili nedir?"))
+            Text(promptText)
                 .font(.custom(GeoFontName.balooBold, size: 20))
                 .foregroundStyle(GeoColor.textPrimary)
                 .multilineTextAlignment(.center)
