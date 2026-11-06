@@ -186,8 +186,20 @@ struct ProfileView: View {
             .accessibilityLabel(Text("Geonaut seviyesi: \(L(standing.level.title))"))
             .accessibilityHint(Text("Ünvan detaylarını açar"))
 
-            GlitterBar(progress: standing.fraction, color: standing.level.accentColor, animated: !reduceMotion)
-                .frame(width: 160, height: 8)
+            VStack(spacing: 6) {
+                GlitterBar(progress: standing.fraction, color: standing.level.accentColor, animated: !reduceMotion)
+                    .frame(width: 160, height: 8)
+                Group {
+                    if let upper = standing.upper {
+                        Text("\(standing.points) / \(upper) puan")
+                    } else {
+                        Text("\(standing.points) puan")
+                    }
+                }
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(GeoColor.textSecondary)
+                .monospacedDigit()
+            }
         }
         .sheet(isPresented: $showLevelSheet) { LevelInfoSheet(standing: standing) }
     }
