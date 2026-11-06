@@ -220,13 +220,6 @@ enum Capitals {
 // MARK: - Soru üretimi
 
 extension Capitals {
-    /// Başkenti "şaşırtıcı" ülkeler — en bilinen/büyük şehir başkent değil (Avustralya→Canberra,
-    /// Brezilya→Brasília, Türkiye→Ankara …). Etap 5-6 yalnızca bunlardan sorar (bkz. MainLanguageStructure.style).
-    static let trickyCodes: Set<String> = [
-        "AU", "BR", "CA", "CH", "TR", "NZ", "NG", "TZ", "MM", "KZ", "CI", "PK", "MA", "NL", "IN", "US",
-        "VN", "MY", "CM", "GH", "ET", "KE", "SA", "AE", "ZM", "MX", "CO", "PE", "CL", "AR", "ES", "PT", "DE"
-    ]
-
     /// "Başkentleri Öğren" listesi: başkenti olan ülkeler (Türkçe ada göre alfabetik, bkz. Countries.all).
     static var learnableCountries: [Country] {
         Countries.uniqueByCode(Countries.all).filter { has($0.code) }
@@ -238,60 +231,75 @@ extension Capitals {
         return base.isEmpty ? learnableCountries : base
     }
 
-    static func trickyPool(forContinent continent: String) -> [Country] {
-        let base = pool(forContinent: continent)
-        let tricky = base.filter { trickyCodes.contains($0.code) }
-        // Küçük kıta havuzlarında (ör. Okyanusya) "şaşırtıcı" ülke olmayabilir: önce tüm dünyadan şaşırtıcılara bak.
-        if !tricky.isEmpty { return tricky }
-        let world = learnableCountries.filter { trickyCodes.contains($0.code) }
-        return world.isEmpty ? base : world
+    /// Bir seviyede (0 tabanlı) hangi soru biçimleri çıkar — kullanıcı kararı:
+    /// 1-2 bayrak + ülke adı → başkent; 3 başkent adı → ülke adı ya da bayrak; 4 yalnızca bayrak → başkent;
+    /// 5-6 hepsinin karışımı; 7-8 karışım + harita.
+    static func formats(forStage stageIndex: Int) -> [CapitalQuestion.Format] {
+        switch stageIndex {
+        case 0, 1: return [.flagWithNameToCapital]
+        case 2: return [.capitalToCountry, .capitalToFlag]
+        case 3: return [.flagToCapital]
+        case 4, 5: return [.flagWithNameToCapital, .flagToCapital, .capitalToCountry, .capitalToFlag]
+        default: return [.flagWithNameToCapital, .flagToCapital, .capitalToCountry, .capitalToFlag, .mapToCapital]
+        }
     }
 
-    /// Bir etap için 10 soru üretir — etap 1-4 standart (bayrak), 5-6 zor (şaşırtıcı başkentler; şıklar aynı
-    /// kıtadan), 7-8 karışık (soru başına bayrak ya da harita). Şıklar GÖSTERİLEN yazılışa göre tekilleştirilir.
-    static func makeQuestions(forContinent continent: String, stageIndex: Int, tour: Int = 0) -> [LanguageQuestion] {
-        let style = MainLanguageStructure.style(forStage: stageIndex)
+    /// Bir etap için 10 soru üretir. Şıklar GÖSTERİLEN yazılışa göre tekilleştirilir (farklı ülkelerin başkenti
+    /// bir dilde aynı yazılabilir).
+    static func makeQuestions(forContinent continent: String, stageIndex: Int, tour: Int = 0) -> [CapitalQuestion] {
+        let formats = formats(forStage: stageIndex)
         let fullPool = pool(forContinent: continent)
-        let sourcePool = style == .tricky ? trickyPool(forContinent: continent) : fullPool
         let mapPool = fullPool.filter { CountryCoordinates.coordinate(for: $0.code) != nil }
         let world = learnableCountries
         let preferred = TourStructure.preferredCodes(fullPool.map(\.code), tour: tour, stageIndex: stageIndex)
 
         var usedCodes: Set<String> = []
-        var result: [LanguageQuestion] = []
+        var result: [CapitalQuestion] = []
         for _ in 0..<GameRules.questionsPerStage {
-            let useMap = style == .mixed && !mapPool.isEmpty && Bool.random()
-            let effectivePool = useMap ? mapPool : sourcePool
+            let format = formats.randomElement() ?? .flagToCapital
+            let needsMap = format == .mapToCapital && !mapPool.isEmpty
+            let effectiveFormat: CapitalQuestion.Format = (format == .mapToCapital && !needsMap) ? .flagToCapital : format
+
             var chosen: Country?
-            for candidatePool in [effectivePool, fullPool, world] {
-                let eligible = candidatePool.filter { !usedCodes.contains($0.code) && (!useMap || CountryCoordinates.coordinate(for: $0.code) != nil) }
+            for candidatePool in [needsMap ? mapPool : fullPool, fullPool, world] {
+                let eligible = candidatePool.filter { !usedCodes.contains($0.code) && (!needsMap || CountryCoordinates.coordinate(for: $0.code) != nil) }
                 if let pick = TourStructure.pick(eligible, code: \.code, preferred: preferred) { chosen = pick; break }
             }
-            guard let correct = chosen ?? effectivePool.randomElement() else { continue }
+            guard let correct = chosen ?? fullPool.randomElement() else { continue }
             usedCodes.insert(correct.code)
 
-            let correctName = name(for: correct.code)
-            var seen: Set<String> = [correctName]
-            var distractors: [String] = []
-            // Zor etaplarda şıklar önce aynı kıtadan (daha yakın seçenekler), diğerlerinde tüm dünyadan.
-            let continentCodes = Set(fullPool.map(\.code))
-            let shuffledWorld = world.shuffled()
-            let ordered = style == .tricky
-                ? shuffledWorld.filter { continentCodes.contains($0.code) } + shuffledWorld.filter { !continentCodes.contains($0.code) }
-                : shuffledWorld
-            for candidate in ordered where candidate.code != correct.code {
-                let candidateName = name(for: candidate.code)
-                if seen.insert(candidateName).inserted { distractors.append(candidateName) }
-                if distractors.count == 3 { break }
+            let capital = name(for: correct.code)
+            let others = world.filter { $0.code != correct.code }.shuffled()
+            var options: [String]
+            var answer: String
+            switch effectiveFormat {
+            case .capitalToFlag:
+                answer = correct.code
+                options = [correct.code] + others.prefix(3).map(\.code)
+            case .capitalToCountry:
+                answer = correct.turkishName
+                var seen: Set<String> = [D(correct.turkishName)]
+                var names: [String] = []
+                for other in others where seen.insert(D(other.turkishName)).inserted {
+                    names.append(other.turkishName)
+                    if names.count == 3 { break }
+                }
+                options = [correct.turkishName] + names
+            default:
+                answer = capital
+                var seen: Set<String> = [capital]
+                var names: [String] = []
+                for other in others {
+                    let otherCapital = name(for: other.code)
+                    if seen.insert(otherCapital).inserted { names.append(otherCapital) }
+                    if names.count == 3 { break }
+                }
+                options = [capital] + names
             }
 
-            result.append(LanguageQuestion(
-                stimulus: useMap ? .map : .flag,
-                countryCode: correct.code,
-                countryName: correct.name,
-                correctLanguage: correctName,
-                options: ([correctName] + distractors).shuffled(),
-                kind: .capital
+            result.append(CapitalQuestion(
+                format: effectiveFormat, countryCode: correct.code, countryName: correct.turkishName,
+                capitalName: capital, options: options.shuffled(), correct: answer
             ))
         }
         return result

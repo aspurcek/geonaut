@@ -5892,6 +5892,15 @@
         "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın." } }
       }
     },
+    "Bu şehir hangi ülkenin başkentidir?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Von welchem Land ist diese Stadt die Hauptstadt?" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Which country is this city the capital of?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿De qué país es capital esta ciudad?" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bu şehir hangi ülkenin başkentidir?" } }
+      }
+    },
     "Gizlilik Politikası" : {
       "extractionState" : "manual",
       "localizations" : {

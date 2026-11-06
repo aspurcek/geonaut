@@ -11,6 +11,15 @@ import SwiftUI
 struct GeonautApp: App {
     @State private var appState = AppState()
 
+    #if DEBUG
+    private func debugCapitalQuestion(_ format: CapitalQuestion.Format, _ options: [String], _ correct: String) -> some View {
+        CapitalQuestionView(
+            question: CapitalQuestion(format: format, countryCode: "DE", countryName: "Almanya", capitalName: "Berlin", options: options, correct: correct),
+            questionIndex: 3, totalQuestions: 10, hearts: 5, onAnswer: { _ in }, onBack: {}
+        )
+    }
+    #endif
+
     @ViewBuilder private var debugOrRoot: some View {
         #if DEBUG
         // `-debugScreen hearts|streaklost|reminder`: tek tek ekranları doğrudan göster (ekran görüntüsü/test için).
@@ -18,6 +27,11 @@ struct GeonautApp: App {
         case "hearts": OutOfHeartsView(currentPoints: 340, correctCount: 6, onContinueWithPoints: {}, onRestartStage: {})
         case "streaklost": StreakLostView(streakDays: 12, points: 340, onRevive: {}, onGiveUp: {})
         case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
+        case "capq_flagname": debugCapitalQuestion(.flagWithNameToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
+        case "capq_flag": debugCapitalQuestion(.flagToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
+        case "capq_map": debugCapitalQuestion(.mapToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
+        case "capq_country": debugCapitalQuestion(.capitalToCountry, ["Almanya", "Fransa", "İtalya", "İspanya"], "Almanya")
+        case "capq_flags": debugCapitalQuestion(.capitalToFlag, ["DE", "FR", "IT", "ES"], "DE")
         default: RootView(appState: appState)
         }
         #else

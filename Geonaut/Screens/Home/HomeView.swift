@@ -486,11 +486,11 @@ struct HomeView: View {
 
                 case .capitalsQuiz(let continent, let stageIndex, let tour):
                     let progressKey = TourStructure.progressKey(CapitalStructure.progressKey(for: continent), tour: tour)
-                    let capitalSession = LanguageQuizSession(
+                    let capitalSession = CapitalQuizSession(
                         stageIndex: stageIndex,
                         questions: Capitals.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
                     )
-                    LanguageQuizSessionView(
+                    CapitalQuizSessionView(
                         session: capitalSession,
                         points: $points,
                         onCompleted: { earnedPoints, seenCodes in
