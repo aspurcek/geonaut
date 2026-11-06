@@ -172,12 +172,8 @@ struct ProfileView: View {
         let standing = LevelStanding(points: progress.lifetimePoints)
         return VStack(spacing: 10) {
             Button { showLevelSheet = true } label: {
-                HStack(spacing: 4) {
-                    Text(L(standing.level.title))
-                        .font(.custom(GeoFontName.balooBold, size: 16))
-                    Image(systemName: "chevron.right")
-                        .font(.system(size: 11, weight: .bold))
-                }
+                Text(L(standing.level.title))
+                    .font(.custom(GeoFontName.balooBold, size: 16))
                 .foregroundStyle(GeoColor.textPrimary)
                 .padding(.horizontal, 16).padding(.vertical, 4)
                 .background(standing.level.accentColor, in: Capsule())
