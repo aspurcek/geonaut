@@ -23,6 +23,7 @@ struct ProfileView: View {
     @State private var path = NavigationPath()
     /// Rozet önizlemesine dokununca açılan bilgi penceresi (Rozetler sayfasındakiyle aynı bileşen).
     @State private var selectedBadge: BadgeCardInfo?
+    @State private var showLevelSheet = false
 
     private var avatarColor: Color { Color(hex: avatarColorHex) }
     /// Kullanıcı kararı: bir soruda gösterilip cevaplanan (doğru/yanlış fark etmez)
@@ -31,7 +32,6 @@ struct ProfileView: View {
 
     // Bkz. GeoLevel.swift — Kural Kitabı böl. 07'nin tanımsız bıraktığı kademe
     // adları/puan eşikleri, içerik puan tavanlarına orantılı olarak burada karara bağlandı.
-    private var level: GeoLevel { GeoLevel.level(forPoints: progress.lifetimePoints) }
     /// Önceden sabit/örnek veriydi (herkes için aynı 3 yeşil gün); artık gerçek seriden hesaplanıyor.
     private var weekDayStates: [GeoDayChip.State] {
         StreakStatus.weekDays(lastActiveDate: lastActiveDate, streakDays: streak).map { day in
@@ -160,69 +160,36 @@ struct ProfileView: View {
                 Text(displayName)
                     .font(GeoTypography.headingL)
                     .foregroundStyle(GeoColor.textPrimary)
-                levelCard
+                levelBadge
                     .padding(.top, GeoSpacing.sm)
             }
         }
     }
 
-    /// Tanıtım turundaki seviye kartıyla aynı dil: ünvanın renginde rozet, altında "sıradaki ünvan" ipucu,
-    /// ünvan renginde simli çubuk ve "puan / hedef". En üst ünvandaysa kısa bir not.
-    private var levelCard: some View {
-        VStack(spacing: 6) {
-            Text("Geonaut seviyesi")
-                .font(.system(size: 12, weight: .semibold))
-                .foregroundStyle(GeoColor.textMuted)
-            Text(L(level.title))
-                .font(.custom(GeoFontName.balooBold, size: 16))
+    /// Sade ünvan alanı: ünvanın renginde, dokunulabilir rozet + altında ince simli çubuk.
+    /// Detaylar (sıradaki ünvan, puan, tüm ünvanlar) rozete dokununca açılan alt sayfada.
+    private var levelBadge: some View {
+        let standing = LevelStanding(points: progress.lifetimePoints)
+        return VStack(spacing: 10) {
+            Button { showLevelSheet = true } label: {
+                HStack(spacing: 4) {
+                    Text(L(standing.level.title))
+                        .font(.custom(GeoFontName.balooBold, size: 16))
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .bold))
+                }
                 .foregroundStyle(GeoColor.textPrimary)
-                .padding(.horizontal, 16).padding(.vertical, 3)
-                .background(level.accentColor, in: Capsule())
-            levelProgress
-        }
-        .padding(.horizontal, 20).padding(.vertical, 14)
-        .frame(width: 290)
-        .background(GeoColor.bgSurface, in: RoundedRectangle(cornerRadius: 22))
-        .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(Text("Geonaut seviyesi: \(L(level.title))"))
-    }
+                .padding(.horizontal, 16).padding(.vertical, 4)
+                .background(standing.level.accentColor, in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Geonaut seviyesi: \(L(standing.level.title))"))
+            .accessibilityHint(Text("Ünvan detaylarını açar"))
 
-    @ViewBuilder private var levelProgress: some View {
-        let points = progress.lifetimePoints
-        let thresholds = GameRules.levelThresholds
-        let levels = GeoLevel.allCases
-        if let index = levels.firstIndex(of: level), index < thresholds.count {
-            let lower = index == 0 ? 0 : thresholds[index - 1]
-            let upper = thresholds[index]
-            let fraction = min(1, max(0, Double(points - lower) / Double(upper - lower)))
-            VStack(spacing: 6) {
-                Text("Sıradaki ünvan: \(L(levels[index + 1].title))")
-                    .font(.system(size: 12, weight: .regular))
-                    .foregroundStyle(GeoColor.textMuted)
-                GlitterBar(progress: fraction, color: level.accentColor, animated: !reduceMotion)
-                    .frame(width: 200, height: 10)
-                Text("\(points) / \(upper) puan")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(GeoColor.textSecondary)
-                    .monospacedDigit()
-            }
-            .accessibilityElement(children: .combine)
-        } else {
-            // En üst ünvan: çubuk dolu ve simli kalır, "bitti" hissi verir.
-            VStack(spacing: 6) {
-                Text("En yüksek ünvandasın")
-                    .font(.system(size: 12, weight: .regular))
-                    .foregroundStyle(GeoColor.textMuted)
-                GlitterBar(progress: 1, color: level.accentColor, animated: !reduceMotion)
-                    .frame(width: 200, height: 10)
-                Text("\(progress.lifetimePoints) puan")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(GeoColor.textSecondary)
-                    .monospacedDigit()
-            }
-            .accessibilityElement(children: .combine)
+            GlitterBar(progress: standing.fraction, color: standing.level.accentColor, animated: !reduceMotion)
+                .frame(width: 160, height: 8)
         }
+        .sheet(isPresented: $showLevelSheet) { LevelInfoSheet(standing: standing) }
     }
 
     /// Dişli yerine Figma "Icon/Settings" (node 347:55504) ile birebir aynı iki-kaydırıcı

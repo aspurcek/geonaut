@@ -5919,6 +5919,24 @@
         "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld puan" } }
       }
     },
+    "Ünvanlar, toplam kazandığın puana göre yükselir." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Titel steigen mit deinen insgesamt gesammelten Punkten." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Titles rise with the total points you earn." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Los títulos suben según los puntos totales que ganas." } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ünvanlar, toplam kazandığın puana göre yükselir." } }
+      }
+    },
+    "Ünvan detaylarını açar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffnet die Titeldetails" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Opens title details" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Abre los detalles del título" } },
+        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ünvan detaylarını açar" } }
+      }
+    },
     "Gizlilik Politikası" : {
       "extractionState" : "manual",
       "localizations" : {
