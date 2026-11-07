@@ -53,9 +53,7 @@ for continent in continents {
 check(formatCounts[0] == ["flagWithNameToCapital"] && formatCounts[1] == ["flagWithNameToCapital"], "Seviye 1-2: yalnızca bayrak + ülke adı")
 check(formatCounts[2] == ["capitalToCountry", "capitalToFlag"], "Seviye 3: başkent adı → ülke adı ya da bayrak")
 check(formatCounts[3] == ["flagToCapital"], "Seviye 4: yalnızca bayrak")
-check((formatCounts[4] ?? []).count == 4 && (formatCounts[5] ?? []).count == 4, "Seviye 5-6: 4 biçim karışık")
-check((formatCounts[6] ?? []).contains("mapToCapital") && (formatCounts[7] ?? []).contains("mapToCapital"), "Seviye 7-8: harita da var")
-check(!(formatCounts[4] ?? []).contains("mapToCapital"), "Seviye 5-6: harita yok")
+for stage in 4...7 { check((formatCounts[stage] ?? []).count == 5 && (formatCounts[stage] ?? []).contains("mapToCapital"), "Seviye \(stage + 1): 5 biçim karışık (harita dahil)") }
 print("Üretilen toplam soru:", total, " etap başına biçimler:", formatCounts.sorted { $0.key < $1.key }.map { "\($0.key + 1)=\($0.value.sorted())" })
 print(fails == 0 ? "TÜMÜ GEÇTİ" : "\(fails) HATA")
 exit(fails == 0 ? 0 : 1)

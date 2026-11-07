@@ -233,13 +233,12 @@ extension Capitals {
 
     /// Bir seviyede (0 tabanlı) hangi soru biçimleri çıkar — kullanıcı kararı:
     /// 1-2 bayrak + ülke adı → başkent; 3 başkent adı → ülke adı ya da bayrak; 4 yalnızca bayrak → başkent;
-    /// 5-6 hepsinin karışımı; 7-8 karışım + harita.
+    /// 5-8 hepsinin karışımı (harita sorusu dahil).
     static func formats(forStage stageIndex: Int) -> [CapitalQuestion.Format] {
         switch stageIndex {
         case 0, 1: return [.flagWithNameToCapital]
         case 2: return [.capitalToCountry, .capitalToFlag]
         case 3: return [.flagToCapital]
-        case 4, 5: return [.flagWithNameToCapital, .flagToCapital, .capitalToCountry, .capitalToFlag]
         default: return [.flagWithNameToCapital, .flagToCapital, .capitalToCountry, .capitalToFlag, .mapToCapital]
         }
     }
