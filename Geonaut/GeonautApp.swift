@@ -22,11 +22,13 @@ struct GeonautApp: App {
 
     @ViewBuilder private var debugOrRoot: some View {
         #if DEBUG
-        // `-debugScreen hearts|streaklost|reminder`: tek tek ekranları doğrudan göster (ekran görüntüsü/test için).
+        // `-debugScreen hearts|streaklost|reminder|learnfoods|learncontinents|capq_*`: tek tek ekranları doğrudan göster (ekran görüntüsü/test için).
         switch UserDefaults.standard.string(forKey: "debugScreen") {
         case "hearts": OutOfHeartsView(currentPoints: 340, correctCount: 6, onContinueWithPoints: {}, onRestartStage: {})
         case "streaklost": StreakLostView(streakDays: 12, points: 340, onRevive: {}, onGiveUp: {})
         case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
+        case "learnfoods": LearnFoodsView(onBack: {})
+        case "learncontinents": LearnContinentsView(onBack: {})
         case "capq_flagname": debugCapitalQuestion(.flagWithNameToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
         case "capq_flag": debugCapitalQuestion(.flagToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
         case "capq_map": debugCapitalQuestion(.mapToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")

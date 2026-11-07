@@ -33,9 +33,7 @@ struct GeoFlagListRow: View {
                 Text(D(continentName))
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(GeoColor.textMuted)
-                    .lineLimit(prioritizesTrailing ? 1 : 2)
-                    .multilineTextAlignment(.trailing)
-                    .minimumScaleFactor(0.85)
+                    .lineLimit(1)
                     .fixedSize(horizontal: prioritizesTrailing, vertical: false)
                     .layoutPriority(prioritizesTrailing ? 1 : 0)
             } else {
