@@ -66,14 +66,22 @@ struct SettingsView: View {
             // Kullanıcı kararı: sayfa diğer ekranlar gibi (Ana Sayfa/Profil) TEK bir
             // ScrollView içinde baştan sona kaysın — geri oku/başlık sabit kalmasın.
             VStack(alignment: .leading, spacing: 0) {
-                HStack {
+                // Geri oku + başlık + çıkış ikonu TEK satırda: önceden ok kendi satırını
+                // kaplıyor, yanı boş kalıyordu; başlık da ayrı bir satırdaydı.
+                HStack(spacing: GeoSpacing.xs) {
                     Button(action: onBack) {
                         Image(systemName: "chevron.left")
                             .accessibilityLabel("Geri")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(GeoColor.textPrimary)
-                            .padding(GeoSpacing.sm)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
                     }
+
+                    Text("Ayarlar")
+                        .font(.custom(GeoFontName.balooExtraBold, size: 24))
+                        .foregroundStyle(GeoColor.textPrimary)
+                        .accessibilityAddTraits(.isHeader)
 
                     Spacer()
 
@@ -87,22 +95,32 @@ struct SettingsView: View {
                             .accessibilityLabel("Çıkış Yap")
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundStyle(GeoColor.accentDanger)
-                            .padding(GeoSpacing.sm)
+                            .frame(width: 44, height: 44)
+                            .contentShape(Rectangle())
                     }
                 }
-
-                Text("Ayarlar")
-                    .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .padding(.top, GeoSpacing.sm)
-                    .padding(.bottom, GeoSpacing.xl)
+                // 44 pt'lik dokunma alanları ikonları içeri itmesin: görsel kenar eskisiyle aynı kalsın.
+                .padding(.horizontal, -GeoSpacing.sm)
+                .padding(.bottom, GeoSpacing.lg)
 
                 VStack(alignment: .leading, spacing: GeoSpacing.xxl) {
                     VStack(spacing: GeoSpacing.md) {
                         Button(action: onEditAvatar) {
                             GeoAvatar(backgroundColor: Color(hex: avatarColorHex), character: character)
+                                .overlay(alignment: .bottomTrailing) {
+                                    // Profil'deki dişli rozetiyle aynı boyut/renk: avatarın düzenlenebildiğini gösterir.
+                                    Circle()
+                                        .fill(GeoColor.accentPrimary)
+                                        .frame(width: 30, height: 30)
+                                        .overlay {
+                                            Image(systemName: "pencil")
+                                                .font(.system(size: 14, weight: .bold))
+                                                .foregroundStyle(.white)
+                                        }
+                                }
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Avatarını düzenle"))
 
                         Text("Avatarını düzenle")
                             .font(.system(size: 13, weight: .semibold))
@@ -124,11 +142,14 @@ struct SettingsView: View {
                         )
                         .disabled(true)
 
-                        Button("Kaydet") {
+                        Button {
                             onSave(trimmedDraftName)
+                        } label: {
+                            // Genişlik etiketin içinde: stil zemini (hap) etiketi sardığı için
+                            // dışarıdan frame verilirse yalnızca boşluk büyür, buton dar kalır.
+                            Text("Kaydet").frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.kasifPrimary)
-                        .frame(maxWidth: .infinity)
                         .disabled(!hasChanges)
                     }
 
