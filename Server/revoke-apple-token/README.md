@@ -1,5 +1,7 @@
 # Geonaut — Apple izni iptal sunucusu (ücretsiz)
 
+> **Önerilen yol: Cloudflare Workers** (aşağıdaki "Cloudflare ile" bölümü). Netlify'ın yeni ücretsiz planı kredi sistemine geçti ve yeni takım açarken ücretli plan istiyor; Cloudflare'de bu sorun yok. Netlify sürümü de çalışır durumda (aynı mantık).
+
 Hesap silinince Apple'a "bu uygulamanın Sign in with Apple iznini iptal et" demek için gerekli (App Store kuralı 5.1.1(v)).
 Gizli anahtar uygulamaya konulamadığı için bu küçük işlev Netlify'da çalışır.
 
@@ -23,3 +25,14 @@ Gizli anahtar uygulamaya konulamadığı için bu küçük işlev Netlify'da ça
 ## Nasıl çalışıyor
 Uygulama hesap silerken kullanıcıya Apple ile kısa bir onay gösterir → Apple'dan kısa ömürlü bir kod gelir → bu işleve gönderilir →
 işlev kodu gizli anahtarla Apple'a karşılık imzalayıp bir token alır ve o token'ı iptal eder. Sunucu hiçbir kullanıcı verisi saklamaz.
+
+## Cloudflare ile (önerilen, ücretsiz, kart istemez)
+1. **dash.cloudflare.com** → ücretsiz hesap aç, e-postanı doğrula.
+2. Soldan **Workers & Pages** → **Create** → **Create Worker** → ad: `geonaut-revoke` → **Deploy**. (İlk seferde bir `workers.dev` alt alan adı seçmeni isteyebilir.)
+3. **Edit code** → içindeki her şeyi sil → `cloudflare-worker.js` dosyasının **tüm içeriğini** yapıştır → **Deploy**.
+4. **Settings → Variables and Secrets → Add** ile 4 değişken ekle (hepsini **Secret** türünde):
+   - `APPLE_TEAM_ID` = `PPAAHJK43N`
+   - `APPLE_KEY_ID` = Apple anahtarının Key ID'si
+   - `APPLE_CLIENT_ID` = `com.aspurce.geonaut`
+   - `APPLE_PRIVATE_KEY` = `.p8` dosyasının tüm içeriği
+5. **Deploy** et. Sayfanın üstündeki adres (ör. `https://geonaut-revoke.KULLANICI.workers.dev`) uygulamadaki `AppleTokenRevocation.endpoint` alanına yazılır.
