@@ -200,12 +200,38 @@ final class AppState {
         Task { await loadProfile(userIdentifier: userIdentifier, fallbackName: name.isEmpty ? String(localized: "Geonaut") : name, email: email) }
     }
 
+    /// `operation` süre dolmadan bitmezse `CKError(.networkUnavailable)` fırlatır. İptale saygı
+    /// göstermeyen bir çağrıyı da beklemeden bırakabilmek için task group değil, ilk biten kazanır.
+    private nonisolated static func withTimeout<T: Sendable>(
+        seconds: Double, _ operation: @escaping @Sendable () async throws -> T
+    ) async throws -> T {
+        try await withCheckedThrowingContinuation { continuation in
+            let gate = OneShotGate()
+            Task {
+                do {
+                    let value = try await operation()
+                    if gate.claim() { continuation.resume(returning: value) }
+                } catch {
+                    if gate.claim() { continuation.resume(throwing: error) }
+                }
+            }
+            Task {
+                try? await Task.sleep(for: .seconds(seconds))
+                if gate.claim() { continuation.resume(throwing: CKError(.networkUnavailable)) }
+            }
+        }
+    }
+
     @MainActor
     private func loadProfile(userIdentifier: String, fallbackName: String, email: String? = nil) async {
         phase = .loadingProfile
         let cached = LocalProfileCache.load(userIdentifier: userIdentifier)
         do {
-            var profile = try await PlayerCloudKitService.fetchOrCreateProfile(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
+            // iCloud yanıt vermezse (yavaş/kopuk ağ) CloudKit çağrısı süresiz bekleyebilir ve
+            // "Yükleniyor"da takılırdık; 20 sn sonra hata sayıp cihazdaki yedekle devam ediyoruz.
+            var profile = try await Self.withTimeout(seconds: 20) {
+                try await PlayerCloudKitService.fetchOrCreateProfile(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
+            }
             if let cached {
                 // Cihazdaki yedek varsa HER ZAMAN buluttakiyle BİRLEŞTİR (ezme yok, bkz.
                 // PlayerProfile.merging): bulut kaydı eskiyse ya da bir yazma kaybolduysa
@@ -375,5 +401,17 @@ final class AppState {
         // daysSince <= 0 ve streakDays > 0: bugün zaten oynanmış, sayı değişmez.
         profile.lastActiveDate = .now
         return bonus
+    }
+}
+
+/// Birden fazla yarışan görevden yalnızca ilkinin sonucu sayılsın diye.
+private final class OneShotGate: @unchecked Sendable {
+    private let lock = NSLock()
+    private var claimed = false
+    func claim() -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        if claimed { return false }
+        claimed = true
+        return true
     }
 }
