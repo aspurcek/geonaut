@@ -11,7 +11,7 @@ struct ContinentCompleteView: View {
     var onContinue: () -> Void
 
     private var icon: (icon: String, color: Color) {
-        BadgeCatalog.continentIcon(for: continentName) ?? ("🏆", GeoColor.accentHighlightStrong)
+        BadgeCatalog.continentIcon(for: continentName) ?? ("🏆", BadgeCatalog.BadgeTint.ink)
     }
 
     var body: some View {

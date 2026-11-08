@@ -63,15 +63,27 @@ enum BadgeCatalog {
         let description: String
     }
 
+    /// Rozet zemin renkleri: emoji ile zemin arasında yeterli kontrast olsun diye seçildi
+    /// (örn. kırmızı kule turuncu zeminde, altın kupa altın zeminde, kahverengi kanguru
+    /// koyu kırmızıda kayboluyordu). Kilitliyken zemin GeoColor.bgLocked olduğundan,
+    /// açık rozetlerin zemini bundan ayırt edilebilir kalmalı.
+    enum BadgeTint {
+        static let peach = Color(hex: 0xFFD3C5)
+        static let butter = Color(hex: 0xFBEBA8)
+        static let rose = Color(hex: 0xF8CCD8)
+        static let apricot = Color(hex: 0xFFE0B8)
+        static let ink = Color(hex: 0x2A3045)
+    }
+
     /// FlagGuessStructure.continents ile aynı sırada (Avrupa...Antarktika) — bkz.
     /// Rozet Simgeleri referans paneli için seçilen renk/emoji eşleşmesi.
     private static let continentIcons: [(icon: String, color: Color)] = [
-        ("🗼", GeoColor.accentPrimary),
+        ("🗼", BadgeTint.peach),
         ("🐼", GeoColor.accentSuccess),
-        ("🦁", GeoColor.accentHighlight),
+        ("🦁", BadgeTint.butter),
         ("🦅", GeoColor.accentTertiary),
-        ("🦙", GeoColor.accentPrimarySoft),
-        ("🦘", GeoColor.accentDanger),
+        ("🦙", GeoColor.accentPrimary),
+        ("🦘", BadgeTint.rose),
         ("🐧", GeoColor.accentInfo)
     ]
 
@@ -94,12 +106,12 @@ enum BadgeCatalog {
             )
         } + [
             BadgeInfo(
-                title: "Karışık", icon: "🔀", accentColor: GeoColor.textSecondary,
+                title: "Karışık", icon: "🔀", accentColor: BadgeTint.apricot,
                 unlocked: progress.isContinentCompleted("Karışık", stageCount: FlagGuessStructure.stagesPerSection),
                 description: String(localized: "Diğer 7 kıtayı bitirince açılan Karışık bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
             ),
             BadgeInfo(
-                title: "Bayrak Ustası", icon: "🏆", accentColor: GeoColor.accentHighlightStrong,
+                title: "Bayrak Ustası", icon: "🏆", accentColor: BadgeTint.ink,
                 unlocked: progress.isCategoryTrophyEarned(.flags),
                 description: String(localized: "Bayraklar kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın.")
             )
@@ -114,12 +126,12 @@ enum BadgeCatalog {
                 description: String(localized: "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
             ),
             BadgeInfo(
-                title: "Ülkeler Rozeti", icon: "📍", accentColor: GeoColor.accentInfoStrong,
+                title: "Ülkeler Rozeti", icon: "📍", accentColor: GeoColor.accentSuccess,
                 unlocked: progress.isMapPuzzleCountriesCompleted(),
                 description: String(localized: "Haritalar'da Ülkeler bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
             ),
             BadgeInfo(
-                title: "Harita Ustası", icon: "🏆", accentColor: GeoColor.accentHighlightStrong,
+                title: "Harita Ustası", icon: "🏆", accentColor: BadgeTint.ink,
                 unlocked: progress.isCategoryTrophyEarned(.maps),
                 description: String(localized: "Haritalar kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın.")
             )
@@ -138,12 +150,12 @@ enum BadgeCatalog {
             )
         } + [
             BadgeInfo(
-                title: "Karışık", icon: "🔀", accentColor: GeoColor.textSecondary,
+                title: "Karışık", icon: "🔀", accentColor: BadgeTint.apricot,
                 unlocked: progress.isContinentCompleted(MainLanguageStructure.progressKey(for: "Karışık"), stageCount: MainLanguageStructure.stagesPerSection),
                 description: String(localized: "Diğer 7 kıtayı bitirince açılan Karışık bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
             ),
             BadgeInfo(
-                title: "Dil Ustası", icon: "🏆", accentColor: GeoColor.accentHighlightStrong,
+                title: "Dil Ustası", icon: "🏆", accentColor: BadgeTint.ink,
                 unlocked: progress.isCategoryTrophyEarned(.languages),
                 description: String(localized: "Diller kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın.")
             )
@@ -170,12 +182,12 @@ enum BadgeCatalog {
             )
         } + [
             BadgeInfo(
-                title: "Karışık", icon: "🔀", accentColor: GeoColor.textSecondary,
+                title: "Karışık", icon: "🔀", accentColor: BadgeTint.apricot,
                 unlocked: progress.isContinentCompleted(WorldFoodStructure.progressKey(for: "Karışık"), stageCount: WorldFoodStructure.stagesPerSection),
                 description: String(localized: "Diğer 3 bölümü bitirince açılan Karışık bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
             ),
             BadgeInfo(
-                title: "Lezzet Ustası", icon: "🏆", accentColor: GeoColor.accentHighlightStrong,
+                title: "Lezzet Ustası", icon: "🏆", accentColor: BadgeTint.ink,
                 unlocked: progress.isCategoryTrophyEarned(.foods),
                 description: String(localized: "Lezzetler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın.")
             )
@@ -192,12 +204,12 @@ enum BadgeCatalog {
             )
         } + [
             BadgeInfo(
-                title: "Karışık", icon: "🔀", accentColor: GeoColor.textSecondary,
+                title: "Karışık", icon: "🔀", accentColor: BadgeTint.apricot,
                 unlocked: progress.isContinentCompleted(CapitalStructure.progressKey(for: "Karışık"), stageCount: CapitalStructure.stagesPerSection),
                 description: String(localized: "Diğer 7 kıtayı bitirince açılan Karışık bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın.")
             ),
             BadgeInfo(
-                title: "Başkent Ustası", icon: "🏆", accentColor: GeoColor.accentHighlightStrong,
+                title: "Başkent Ustası", icon: "🏆", accentColor: BadgeTint.ink,
                 unlocked: progress.isCategoryTrophyEarned(.capitals),
                 description: String(localized: "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın.")
             )

@@ -615,7 +615,7 @@ struct HomeView: View {
                     BadgeEarnedView(
                         title: "Karışık",
                         icon: "🔀",
-                        accentColor: GeoColor.textSecondary,
+                        accentColor: BadgeCatalog.BadgeTint.apricot,
                         headline: "Karışık Bölüm Tamamlandı!",
                         message: mixedBadgeMessage(for: category),
                         onContinue: { advanceAfterStage(category, tour: 0, wasTourDone: false) }
@@ -626,7 +626,7 @@ struct HomeView: View {
                     BadgeEarnedView(
                         title: isCountries ? "Ülkeler Rozeti" : "Kıtalar Rozeti",
                         icon: isCountries ? "📍" : "🌍",
-                        accentColor: isCountries ? GeoColor.accentInfoStrong : GeoColor.accentInfo,
+                        accentColor: isCountries ? GeoColor.accentSuccess : GeoColor.accentInfo,
                         headline: "Yeni rozet kazandın!",
                         message: isCountries
                             ? "Haritalar'da Ülkeler bölümünün 8 seviyesini tamamladın."
