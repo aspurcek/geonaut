@@ -39,7 +39,12 @@ export default {
     let secret;
     try { secret = await clientSecret({ teamId, keyId, clientId, privateKeyPem }); } catch { return new Response("Bad key", { status: 500 }); }
     const token = await appleForm("token", { client_id: clientId, client_secret: secret, code, grant_type: "authorization_code" });
-    if (!token.ok) return new Response("Token exchange failed", { status: 502 });
+    if (!token.ok) {
+      // Apple'ın hata türü (invalid_grant: kod geçersiz — normal; invalid_client: anahtar/Key ID/Team ID uyuşmuyor). Gizli bilgi içermez.
+      let reason = "unknown";
+      try { reason = JSON.parse(token.body).error || reason; } catch { /* yok say */ }
+      return new Response(`Token exchange failed: ${reason}`, { status: 502 });
+    }
 
     let refreshToken;
     try { refreshToken = JSON.parse(token.body).refresh_token; } catch { /* aşağıda ele alınır */ }
