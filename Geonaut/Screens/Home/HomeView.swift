@@ -51,6 +51,8 @@ struct HomeView: View {
     /// İlk seviye sonrası bir kez sorulan hatırlatma izni sayfası (bkz. ReminderPromptSheet).
     @AppStorage("geonaut.reminderPromptShown") private var reminderPromptShown = false
     @State private var showReminderPrompt = false
+    /// Bu oturumda bir seviye gerçekten bitti mi — sayfa, eski oyuncuya alakasız bir anda (ör. bir ekrandan geri dönerken) çıkmasın.
+    @State private var completedStageThisSession = false
 
     private enum HomeCategory {
         case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri, baskentler
@@ -113,6 +115,7 @@ struct HomeView: View {
     /// Bir seviye biter bitmez (tamamlanma ekranı açılırken) puanı ve ilerlemeyi kaydeder. Oyuncu "Devam"a
     /// basmadan uygulamayı kapatsa ya da geri dönse bile kayıt (ve seri) kaybolmaz.
     private func commitStage(_ category: TourCategory, tour: Int, progressKey: String, stageCount: Int, stageIndex: Int, earnedPoints: Int, seenCodes: [String]) {
+        completedStageThisSession = true
         stageSnapshot = StageSnapshot(
             tourDone: progress.isCategoryCompleted(category, tour: tour),
             continentDone: progress.isContinentCompleted(progressKey, stageCount: stageCount),
@@ -199,7 +202,7 @@ struct HomeView: View {
             .onChange(of: selectedCategory) { _, _ in lockedTourHint = nil }
             .onChange(of: path.count) { _, count in
                 // Tüm kutlama ekranları kapanıp Ana Sayfa'ya dönülünce, ilk tamamlanan seviyeden sonra bir kez sor.
-                guard count == 0, !isGuest, !reminderPromptShown, !progress.completedStageKeysExport.isEmpty,
+                guard count == 0, !isGuest, !reminderPromptShown, completedStageThisSession,
                       !UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey) else { return }
                 reminderPromptShown = true
                 showReminderPrompt = true

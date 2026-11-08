@@ -174,7 +174,13 @@ final class AppState {
     func deleteAccount() async -> Bool {
         guard case .signedIn(let profile) = phase else { return false }
         // Apple iznini iptal edebilmek için taze bir kod (yalnızca sunucu adresi tanımlıysa; kullanıcı vazgeçerse silme yine devam eder).
-        let revocationCode = AppleTokenRevocation.isConfigured ? await appleSignIn.requestAuthorizationCode() : nil
+        // Yalnızca onaylayan kişi giriş yapmış kişiyse (başka bir Apple Kimliği seçilirse onun iznini iptal etmeyelim).
+        let revocationCode: String?
+        if AppleTokenRevocation.isConfigured, let result = await appleSignIn.requestAuthorizationCode(), result.user == profile.appleUserIdentifier {
+            revocationCode = result.code
+        } else {
+            revocationCode = nil
+        }
         do {
             try await PlayerCloudKitService.delete(appleUserIdentifier: profile.appleUserIdentifier)
         } catch {

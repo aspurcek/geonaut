@@ -91,6 +91,35 @@
         }
       }
     },
+    "%@ → %@\nKeşfetmeye devam et!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ → %@\nEntdecke weiter!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ → %@\nKeep exploring!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ → %@\n¡Sigue explorando!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ → %@\nKeşfetmeye devam et!"
+          }
+        }
+      }
+    },
     "%@ bölümünü tamamladın!" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -236,6 +265,35 @@
         }
       }
     },
+    "%@ oldun!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist jetzt %@!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're now %@!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Ya eres %@!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ oldun!"
+          }
+        }
+      }
+    },
     "%@ puan" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -323,6 +381,93 @@
         }
       }
     },
+    "%@'daki ülkelerin başkentlerini öğrendin. %@ rozetini kazandın!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast die Hauptstädte der Länder in %1$@ gelernt. Du hast das %2$@-Abzeichen verdient!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You learned the capitals of the countries in %1$@. You earned the %2$@ badge!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprendiste las capitales de los países de %1$@. ¡Ganaste la insignia de %2$@!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@'daki ülkelerin başkentlerini öğrendin. %2$@ rozetini kazandın!"
+          }
+        }
+      }
+    },
+    "%lld / %lld doğru" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld richtig"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld correct"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld correctas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld / %2$lld doğru"
+          }
+        }
+      }
+    },
+    "%lld / %lld puan" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld Punkte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld points"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld puntos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld puan"
+          }
+        }
+      }
+    },
     "%lld / %lld rozet, %lld/%lld kupa kazanıldı." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -348,6 +493,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld / %lld rozet, %lld/%lld kupa kazanıldı."
+          }
+        }
+      }
+    },
+    "%lld gün üst üste oynadın. Hediye: +%lld puan." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast %lld Tage in Folge gespielt. Geschenk: +%lld Punkte."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You played %lld days in a row. Gift: +%lld points."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has jugado %lld días seguidos. Regalo: +%lld puntos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld gün üst üste oynadın. Hediye: +%lld puan."
           }
         }
       }
@@ -468,6 +642,35 @@
         }
       }
     },
+    "%lld günlük serin yarıda kaldı. %lld puanla kaldığın yerden devam edebilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine %1$lld-Tage-Serie ist unterbrochen. Mit %2$lld Punkten machst du dort weiter, wo du aufgehört hast."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your %1$lld-day streak stopped halfway. Pick up where you left off for %2$lld points."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu racha de %1$lld días se quedó a medias. Retómala donde la dejaste por %2$lld puntos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld günlük serin yarıda kaldı. %lld puanla kaldığın yerden devam edebilirsin."
+          }
+        }
+      }
+    },
     "%lld günlük serini kaybetme!" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -493,6 +696,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld günlük serini kaybetme!"
+          }
+        }
+      }
+    },
+    "%lld puan" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Punkte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld points"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld puntos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld puan"
           }
         }
       }
@@ -551,6 +783,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld sorunun %lld'ünü doğru bildin!"
+          }
+        }
+      }
+    },
+    "%lld ülkenin başkentini keşfet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entdecke die Hauptstädte von %lld Ländern"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Discover the capitals of %lld countries"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descubre las capitales de %lld países"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ülkenin başkentini keşfet"
           }
         }
       }
@@ -623,6 +884,35 @@
         }
       }
     },
+    "+100 puan" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+100 Punkte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+100 points"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+100 puntos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "+100 puan"
+          }
+        }
+      }
+    },
     "☝️ Ülkenin bulunduğu yere dokun" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -651,6 +941,10 @@
           }
         }
       }
+    },
+    "✓ +%lld" : {
+      "comment" : "A floating, green label that appears when the user answers a question correctly. The argument is the number of points awarded for a correct answer.",
+      "isCommentAutoGenerated" : true
     },
     "✓ Doğru!" : {
       "extractionState" : "manual",
@@ -710,8 +1004,53 @@
         }
       }
     },
+    "❤️ 5" : {
+      "comment" : "Text displayed in a chip that shows the number of lives a user has left.",
+      "isCommentAutoGenerated" : true
+    },
+    "⭐⭐⭐" : {
+      "comment" : "Text displayed in a view representing a star.",
+      "isCommentAutoGenerated" : true
+    },
     "🌍" : {
 
+    },
+    "💎 340" : {
+      "comment" : "Text displayed in a 3D-rendered chip that appears in the background of the intro page.",
+      "isCommentAutoGenerated" : true
+    },
+    "🔥" : {
+      "comment" : "A fire emoji.",
+      "isCommentAutoGenerated" : true
+    },
+    "🔥 7 gün" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔥 7 Tage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔥 7 days"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔥 7 días"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "🔥 7 gün"
+          }
+        }
+      }
     },
     "🙁" : {
 
@@ -1296,6 +1635,35 @@
         }
       }
     },
+    "Apple ile giriş yap" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Apple anmelden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sign in with Apple"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Iniciar sesión con Apple"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple ile giriş yap"
+          }
+        }
+      }
+    },
     "Arap Kahvesi" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1437,6 +1805,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Asya"
+          }
+        }
+      }
+    },
+    "Atla" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atla"
           }
         }
       }
@@ -1789,6 +2186,267 @@
         }
       }
     },
+    "Başkent Ustası" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptstadt-Meister"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capital Master"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maestro de las capitales"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkent Ustası"
+          }
+        }
+      }
+    },
+    "Başkent Ustası!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptstadt-Meister!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capital Master!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Maestro de las capitales!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkent Ustası!"
+          }
+        }
+      }
+    },
+    "Başkenti" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptstadt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capital"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capital"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkenti"
+          }
+        }
+      }
+    },
+    "Başkentler" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptstädte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capitals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capitales"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentler"
+          }
+        }
+      }
+    },
+    "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du erhältst diesen Pokal, wenn du alle 3 Runden (Runde 1, 2, 3) der Hauptstädte abschließt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You earn this trophy when you complete all 3 rounds (Round 1, 2 and 3) of the Capitals category."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganas este trofeo al completar las 3 rondas (Ronda 1, 2 y 3) de la categoría Capitales."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın."
+          }
+        }
+      }
+    },
+    "Başkentler kategorisinin 3 turunu da bitirdin! Dünyanın ülkelerinin başkentlerini öğrendin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 3 Runden der Hauptstädte geschafft! Du kennst die Hauptstädte der Länder der Welt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You finished all 3 rounds of Capitals! You learned the capitals of the world's countries."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Terminaste las 3 rondas de Capitales! Aprendiste las capitales de los países del mundo."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentler kategorisinin 3 turunu da bitirdin! Dünyanın ülkelerinin başkentlerini öğrendin."
+          }
+        }
+      }
+    },
+    "Başkentler'de %@ bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du erhältst dieses Abzeichen, wenn du alle 8 Level des Abschnitts %@ bei den Hauptstädten abschließt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You earn this badge when you complete all 8 levels of the %@ section in Capitals."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ganas esta insignia al completar los 8 niveles de la sección %@ en Capitales."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentler'de %@ bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın."
+          }
+        }
+      }
+    },
+    "Başkentler'de Karışık bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 8 Level des Misch-Abschnitts bei den Hauptstädten abgeschlossen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed all 8 levels of the Mixed section in Capitals."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completaste los 8 niveles de la sección Mixta de Capitales."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentler'de Karışık bölümünün 8 seviyesini tamamladın."
+          }
+        }
+      }
+    },
+    "Başkentleri Öğren" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptstädte lernen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Learn the Capitals"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aprende las capitales"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentleri Öğren"
+          }
+        }
+      }
+    },
     "BAŞLA" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2050,6 +2708,35 @@
         }
       }
     },
+    "Bayraklar'da Karışık bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 8 Level des gemischten Bereichs in Flaggen abgeschlossen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed all 8 levels of the Mixed section in Flags."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completaste los 8 niveles de la sección Mixta en Banderas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bayraklar'da Karışık bölümünün 8 seviyesini tamamladın."
+          }
+        }
+      }
+    },
     "Bayrakları Öğren" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2075,6 +2762,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bayrakları Öğren"
+          }
+        }
+      }
+    },
+    "Bayrakları, ülkeleri, dilleri ve lezzetleri tanıdıkça dünya haritan açılır." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je mehr Flaggen, Länder, Sprachen und Geschmäcker du kennenlernst, desto mehr öffnet sich deine Weltkarte."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As you learn flags, countries, languages and flavors, your world map opens up."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A medida que aprendes banderas, países, idiomas y sabores, se abre tu mapa del mundo."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bayrakları, ülkeleri, dilleri ve lezzetleri tanıdıkça dünya haritan açılır."
           }
         }
       }
@@ -2249,6 +2965,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bingsu"
+          }
+        }
+      }
+    },
+    "Bir dahaki sefere daha iyi olacak! Canlarını doldurabilir ya da seviyeyi baştan deneyebilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beim nächsten Mal klappt es besser! Fülle deine Leben auf oder versuche das Level von vorn."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You'll do better next time! Refill your hearts or try the level again from the start."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡La próxima será mejor! Recarga tus vidas o intenta el nivel desde el principio."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir dahaki sefere daha iyi olacak! Canlarını doldurabilir ya da seviyeyi baştan deneyebilirsin."
           }
         }
       }
@@ -2659,6 +3404,35 @@
         }
       }
     },
+    "Bu şehir hangi ülkenin başkentidir?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von welchem Land ist diese Stadt die Hauptstadt?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which country is this city the capital of?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿De qué país es capital esta ciudad?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu şehir hangi ülkenin başkentidir?"
+          }
+        }
+      }
+    },
     "Bu seviyede kazandığın puanlar ve ilerleme kaydedilmez. Mevcut puanların ve serin korunur." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2742,6 +3516,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Bu ülkenin ana dili nedir?"
+          }
+        }
+      }
+    },
+    "Bu ülkenin başkenti neresidir?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was ist die Hauptstadt dieses Landes?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What is this country's capital?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cuál es la capital de este país?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu ülkenin başkenti neresidir?"
           }
         }
       }
@@ -3529,6 +4332,64 @@
         }
       }
     },
+    "Demo girişi" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo-Zugang"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo login"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acceso demo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo girişi"
+          }
+        }
+      }
+    },
+    "Demo modunu dene — hesap gerekmez" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo-Modus testen – ohne Konto"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try demo mode — no account needed"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar modo demo: sin cuenta"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo modunu dene — hesap gerekmez"
+          }
+        }
+      }
+    },
     "Devam Et" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3848,6 +4709,35 @@
         }
       }
     },
+    "Diller'de Karışık bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 8 Level des gemischten Bereichs in Sprachen abgeschlossen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed all 8 levels of the Mixed section in Languages."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completaste los 8 niveles de la sección Mixta en Idiomas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diller'de Karışık bölümünün 8 seviyesini tamamladın."
+          }
+        }
+      }
+    },
     "Dilleri Öğren" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -3873,6 +4763,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dilleri Öğren"
+          }
+        }
+      }
+    },
+    "Doğru ve yanlış cevaplarda, ayrıca ünvan, rozet ve kupa kazandığında kısa sesler çalar." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kurze Töne bei richtigen und falschen Antworten sowie bei neuem Titel, Abzeichen oder Pokal."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Short sounds play for right and wrong answers, and when you earn a title, badge or trophy."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suenan sonidos cortos al responder bien o mal y al ganar un título, una insignia o un trofeo."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doğru ve yanlış cevaplarda, ayrıca ünvan, rozet ve kupa kazandığında kısa sesler çalar."
           }
         }
       }
@@ -4138,6 +5057,35 @@
         }
       }
     },
+    "Dünyayı oynayarak keşfet" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entdecke die Welt spielerisch"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explore the world by playing"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explora el mundo jugando"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dünyayı oynayarak keşfet"
+          }
+        }
+      }
+    },
     "E-posta ile devam et" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4250,6 +5198,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Empanada"
+          }
+        }
+      }
+    },
+    "En yüksek ünvana ulaştın. Dünya senin haritan!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast den höchsten Titel erreicht. Die Welt ist deine Karte!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You reached the top title. The world is your map!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has alcanzado el título más alto. ¡El mundo es tu mapa!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En yüksek ünvana ulaştın. Dünya senin haritan!"
+          }
+        }
+      }
+    },
+    "En yüksek ünvandasın" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast den höchsten Titel erreicht"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You've reached the top title"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Has alcanzado el título más alto"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En yüksek ünvandasın"
           }
         }
       }
@@ -4634,6 +5640,35 @@
         }
       }
     },
+    "Geonaut seviyesi" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geonaut-Level"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geonaut level"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nivel Geonaut"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geonaut seviyesi"
+          }
+        }
+      }
+    },
     "Geonaut seviyesi: %@" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -4721,870 +5756,31 @@
         }
       }
     },
-    "Haftalık seri ödülü!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wochenserien-Belohnung!" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Weekly streak reward!" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Recompensa de racha semanal!" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Haftalık seri ödülü!" } }
-      }
-    },
-    "Harika!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Super!" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Awesome!" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Genial!" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Harika!" } }
-      }
-    },
-    "%lld gün üst üste oynadın. Hediye: +%lld puan." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast %lld Tage in Folge gespielt. Geschenk: +%lld Punkte." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You played %lld days in a row. Gift: +%lld points." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Has jugado %lld días seguidos. Regalo: +%lld puntos." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld gün üst üste oynadın. Hediye: +%lld puan." } }
-      }
-    },
-    "YENİ ÜNVAN" : {
+    "Giriş yap" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NEUER TITEL"
+            "value" : "Anmelden"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NEW TITLE"
+            "value" : "Sign in"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "NUEVO TÍTULO"
+            "value" : "Iniciar sesión"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "YENİ ÜNVAN"
-          }
-        }
-      }
-    },
-    "YENİ ROZET" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NEUES ABZEICHEN"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NEW BADGE"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NUEVA INSIGNIA"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "YENİ ROZET"
-          }
-        }
-      }
-    },
-    "YENİ KUPA" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NEUE TROPHÄE"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NEW TROPHY"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "NUEVO TROFEO"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "YENİ KUPA"
-          }
-        }
-      }
-    },
-    "%@ oldun!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du bist jetzt %@!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You're now %@!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Ya eres %@!"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ oldun!"
-          }
-        }
-      }
-    },
-    "En yüksek ünvana ulaştın. Dünya senin haritan!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast den höchsten Titel erreicht. Die Welt ist deine Karte!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You reached the top title. The world is your map!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Has alcanzado el título más alto. ¡El mundo es tu mapa!"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En yüksek ünvana ulaştın. Dünya senin haritan!"
-          }
-        }
-      }
-    },
-    "%@ → %@\nKeşfetmeye devam et!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ → %@\nEntdecke weiter!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ → %@\nKeep exploring!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ → %@\n¡Sigue explorando!"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ → %@\nKeşfetmeye devam et!"
-          }
-        }
-      }
-    },
-    "Yeni rozet kazandın!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast ein neues Abzeichen verdient!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You earned a new badge!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Has ganado una nueva insignia!"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yeni rozet kazandın!"
-          }
-        }
-      }
-    },
-    "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast alle 8 Level des Bereichs Kontinente in Karten abgeschlossen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You completed all 8 levels of the Continents section in Maps."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completaste los 8 niveles de la sección Continentes en Mapas."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladın."
-          }
-        }
-      }
-    },
-    "Haritalar'da Ülkeler bölümünün 8 seviyesini tamamladın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast alle 8 Level des Bereichs Länder in Karten abgeschlossen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You completed all 8 levels of the Countries section in Maps."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completaste los 8 niveles de la sección Países en Mapas."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Haritalar'da Ülkeler bölümünün 8 seviyesini tamamladın."
-          }
-        }
-      }
-    },
-    "Karışık Bölüm Tamamlandı!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gemischter Bereich abgeschlossen!"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mixed Section Complete!"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¡Sección Mixta completada!"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Karışık Bölüm Tamamlandı!"
-          }
-        }
-      }
-    },
-    "Bayraklar'da Karışık bölümünün 8 seviyesini tamamladın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast alle 8 Level des gemischten Bereichs in Flaggen abgeschlossen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You completed all 8 levels of the Mixed section in Flags."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completaste los 8 niveles de la sección Mixta en Banderas."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bayraklar'da Karışık bölümünün 8 seviyesini tamamladın."
-          }
-        }
-      }
-    },
-    "Diller'de Karışık bölümünün 8 seviyesini tamamladın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast alle 8 Level des gemischten Bereichs in Sprachen abgeschlossen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You completed all 8 levels of the Mixed section in Languages."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completaste los 8 niveles de la sección Mixta en Idiomas."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diller'de Karışık bölümünün 8 seviyesini tamamladın."
-          }
-        }
-      }
-    },
-    "Lezzetler'de Karışık bölümünün 8 seviyesini tamamladın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast alle 8 Level des gemischten Bereichs in Geschmäcker abgeschlossen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You completed all 8 levels of the Mixed section in Flavors."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completaste los 8 niveles de la sección Mixta en Sabores."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lezzetler'de Karışık bölümünün 8 seviyesini tamamladın."
-          }
-        }
-      }
-    },
-    "Haritalar'da Karışık bölümünün 8 seviyesini tamamladın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du hast alle 8 Level des gemischten Bereichs in Karten abgeschlossen."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You completed all 8 levels of the Mixed section in Maps."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Completaste los 8 niveles de la sección Mixta en Mapas."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Haritalar'da Karışık bölümünün 8 seviyesini tamamladın."
-          }
-        }
-      }
-    },
-    "Ses" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ton"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sound"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sonido"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ses"
-          }
-        }
-      }
-    },
-    "Ses efektleri" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Soundeffekte"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sound Effects"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Efectos de sonido"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ses efektleri"
-          }
-        }
-      }
-    },
-    "Doğru ve yanlış cevaplarda, ayrıca ünvan, rozet ve kupa kazandığında kısa sesler çalar." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kurze Töne bei richtigen und falschen Antworten sowie bei neuem Titel, Abzeichen oder Pokal."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Short sounds play for right and wrong answers, and when you earn a title, badge or trophy."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suenan sonidos cortos al responder bien o mal y al ganar un título, una insignia o un trofeo."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Doğru ve yanlış cevaplarda, ayrıca ünvan, rozet ve kupa kazandığında kısa sesler çalar."
-          }
-        }
-      }
-    },
-    "Atla" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Überspringen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skip"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omitir"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atla"
-          }
-        }
-      }
-    },
-    "İleri" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Weiter"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siguiente"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İleri"
-          }
-        }
-      }
-    },
-    "Hemen bir seviye dene" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt ein Level testen"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try a level now"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prueba un nivel ahora"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hemen bir seviye dene"
-          }
-        }
-      }
-    },
-    "Apple ile giriş yap" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mit Apple anmelden"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sign in with Apple"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Iniciar sesión con Apple"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple ile giriş yap"
-          }
-        }
-      }
-    },
-    "Dünyayı oynayarak keşfet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entdecke die Welt spielerisch"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explore the world by playing"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Explora el mundo jugando"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dünyayı oynayarak keşfet"
-          }
-        }
-      }
-    },
-    "Bayrakları, ülkeleri, dilleri ve lezzetleri tanıdıkça dünya haritan açılır." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je mehr Flaggen, Länder, Sprachen und Geschmäcker du kennenlernst, desto mehr öffnet sich deine Weltkarte."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As you learn flags, countries, languages and flavors, your world map opens up."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A medida que aprendes banderas, países, idiomas y sabores, se abre tu mapa del mundo."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bayrakları, ülkeleri, dilleri ve lezzetleri tanıdıkça dünya haritan açılır."
-          }
-        }
-      }
-    },
-    "Hangisi Japonya'nın bayrağı?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Welche Flagge gehört zu Japan?"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Which one is Japan's flag?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Cuál es la bandera de Japón?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hangisi Japonya'nın bayrağı?"
-          }
-        }
-      }
-    },
-    "Her gün biraz daha usta" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeden Tag ein Stück besser"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A little better every day"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cada día un poco mejor"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Her gün biraz daha usta"
-          }
-        }
-      }
-    },
-    "Serini koru, rozet ve kupa topla, Çaylak'tan Efsanevi Geonaut'a yüksel." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halte deine Serie, sammle Abzeichen und Pokale und steige vom Anfänger zum legendären Geonaut auf."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Keep your streak, collect badges and trophies, and rise from Rookie to Legendary Geonaut."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mantén tu racha, reúne insignias y trofeos y asciende de Novato a Geonaut Legendario."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serini koru, rozet ve kupa topla, Çaylak'tan Efsanevi Geonaut'a yüksel."
-          }
-        }
-      }
-    },
-    "🔥 7 gün" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "🔥 7 Tage"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "🔥 7 days"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "🔥 7 días"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "🔥 7 gün"
-          }
-        }
-      }
-    },
-    "+100 puan" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+100 Punkte"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+100 points"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+100 puntos"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "+100 puan"
-          }
-        }
-      }
-    },
-    "Hazır mısın, Geonaut?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bereit, Geonaut?"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ready, Geonaut?"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "¿Listo, Geonaut?"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hazır mısın, Geonaut?"
+            "value" : "Giriş yap"
           }
         }
       }
@@ -5616,325 +5812,6 @@
             "value" : "Giriş yapmadan ilk seviyeyi hemen deneyebilirsin."
           }
         }
-      }
-    },
-    "Sıradaki ünvan: %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nächster Titel: %@"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next title: %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Próximo título: %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sıradaki ünvan: %@"
-          }
-        }
-      }
-    },
-    "%lld / %lld puan" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld Punkte"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld points"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld puntos"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / %lld puan"
-          }
-        }
-      }
-    },
-    "Serin yarım kaldı…" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Deine Serie wurde unterbrochen…" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your streak was cut short…" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tu racha se quedó a medias…" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Serin yarım kaldı…" } }
-      }
-    },
-    "%lld günlük serin yarıda kaldı. %lld puanla kaldığın yerden devam edebilirsin." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Deine %1$lld-Tage-Serie ist unterbrochen. Mit %2$lld Punkten machst du dort weiter, wo du aufgehört hast." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your %1$lld-day streak stopped halfway. Pick up where you left off for %2$lld points." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Tu racha de %1$lld días se quedó a medias. Retómala donde la dejaste por %2$lld puntos." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld günlük serin yarıda kaldı. %lld puanla kaldığın yerden devam edebilirsin." } }
-      }
-    },
-    "%lld / %lld doğru" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld richtig" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld correct" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld correctas" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld / %2$lld doğru" } }
-      }
-    },
-    "Bir dahaki sefere daha iyi olacak! Canlarını doldurabilir ya da seviyeyi baştan deneyebilirsin." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Beim nächsten Mal klappt es besser! Fülle deine Leben auf oder versuche das Level von vorn." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You'll do better next time! Refill your hearts or try the level again from the start." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡La próxima será mejor! Recarga tus vidas o intenta el nivel desde el principio." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bir dahaki sefere daha iyi olacak! Canlarını doldurabilir ya da seviyeyi baştan deneyebilirsin." } }
-      }
-    },
-    "En yüksek ünvandasın" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast den höchsten Titel erreicht" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You've reached the top title" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Has alcanzado el título más alto" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "En yüksek ünvandasın" } }
-      }
-    },
-    "Serini korumak ister misin?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Möchtest du deine Serie schützen?" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Want to protect your streak?" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Quieres proteger tu racha?" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Serini korumak ister misin?" } }
-      }
-    },
-    "Her akşam 19.00'da küçük bir hatırlatma gönderelim, serin yarım kalmasın. İstediğin zaman Ayarlar'dan kapatabilirsin." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wir schicken dir jeden Abend um 19 Uhr eine kleine Erinnerung, damit deine Serie nicht abreißt. Du kannst sie jederzeit in den Einstellungen ausschalten." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Let us send a small reminder every evening at 7 PM so your streak doesn't slip away. You can turn it off anytime in Settings." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Te enviaremos un pequeño recordatorio cada tarde a las 19:00 para que no pierdas tu racha. Puedes desactivarlo cuando quieras en Ajustes." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Her akşam 19.00'da küçük bir hatırlatma gönderelim, serin yarım kalmasın. İstediğin zaman Ayarlar'dan kapatabilirsin." } }
-      }
-    },
-    "Hatırlat" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Erinnere mich" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remind me" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Recuérdamelo" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Hatırlat" } }
-      }
-    },
-    "Şimdi değil" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Jetzt nicht" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Not now" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ahora no" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Şimdi değil" } }
-      }
-    },
-    "Başkentler" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstädte" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capitals" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Capitales" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler" } }
-      }
-    },
-    "Kıtaları keşfet, başkentleri öğren!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entdecke die Kontinente, lerne die Hauptstädte!" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Explore the continents, learn the capitals!" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Explora los continentes y aprende las capitales!" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Kıtaları keşfet, başkentleri öğren!" } }
-      }
-    },
-    "Bu ülkenin başkenti neresidir?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Was ist die Hauptstadt dieses Landes?" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "What is this country's capital?" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Cuál es la capital de este país?" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bu ülkenin başkenti neresidir?" } }
-      }
-    },
-    "Haritadaki ülkenin başkenti neresidir?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Was ist die Hauptstadt des Landes auf der Karte?" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "What is the capital of the country on the map?" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Cuál es la capital del país del mapa?" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Haritadaki ülkenin başkenti neresidir?" } }
-      }
-    },
-    "Başkentleri Öğren" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstädte lernen" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Learn the Capitals" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aprende las capitales" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentleri Öğren" } }
-      }
-    },
-    "%lld ülkenin başkentini keşfet" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Entdecke die Hauptstädte von %lld Ländern" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Discover the capitals of %lld countries" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Descubre las capitales de %lld países" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld ülkenin başkentini keşfet" } }
-      }
-    },
-    "Ülke veya başkent ara..." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Land oder Hauptstadt suchen..." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Search country or capital..." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Buscar país o capital..." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ülke veya başkent ara..." } }
-      }
-    },
-    "Başkenti" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstadt" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capital" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Capital" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkenti" } }
-      }
-    },
-    "Başkent Ustası" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstadt-Meister" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capital Master" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Maestro de las capitales" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkent Ustası" } }
-      }
-    },
-    "Başkent Ustası!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Hauptstadt-Meister!" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Capital Master!" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Maestro de las capitales!" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkent Ustası!" } }
-      }
-    },
-    "Başkentler kategorisinin 3 turunu da bitirdin! Dünyanın ülkelerinin başkentlerini öğrendin." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast alle 3 Runden der Hauptstädte geschafft! Du kennst die Hauptstädte der Länder der Welt." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You finished all 3 rounds of Capitals! You learned the capitals of the world's countries." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Terminaste las 3 rondas de Capitales! Aprendiste las capitales de los países del mundo." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler kategorisinin 3 turunu da bitirdin! Dünyanın ülkelerinin başkentlerini öğrendin." } }
-      }
-    },
-    "%@'daki ülkelerin başkentlerini öğrendin. %@ rozetini kazandın!" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast die Hauptstädte der Länder in %1$@ gelernt. Du hast das %2$@-Abzeichen verdient!" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You learned the capitals of the countries in %1$@. You earned the %2$@ badge!" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Aprendiste las capitales de los países de %1$@. ¡Ganaste la insignia de %2$@!" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@'daki ülkelerin başkentlerini öğrendin. %2$@ rozetini kazandın!" } }
-      }
-    },
-    "Başkentler'de Karışık bölümünün 8 seviyesini tamamladın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du hast alle 8 Level des Misch-Abschnitts bei den Hauptstädten abgeschlossen." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You completed all 8 levels of the Mixed section in Capitals." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Completaste los 8 niveles de la sección Mixta de Capitales." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler'de Karışık bölümünün 8 seviyesini tamamladın." } }
-      }
-    },
-    "Başkentler'de %@ bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du erhältst dieses Abzeichen, wenn du alle 8 Level des Abschnitts %@ bei den Hauptstädten abschließt." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You earn this badge when you complete all 8 levels of the %@ section in Capitals." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ganas esta insignia al completar los 8 niveles de la sección %@ en Capitales." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler'de %@ bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın." } }
-      }
-    },
-    "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Du erhältst diesen Pokal, wenn du alle 3 Runden (Runde 1, 2, 3) der Hauptstädte abschließt." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "You earn this trophy when you complete all 3 rounds (Round 1, 2 and 3) of the Capitals category." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ganas este trofeo al completar las 3 rondas (Ronda 1, 2 y 3) de la categoría Capitales." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Başkentler kategorisinin 3 turunu da (Tur 1, Tur 2, Tur 3) tamamladığında bu kupayı kazanırsın." } }
-      }
-    },
-    "Bu şehir hangi ülkenin başkentidir?" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Von welchem Land ist diese Stadt die Hauptstadt?" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Which country is this city the capital of?" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿De qué país es capital esta ciudad?" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Bu şehir hangi ülkenin başkentidir?" } }
-      }
-    },
-    "Geonaut seviyesi" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Geonaut-Level" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Geonaut level" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Nivel Geonaut" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Geonaut seviyesi" } }
-      }
-    },
-    "%lld puan" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "%lld Punkte" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "%lld points" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "%lld puntos" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "%lld puan" } }
-      }
-    },
-    "Ünvanlar, toplam kazandığın puana göre yükselir." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Die Titel steigen mit deinen insgesamt gesammelten Punkten." } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Titles rise with the total points you earn." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Los títulos suben según los puntos totales que ganas." } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ünvanlar, toplam kazandığın puana göre yükselir." } }
-      }
-    },
-    "Ünvan detaylarını açar" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : { "stringUnit" : { "state" : "translated", "value" : "Öffnet die Titeldetails" } },
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Opens title details" } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Abre los detalles del título" } },
-        "tr" : { "stringUnit" : { "state" : "translated", "value" : "Ünvan detaylarını açar" } }
       }
     },
     "Gizlilik Politikası" : {
@@ -6256,6 +6133,35 @@
         }
       }
     },
+    "Haftalık seri ödülü!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wochenserien-Belohnung!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly streak reward!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Recompensa de racha semanal!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haftalık seri ödülü!"
+          }
+        }
+      }
+    },
     "Haiti Kahvesi" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6343,6 +6249,35 @@
         }
       }
     },
+    "Hangisi Japonya'nın bayrağı?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Welche Flagge gehört zu Japan?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Which one is Japan's flag?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cuál es la bandera de Japón?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hangisi Japonya'nın bayrağı?"
+          }
+        }
+      }
+    },
     "Harcanan puan  ·  kalan puanın" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6368,6 +6303,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Harcanan puan  ·  kalan puanın"
+          }
+        }
+      }
+    },
+    "Harika!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Super!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Awesome!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Genial!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Harika!"
           }
         }
       }
@@ -6455,6 +6419,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haritadaki ülkenin ana dili nedir?"
+          }
+        }
+      }
+    },
+    "Haritadaki ülkenin başkenti neresidir?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was ist die Hauptstadt des Landes auf der Karte?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "What is the capital of the country on the map?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Cuál es la capital del país del mapa?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haritadaki ülkenin başkenti neresidir?"
           }
         }
       }
@@ -6633,6 +6626,35 @@
         }
       }
     },
+    "Haritalar'da Karışık bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 8 Level des gemischten Bereichs in Karten abgeschlossen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed all 8 levels of the Mixed section in Maps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completaste los 8 niveles de la sección Mixta en Mapas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haritalar'da Karışık bölümünün 8 seviyesini tamamladın."
+          }
+        }
+      }
+    },
     "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6658,6 +6680,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın."
+          }
+        }
+      }
+    },
+    "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 8 Level des Bereichs Kontinente in Karten abgeschlossen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed all 8 levels of the Continents section in Maps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completaste los 8 niveles de la sección Continentes en Mapas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladın."
           }
         }
       }
@@ -6691,6 +6742,64 @@
         }
       }
     },
+    "Haritalar'da Ülkeler bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 8 Level des Bereichs Länder in Karten abgeschlossen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed all 8 levels of the Countries section in Maps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completaste los 8 niveles de la sección Países en Mapas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haritalar'da Ülkeler bölümünün 8 seviyesini tamamladın."
+          }
+        }
+      }
+    },
+    "Hatırlat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erinnere mich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remind me"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recuérdamelo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hatırlat"
+          }
+        }
+      }
+    },
     "Hatırlatma gönderebilmemiz için Ayarlar'dan bildirim izni vermen gerekiyor." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6716,6 +6825,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hatırlatma gönderebilmemiz için Ayarlar'dan bildirim izni vermen gerekiyor."
+          }
+        }
+      }
+    },
+    "Hazır mısın, Geonaut?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereit, Geonaut?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready, Geonaut?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Listo, Geonaut?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hazır mısın, Geonaut?"
           }
         }
       }
@@ -6749,6 +6887,35 @@
         }
       }
     },
+    "Hemen bir seviye dene" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jetzt ein Level testen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try a level now"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prueba un nivel ahora"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hemen bir seviye dene"
+          }
+        }
+      }
+    },
     "Henüz kazanılmadı" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -6774,6 +6941,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Henüz kazanılmadı"
+          }
+        }
+      }
+    },
+    "Her akşam 19.00'da küçük bir hatırlatma gönderelim, serin yarım kalmasın. İstediğin zaman Ayarlar'dan kapatabilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wir schicken dir jeden Abend um 19 Uhr eine kleine Erinnerung, damit deine Serie nicht abreißt. Du kannst sie jederzeit in den Einstellungen ausschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Let us send a small reminder every evening at 7 PM so your streak doesn't slip away. You can turn it off anytime in Settings."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Te enviaremos un pequeño recordatorio cada tarde a las 19:00 para que no pierdas tu racha. Puedes desactivarlo cuando quieras en Ajustes."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her akşam 19.00'da küçük bir hatırlatma gönderelim, serin yarım kalmasın. İstediğin zaman Ayarlar'dan kapatabilirsin."
+          }
+        }
+      }
+    },
+    "Her gün biraz daha usta" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jeden Tag ein Stück besser"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A little better every day"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada día un poco mejor"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her gün biraz daha usta"
           }
         }
       }
@@ -7126,6 +7351,64 @@
         }
       }
     },
+    "iCloud'a giriş yapılmamış — ilerlemen yalnızca bu cihazda saklanıyor. Ayarlar > [adın] > iCloud'dan giriş yaparsan yedeklenir ve diğer cihazlarında da görünür." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du bist nicht bei iCloud angemeldet – dein Fortschritt wird nur auf diesem Gerät gespeichert. Melde dich unter Einstellungen > [dein Name] > iCloud an, damit er gesichert wird und auch auf deinen anderen Geräten erscheint."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You're not signed in to iCloud — your progress is only saved on this device. Sign in under Settings > [your name] > iCloud to back it up and see it on your other devices."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No has iniciado sesión en iCloud: tu progreso solo se guarda en este dispositivo. Inicia sesión en Ajustes > [tu nombre] > iCloud para guardarlo y verlo en tus otros dispositivos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iCloud'a giriş yapılmamış — ilerlemen yalnızca bu cihazda saklanıyor. Ayarlar > [adın] > iCloud'dan giriş yaparsan yedeklenir ve diğer cihazlarında da görünür."
+          }
+        }
+      }
+    },
+    "İleri" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İleri"
+          }
+        }
+      }
+    },
     "İlerleme" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7184,6 +7467,35 @@
         }
       }
     },
+    "İnceleme ve tanıtım için demo hesabı. Giriş yapınca tüm özellikler açılır." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo-Konto für Prüfung und Präsentation. Nach der Anmeldung sind alle Funktionen freigeschaltet."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Demo account for review and presentation. All features unlock after signing in."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuenta demo para revisión y presentación. Al iniciar sesión se desbloquean todas las funciones."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İnceleme ve tanıtım için demo hesabı. Giriş yapınca tüm özellikler açılır."
+          }
+        }
+      }
+    },
     "Injera" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -7238,35 +7550,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "İnternet bağlantını kontrol edip tekrar dene."
-          }
-        }
-      }
-    },
-    "iCloud'a giriş yapılmamış — ilerlemen yalnızca bu cihazda saklanıyor. Ayarlar > [adın] > iCloud'dan giriş yaparsan yedeklenir ve diğer cihazlarında da görünür." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Du bist nicht bei iCloud angemeldet – dein Fortschritt wird nur auf diesem Gerät gespeichert. Melde dich unter Einstellungen > [dein Name] > iCloud an, damit er gesichert wird und auch auf deinen anderen Geräten erscheint."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "You're not signed in to iCloud — your progress is only saved on this device. Sign in under Settings > [your name] > iCloud to back it up and see it on your other devices."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No has iniciado sesión en iCloud: tu progreso solo se guarda en este dispositivo. Inicia sesión en Ajustes > [tu nombre] > iCloud para guardarlo y verlo en tus otros dispositivos."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iCloud'a giriş yapılmamış — ilerlemen yalnızca bu cihazda saklanıyor. Ayarlar > [adın] > iCloud'dan giriş yaparsan yedeklenir ve diğer cihazlarında da görünür."
           }
         }
       }
@@ -7528,6 +7811,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Karışık"
+          }
+        }
+      }
+    },
+    "Karışık Bölüm Tamamlandı!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gemischter Bereich abgeschlossen!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mixed Section Complete!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Sección Mixta completada!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karışık Bölüm Tamamlandı!"
           }
         }
       }
@@ -7967,6 +8279,35 @@
         }
       }
     },
+    "Kıtaları keşfet, başkentleri öğren!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entdecke die Kontinente, lerne die Hauptstädte!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Explore the continents, learn the capitals!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Explora los continentes y aprende las capitales!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kıtaları keşfet, başkentleri öğren!"
+          }
+        }
+      }
+    },
     "Kıtaları keşfet, bayrakları öğren!" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -8282,6 +8623,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Kuchen"
+          }
+        }
+      }
+    },
+    "Kullanıcı adı" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benutzername"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "User name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de usuario"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı adı"
+          }
+        }
+      }
+    },
+    "Kullanıcı adı ya da şifre hatalı." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Benutzername oder Passwort ist falsch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incorrect user name or password."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de usuario o contraseña incorrectos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullanıcı adı ya da şifre hatalı."
           }
         }
       }
@@ -8630,6 +9029,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Lezzetler'de %@ bölümünün 8 seviyesini tamamladığında bu rozeti kazanırsın."
+          }
+        }
+      }
+    },
+    "Lezzetler'de Karışık bölümünün 8 seviyesini tamamladın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast alle 8 Level des gemischten Bereichs in Geschmäcker abgeschlossen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You completed all 8 levels of the Mixed section in Flavors."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Completaste los 8 niveles de la sección Mixta en Sabores."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lezzetler'de Karışık bölümünün 8 seviyesini tamamladın."
           }
         }
       }
@@ -10722,6 +11150,35 @@
         }
       }
     },
+    "Serin yarım kaldı…" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Serie wurde unterbrochen…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your streak was cut short…"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu racha se quedó a medias…"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serin yarım kaldı…"
+          }
+        }
+      }
+    },
     "Serini kaybetmek üzeresin! Bugün oyna, seriyi koru. 🔥" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10780,6 +11237,64 @@
         }
       }
     },
+    "Serini koru, rozet ve kupa topla, Çaylak'tan Efsanevi Geonaut'a yüksel." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Halte deine Serie, sammle Abzeichen und Pokale und steige vom Anfänger zum legendären Geonaut auf."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep your streak, collect badges and trophies, and rise from Rookie to Legendary Geonaut."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantén tu racha, reúne insignias y trofeos y asciende de Novato a Geonaut Legendario."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serini koru, rozet ve kupa topla, Çaylak'tan Efsanevi Geonaut'a yüksel."
+          }
+        }
+      }
+    },
+    "Serini korumak ister misin?" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Möchtest du deine Serie schützen?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Want to protect your streak?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¿Quieres proteger tu racha?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serini korumak ister misin?"
+          }
+        }
+      }
+    },
     "Sernik" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -10805,6 +11320,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sernik"
+          }
+        }
+      }
+    },
+    "Ses" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ton"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses"
+          }
+        }
+      }
+    },
+    "Ses efektleri" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Soundeffekte"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sound Effects"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Efectos de sonido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses efektleri"
           }
         }
       }
@@ -10954,122 +11527,6 @@
         }
       }
     },
-    "Demo modunu dene — hesap gerekmez" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Demo-Modus testen – ohne Konto"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Try demo mode — no account needed"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Probar modo demo: sin cuenta"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Demo modunu dene — hesap gerekmez"
-          }
-        }
-      }
-    },
-    "Demo girişi" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Demo-Zugang"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Demo login"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Acceso demo"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Demo girişi"
-          }
-        }
-      }
-    },
-    "İnceleme ve tanıtım için demo hesabı. Giriş yapınca tüm özellikler açılır." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Demo-Konto für Prüfung und Präsentation. Nach der Anmeldung sind alle Funktionen freigeschaltet."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Demo account for review and presentation. All features unlock after signing in."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cuenta demo para revisión y presentación. Al iniciar sesión se desbloquean todas las funciones."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İnceleme ve tanıtım için demo hesabı. Giriş yapınca tüm özellikler açılır."
-          }
-        }
-      }
-    },
-    "Kullanıcı adı" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benutzername"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "User name"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre de usuario"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kullanıcı adı"
-          }
-        }
-      }
-    },
     "Şifre" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11099,60 +11556,31 @@
         }
       }
     },
-    "Giriş yap" : {
+    "Şimdi değil" : {
       "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anmelden"
+            "value" : "Jetzt nicht"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sign in"
+            "value" : "Not now"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Iniciar sesión"
+            "value" : "Ahora no"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giriş yap"
-          }
-        }
-      }
-    },
-    "Kullanıcı adı ya da şifre hatalı." : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Benutzername oder Passwort ist falsch."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Incorrect user name or password."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nombre de usuario o contraseña incorrectos."
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kullanıcı adı ya da şifre hatalı."
+            "value" : "Şimdi değil"
           }
         }
       }
@@ -11240,6 +11668,35 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sıcak Çikolatalı Kek"
+          }
+        }
+      }
+    },
+    "Sıradaki ünvan: %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster Titel: %@"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next title: %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo título: %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sıradaki ünvan: %@"
           }
         }
       }
@@ -12056,6 +12513,35 @@
         }
       }
     },
+    "Ülke veya başkent ara..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Land oder Hauptstadt suchen..."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search country or capital..."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar país o capital..."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ülke veya başkent ara..."
+          }
+        }
+      }
+    },
     "Ülke veya dil ara..." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12168,6 +12654,64 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ülkeler Rozeti"
+          }
+        }
+      }
+    },
+    "Ünvan detaylarını açar" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffnet die Titeldetails"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opens title details"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre los detalles del título"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ünvan detaylarını açar"
+          }
+        }
+      }
+    },
+    "Ünvanlar, toplam kazandığın puana göre yükselir." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Titel steigen mit deinen insgesamt gesammelten Punkten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Titles rise with the total points you earn."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los títulos suben según los puntos totales que ganas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ünvanlar, toplam kazandığın puana göre yükselir."
           }
         }
       }
@@ -12433,6 +12977,122 @@
         }
       }
     },
+    "YENİ KUPA" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEUE TROPHÄE"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEW TROPHY"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NUEVO TROFEO"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YENİ KUPA"
+          }
+        }
+      }
+    },
+    "YENİ ROZET" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEUES ABZEICHEN"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEW BADGE"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NUEVA INSIGNIA"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YENİ ROZET"
+          }
+        }
+      }
+    },
+    "Yeni rozet kazandın!" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Du hast ein neues Abzeichen verdient!"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You earned a new badge!"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Has ganado una nueva insignia!"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yeni rozet kazandın!"
+          }
+        }
+      }
+    },
+    "YENİ ÜNVAN" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEUER TITEL"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEW TITLE"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NUEVO TÍTULO"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YENİ ÜNVAN"
+          }
+        }
+      }
+    },
     "Yeniden Başla" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -12666,5 +13326,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.1"
 }

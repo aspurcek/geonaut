@@ -25,7 +25,7 @@ final class AppleSignInCoordinator: NSObject {
     /// `authorizationCode` ister. Kod yalnızca birkaç dakika geçerli olduğu için giriş anında saklanamaz;
     /// silme sırasında kullanıcı Apple'la yeniden onaylar. Vazgeçilir/başarısız olursa nil döner.
     @MainActor
-    func requestAuthorizationCode() async -> String? {
+    func requestAuthorizationCode() async -> (user: String, code: String)? {
         await withCheckedContinuation { continuation in
             codeContinuation = continuation
             let request = ASAuthorizationAppleIDProvider().createRequest()
@@ -37,7 +37,7 @@ final class AppleSignInCoordinator: NSObject {
         }
     }
 
-    private var codeContinuation: CheckedContinuation<String?, Never>?
+    private var codeContinuation: CheckedContinuation<(user: String, code: String)?, Never>?
 
     func signIn() {
         state = .authorizing
@@ -55,7 +55,8 @@ extension AppleSignInCoordinator: ASAuthorizationControllerDelegate {
         if let continuation = codeContinuation {
             codeContinuation = nil
             let credential = authorization.credential as? ASAuthorizationAppleIDCredential
-            continuation.resume(returning: credential?.authorizationCode.flatMap { String(data: $0, encoding: .utf8) })
+            let code = credential?.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
+            continuation.resume(returning: credential.flatMap { c in code.map { (user: c.user, code: $0) } })
             return
         }
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else {
