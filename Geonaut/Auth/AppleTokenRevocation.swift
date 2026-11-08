@@ -5,8 +5,8 @@ import Foundation
 /// bu yüzden küçük bir sunucu işlevi yapıyor (bkz. Server/revoke-apple-token). Adres henüz yazılmadıysa
 /// (nil) hiçbir şey yapılmaz ve silme eskisi gibi çalışır.
 enum AppleTokenRevocation {
-    /// Sunucu işlevi yayınlanınca buraya adresini yazın, ör. "https://geonaut-revoke.netlify.app/revoke".
-    static let endpoint: URL? = nil
+    /// Sunucu işlevinin adresi (Netlify, Server/revoke-apple-token). nil yapılırsa iptal kapanır ve hesap silme eskisi gibi çalışır.
+    static let endpoint: URL? = URL(string: "https://geonaut-revoke.netlify.app/revoke")
 
     static var isConfigured: Bool { endpoint != nil }
 
