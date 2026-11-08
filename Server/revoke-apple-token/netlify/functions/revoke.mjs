@@ -7,6 +7,13 @@ import { createSign } from "node:crypto";
 
 const b64url = (input) => Buffer.from(input).toString("base64url");
 
+// Anahtar panodan/formdan gelirken satır sonları boşluğa, "\\n" yazısına ya da hiçbir şeye dönüşebiliyor (tek satırlık alanlar).
+// Başlık/bitiş satırlarını ve tüm boşlukları atıp 64 karakterlik satırlarla yeniden kurarak her biçimi kabul ederiz.
+function normalizePem(raw) {
+  const body = raw.replace(/-----(BEGIN|END)[A-Z ]*-----/g, "").replace(/\\n/g, "").replace(/\s+/g, "");
+  return `-----BEGIN PRIVATE KEY-----\n${body.match(/.{1,64}/g).join("\n")}\n-----END PRIVATE KEY-----\n`;
+}
+
 function clientSecret({ teamId, keyId, clientId, privateKey }) {
   const now = Math.floor(Date.now() / 1000);
   const header = b64url(JSON.stringify({ alg: "ES256", kid: keyId }));
@@ -31,14 +38,16 @@ export default async (req) => {
   if (req.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
 
   const { APPLE_TEAM_ID: teamId, APPLE_KEY_ID: keyId, APPLE_CLIENT_ID: clientId } = process.env;
-  const privateKey = (process.env.APPLE_PRIVATE_KEY || "").replace(/\\n/g, "\n");
+  const rawKey = process.env.APPLE_PRIVATE_KEY || "";
+  const privateKey = rawKey ? normalizePem(rawKey) : "";
   if (!teamId || !keyId || !clientId || !privateKey) return new Response("Server not configured", { status: 500 });
 
   let code;
   try { ({ code } = await req.json()); } catch { return new Response("Bad request", { status: 400 }); }
   if (typeof code !== "string" || code.length < 10 || code.length > 2000) return new Response("Bad request", { status: 400 });
 
-  const secret = clientSecret({ teamId, keyId, clientId, privateKey });
+  let secret;
+  try { secret = clientSecret({ teamId, keyId, clientId, privateKey }); } catch { return new Response("Bad key", { status: 500 }); }
   const token = await appleForm("token", { client_id: clientId, client_secret: secret, code, grant_type: "authorization_code" });
   if (!token.ok) return new Response("Token exchange failed", { status: 502 });
 
