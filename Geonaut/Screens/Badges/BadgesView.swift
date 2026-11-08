@@ -30,24 +30,7 @@ struct BadgesView: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: GeoSpacing.xxl) {
-                    if let onBack {
-                        Button(action: onBack) {
-                            Image(systemName: "chevron.left")
-                                .accessibilityLabel("Geri")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundStyle(GeoColor.textPrimary)
-                                .padding(GeoSpacing.sm)
-                        }
-                        .padding(.bottom, -GeoSpacing.lg)
-                    }
-                    VStack(alignment: .leading, spacing: GeoSpacing.xs) {
-                        Text("Rozetler & Kupalar")
-                            .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                            .foregroundStyle(GeoColor.textPrimary)
-                        Text("\(totalUnlocked) / \(BadgeCatalog.totalRozet) rozet, \(totalTrophiesUnlocked)/\(BadgeCatalog.totalKupa) kupa kazanıldı.")
-                            .font(.system(size: 14, weight: .semibold))
-                            .foregroundStyle(GeoColor.textSecondary)
-                    }
+                    GeoScreenHeader(title: "Rozetler & Kupalar", subtitle: "\(totalUnlocked) / \(BadgeCatalog.totalRozet) rozet, \(totalTrophiesUnlocked)/\(BadgeCatalog.totalKupa) kupa kazanıldı.", onBack: onBack)
 
                     badgeSection(
                         title: "Bayraklar", subtitle: "8 rozet + kategori kupası",

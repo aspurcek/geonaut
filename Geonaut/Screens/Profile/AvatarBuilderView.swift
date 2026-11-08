@@ -28,18 +28,7 @@ struct AvatarBuilderView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .accessibilityLabel("Geri")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .padding(GeoSpacing.sm)
-            }
-
-            Text("Avatarını Oluştur")
-                .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                .foregroundStyle(GeoColor.textPrimary)
-                .padding(.top, GeoSpacing.sm)
+            GeoScreenHeader(title: "Avatarını Oluştur", onBack: onBack)
                 .padding(.bottom, GeoSpacing.xl)
 
             ScrollView {

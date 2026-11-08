@@ -18,12 +18,8 @@ struct FoodQuestionView: View {
     var body: some View {
         VStack(spacing: GeoSpacing.xxl) {
             HStack(spacing: GeoSpacing.md) {
-                Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                        .accessibilityLabel("Geri")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(GeoColor.textPrimary)
-                }
+                GeoBackButton(action: onBack)
+                    .padding(.horizontal, -13) // 44 pt dokunma alanı, görsel yer eskisiyle aynı
                 GeoProgressBar(progress: Double(questionIndex) / Double(totalQuestions))
                 GeoStatPill(icon: .hearts, value: "\(hearts)")
             }

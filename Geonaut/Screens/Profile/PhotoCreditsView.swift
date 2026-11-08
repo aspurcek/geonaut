@@ -12,23 +12,7 @@ struct PhotoCreditsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .accessibilityLabel("Geri")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .padding(GeoSpacing.sm)
-            }
-
-            VStack(alignment: .leading, spacing: GeoSpacing.xs) {
-                Text("Görsel Kaynakları")
-                    .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                    .foregroundStyle(GeoColor.textPrimary)
-                Text("Lezzetler'deki fotoğraflar Openverse üzerinden, aşağıdaki lisanslarla kullanılmıştır.")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(GeoColor.textSecondary)
-            }
-            .padding(.top, GeoSpacing.sm)
+            GeoScreenHeader(title: "Görsel Kaynakları", subtitle: "Lezzetler'deki fotoğraflar Openverse üzerinden, aşağıdaki lisanslarla kullanılmıştır.", onBack: onBack)
             .padding(.bottom, GeoSpacing.lg)
 
             ScrollView {

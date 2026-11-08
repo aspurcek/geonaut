@@ -16,25 +16,7 @@ struct LearnFlagsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .accessibilityLabel("Geri")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .padding(GeoSpacing.sm)
-            }
-
-            VStack(alignment: .leading, spacing: GeoSpacing.xs) {
-                Text("Bayrakları Öğren")
-                    .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                    .foregroundStyle(GeoColor.textPrimary)
-                // Kullanıcı kararı: satırlar artık dokunulabilir — dokununca ülke
-                // bilgi kartı (bayrak/ad/dil/kıta) açılır, bkz. GeoCountryInfoCard.
-                Text("\(allCountries.count) ülkenin bayrağını keşfet")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(GeoColor.textSecondary)
-            }
-            .padding(.top, GeoSpacing.sm)
+            GeoScreenHeader(title: "Bayrakları Öğren", subtitle: "\(allCountries.count) ülkenin bayrağını keşfet", onBack: onBack)
             .padding(.bottom, GeoSpacing.lg)
 
             GeoSearchBar(placeholder: "Bayrak veya ülke adı ara...", text: $query)

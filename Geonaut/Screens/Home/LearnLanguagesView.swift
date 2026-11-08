@@ -19,23 +19,7 @@ struct LearnLanguagesView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .accessibilityLabel("Geri")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .padding(GeoSpacing.sm)
-            }
-
-            VStack(alignment: .leading, spacing: GeoSpacing.xs) {
-                Text("Dilleri Öğren")
-                    .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                    .foregroundStyle(GeoColor.textPrimary)
-                Text("\(allCountries.count)+ ülkenin ana dilini keşfet")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(GeoColor.textSecondary)
-            }
-            .padding(.top, GeoSpacing.sm)
+            GeoScreenHeader(title: "Dilleri Öğren", subtitle: "\(allCountries.count)+ ülkenin ana dilini keşfet", onBack: onBack)
             .padding(.bottom, GeoSpacing.lg)
 
             GeoSearchBar(placeholder: "Ülke veya dil ara...", text: $query)

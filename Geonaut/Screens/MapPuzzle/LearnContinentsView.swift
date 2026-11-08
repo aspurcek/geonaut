@@ -34,24 +34,9 @@ struct LearnContinentsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .accessibilityLabel("Geri")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .padding(GeoSpacing.sm)
-            }
-
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: GeoSpacing.xs) {
-                    Text("Haritalar")
-                        .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                        .foregroundStyle(GeoColor.textPrimary)
-                    Text("7 kıtayı keşfet, ülkeleri haritada bul")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(GeoColor.textSecondary)
-                }
-                Spacer()
+            GeoScreenHeader(
+                title: "Haritalar", subtitle: "7 kıtayı keşfet, ülkeleri haritada bul", onBack: onBack
+            ) {
                 Circle()
                     .fill(GeoColor.accentTertiary)
                     .frame(width: 44, height: 44)

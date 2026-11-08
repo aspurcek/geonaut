@@ -14,23 +14,11 @@ struct EtapMapView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                        .accessibilityLabel("Geri")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundStyle(GeoColor.textPrimary)
-                        .padding(GeoSpacing.sm)
-                }
-
-                VStack(alignment: .leading, spacing: GeoSpacing.xs) {
-                    Text(LocalizedStringKey(sectionName))
-                        .font(.custom(GeoFontName.balooBold, size: 28))
-                        .foregroundStyle(GeoColor.textPrimary)
-                    Text("\(L(categoryName)) · Tur \(tour + 1) · \(etapStates.count) seviye · \(GameRules.questionsPerStage) soru")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(GeoColor.textSecondary)
-                }
-                .padding(.top, GeoSpacing.sm)
+                GeoScreenHeader(
+                    title: LocalizedStringKey(sectionName),
+                    subtitle: "\(L(categoryName)) · Tur \(tour + 1) · \(etapStates.count) seviye · \(GameRules.questionsPerStage) soru",
+                    titleFontName: GeoFontName.balooBold, titleSize: 28, onBack: onBack
+                )
                 .padding(.bottom, GeoSpacing.lg)
 
                 GeoZigzagPath(count: etapStates.count, rowHeight: 118) { index in

@@ -20,23 +20,7 @@ struct LearnFoodsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .accessibilityLabel("Geri")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .padding(GeoSpacing.sm)
-            }
-
-            VStack(alignment: .leading, spacing: GeoSpacing.xs) {
-                Text("Lezzetleri Öğren")
-                    .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                    .foregroundStyle(GeoColor.textPrimary)
-                Text("Dünya ülkelerinin yemeklerini öğren")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(GeoColor.textSecondary)
-            }
-            .padding(.top, GeoSpacing.sm)
+            GeoScreenHeader(title: "Lezzetleri Öğren", subtitle: "Dünya ülkelerinin yemeklerini öğren", onBack: onBack)
             .padding(.bottom, GeoSpacing.lg)
 
             GeoSearchBar(placeholder: "Ülke veya yemek ara...", text: $query)

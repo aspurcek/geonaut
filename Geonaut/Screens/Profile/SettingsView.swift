@@ -66,25 +66,7 @@ struct SettingsView: View {
             // Kullanıcı kararı: sayfa diğer ekranlar gibi (Ana Sayfa/Profil) TEK bir
             // ScrollView içinde baştan sona kaysın — geri oku/başlık sabit kalmasın.
             VStack(alignment: .leading, spacing: 0) {
-                // Geri oku + başlık + çıkış ikonu TEK satırda: önceden ok kendi satırını
-                // kaplıyor, yanı boş kalıyordu; başlık da ayrı bir satırdaydı.
-                HStack(spacing: GeoSpacing.xs) {
-                    Button(action: onBack) {
-                        Image(systemName: "chevron.left")
-                            .accessibilityLabel("Geri")
-                            .font(.system(size: 18, weight: .semibold))
-                            .foregroundStyle(GeoColor.textPrimary)
-                            .frame(width: 44, height: 44)
-                            .contentShape(Rectangle())
-                    }
-
-                    Text("Ayarlar")
-                        .font(.custom(GeoFontName.balooExtraBold, size: 24))
-                        .foregroundStyle(GeoColor.textPrimary)
-                        .accessibilityAddTraits(.isHeader)
-
-                    Spacer()
-
+                GeoScreenHeader(title: "Ayarlar", onBack: onBack) {
                     // Kullanıcı kararı: Çıkış Yap, header alanının en sağında bir ikon
                     // olarak — aşağıdaki Bildirimler container'ının altındaki metin
                     // buton yerine (bkz. o zamanki karar, bununla değiştirildi).
@@ -98,9 +80,8 @@ struct SettingsView: View {
                             .frame(width: 44, height: 44)
                             .contentShape(Rectangle())
                     }
+                    .padding(.trailing, -GeoSpacing.sm)
                 }
-                // 44 pt'lik dokunma alanları ikonları içeri itmesin: görsel kenar eskisiyle aynı kalsın.
-                .padding(.horizontal, -GeoSpacing.sm)
                 .padding(.bottom, GeoSpacing.lg)
 
                 VStack(alignment: .leading, spacing: GeoSpacing.xxl) {
