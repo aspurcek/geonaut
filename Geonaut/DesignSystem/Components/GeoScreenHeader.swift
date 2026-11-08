@@ -18,7 +18,7 @@ struct GeoBackButton: View {
 }
 
 /// Ekran başlığı: geri oku, başlık (ve isteğe bağlı sağ öğe) TEK satırda, alt başlık
-/// başlığın hizasında altında. Önceden ok kendi satırını kaplıyor, yanı boş kalıyordu.
+/// geri okun sol kenarıyla hizalı altında. Önceden ok kendi satırını kaplıyor, yanı boş kalıyordu.
 /// `onBack` nil ise (sekme kökü ekranlar) ok ve girinti yoktur.
 struct GeoScreenHeader<Trailing: View>: View {
     let title: LocalizedStringKey
@@ -28,10 +28,11 @@ struct GeoScreenHeader<Trailing: View>: View {
     var onBack: (() -> Void)? = nil
     @ViewBuilder var trailing: () -> Trailing
 
-    /// 44 pt'lik dokunma alanı ikonu içeri itmesin diye satır sola kaydırılır; başlık/alt başlık
-    /// girintisi = 44 − 8 (kaydırma) − 4 (negatif boşluk).
+    /// 44 pt'lik dokunma alanı ikonu içeri itmesin diye satır sola kaydırılır; 
     private static var shift: CGFloat { GeoSpacing.sm }
-    private var titleIndent: CGFloat { onBack == nil ? 0 : 44 - Self.shift - 4 }
+    /// Alt başlık, başlığa değil geri okun görünen sol kenarına hizalanır: 44 pt'lik alanda ortalanan
+    /// ok (≈12 pt genişlik) kaydırmadan sonra sayfa kenarından ≈8 pt içeride başlar.
+    private var subtitleIndent: CGFloat { onBack == nil ? 0 : GeoSpacing.sm }
 
     var body: some View {
         VStack(alignment: .leading, spacing: GeoSpacing.xs) {
@@ -52,7 +53,7 @@ struct GeoScreenHeader<Trailing: View>: View {
                 Text(subtitle)
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(GeoColor.textSecondary)
-                    .padding(.leading, titleIndent)
+                    .padding(.leading, subtitleIndent)
             }
         }
     }
