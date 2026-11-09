@@ -13,9 +13,16 @@ struct InfoSheetContent: Identifiable {
     var action: (() -> Void)? = nil
 }
 
+private struct InfoSheetHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
 struct InfoSheet: View {
     let content: InfoSheetContent
     @Environment(\.dismiss) private var dismiss
+    /// Sayfa içeriğin kendi yüksekliği kadar açılır (ölü alan kalmasın); ölçülene kadar makul bir başlangıç değeri.
+    @State private var contentHeight: CGFloat = 420
 
     var body: some View {
         VStack(spacing: GeoSpacing.lg) {
@@ -55,8 +62,6 @@ struct InfoSheet: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer(minLength: GeoSpacing.sm)
-
             VStack(spacing: GeoSpacing.sm) {
                 if let actionTitle = content.actionTitle, let action = content.action {
                     Button {
@@ -83,11 +88,17 @@ struct InfoSheet: View {
         }
         .padding(.horizontal, GeoSpacing.xl)
         .padding(.top, GeoSpacing.xxl)
-        .padding(.bottom, GeoSpacing.lg)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background { GeoColor.bgCanvas.ignoresSafeArea() }
-        // Tek satırlık kilit mesajı kısa, istatistik açıklamaları uzun: yüksekliği içeriğe göre seç.
-        .presentationDetents(content.lines.count <= 1 ? [.fraction(0.5), .large] : [.fraction(0.78), .large])
+        .padding(.bottom, GeoSpacing.xxxl)
+        .frame(maxWidth: .infinity)
+        .background {
+            GeometryReader { proxy in
+                Color.clear.preference(key: InfoSheetHeightKey.self, value: proxy.size.height)
+            }
+        }
+        .onPreferenceChange(InfoSheetHeightKey.self) { if $0 > 0 { contentHeight = $0 } }
+        .frame(maxHeight: .infinity, alignment: .top)
+        .presentationBackground(GeoColor.bgCanvas)
+        .presentationDetents([.height(contentHeight)])
         .presentationDragIndicator(.visible)
     }
 }
