@@ -29,14 +29,18 @@ struct StageCardsView: View {
                 .padding(.top, GeoSpacing.sm)
                 .padding(.bottom, GeoSpacing.md)
 
+            // Kart ekranı doldurmaz (ölü alan olmasın): sabit, içeriğe yakın bir yükseklik; kart ile alt
+            // buton arasındaki boşluk eşit paylaşılır.
+            Spacer(minLength: 0)
             TabView(selection: $index) {
                 ForEach(Array(cards.enumerated()), id: \.element.id) { offset, card in
                     InfoCardPage(card: card)
-                        .padding(.bottom, GeoSpacing.sm)
                         .tag(offset)
                 }
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 490)
+            Spacer(minLength: 0)
 
             Text("\(index + 1) / \(cards.count)")
                 .font(.system(size: 13, weight: .semibold))
@@ -107,7 +111,7 @@ private struct InfoCardPage: View {
     private var content: some View {
         switch card.content {
         case .flag(let caption):
-            flagBlock(size: 150)
+            flagBlock(size: 180)
             nameText
             if let caption {
                 Text(caption)
@@ -115,11 +119,11 @@ private struct InfoCardPage: View {
                     .foregroundStyle(GeoColor.textMuted)
             }
         case .capital(let capital):
-            flagBlock(size: 110)
+            flagBlock(size: 140)
             nameText
             detail(label: "Başkent", value: capital)
         case .language(let language):
-            flagBlock(size: 110)
+            flagBlock(size: 140)
             nameText
             detail(label: "Ana dil", value: D(language))
         case .food(let item, let image):
@@ -174,7 +178,7 @@ private struct InfoCardPage: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 190)
+        .frame(height: 230)
         .background(GeoColor.bgCanvas)
         .clipShape(RoundedRectangle(cornerRadius: GeoRadius.lg))
     }

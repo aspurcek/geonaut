@@ -32,17 +32,20 @@ struct ContinentPathView: View {
             .disabled(node.state == .locked)
             .frame(height: nodeSlotHeight, alignment: .top)
             .overlay(alignment: .top) {
+                // Balon aktif düğümün ÜSTÜNDE ve ucu aşağı, dokunulacak daireyi gösterir. Eskiden düğümün
+                // altındaydı ve aşağıdaki kilitli düğümü işaret ediyor gibi görünüyordu. Yalnızca görsel bir
+                // overlay: konumlandırma hesabına katkısı yok (bkz. yukarıdaki not).
                 if node.state == .active {
-                    VStack(spacing: GeoSpacing.sm) {
-                        GeoSpeechBubble(text: "Hadi başlayalım!")
-                        GeoBadge(text: "BAŞLA", tone: .highlight)
-                    }
-                    // Overlay, temel view'in (düğme — yalnızca daire genişliğinde) sunduğu
-                    // genişlikle sınırlanır; .fixedSize() olmadan "Hadi başlayalım!" o dar
-                    // alana sıkışıp 2 satıra bölünüyordu. Balonun kendi doğal (tek satır)
-                    // genişliğinde ölçülenmesini sağlar.
-                    .fixedSize()
-                    .offset(y: nodeSlotHeight + GeoSpacing.md)
+                    // Sıfır yükseklikli bir çapa, düğümün üst kenarında durur; balon bu çapanın ALT kenarına
+                    // hizalanır, yani balonun ucu dairenin hemen üstünde, gövdesi yukarıda kalır.
+                    Color.clear
+                        .frame(width: 1, height: 0)
+                        .overlay(alignment: .bottom) {
+                            GeoSpeechBubble(text: "Hadi başlayalım!", pointsDown: true)
+                                .fixedSize()
+                                .offset(y: -2)
+                        }
+                        .accessibilityHidden(true)
                 }
             }
         }
