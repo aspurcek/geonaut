@@ -74,10 +74,19 @@ enum StageCards {
     }
 
     /// Etap başında gösterilecek kartlar. Boşsa kart ekranı atlanır, oyun doğrudan başlar.
-    /// `ignoreProgress`: demo hesapta tüm etaplar tamamlanmış sayıldığından (ilerleme gerçek değil) hiçbir ülke "yeni"
-    /// olmaz; demoda kartları her zaman göstermek için ilerleme yok sayılır (App Review'ın da görebilmesi için).
-    static func cards(_ kind: Kind, section: String, stageIndex: Int, tour: Int, progress: GameProgress, ignoreProgress: Bool = false) -> [InfoCard] {
-        var seen = ignoreProgress ? [] : seenCodes(kind, progress: progress)
+    /// `sequentialPlayer`: demo hesapta tüm etaplar tamamlanmış sayıldığından (ilerleme gerçek değil) kayıtlı
+    /// ilerleme kullanılamaz; bunun yerine oyuncu etapları sırayla oynuyormuş gibi davranılır — aynı bölüm ve
+    /// turda ÖNCEKİ etaplarda geçen ülkeler "görülmüş", yalnızca o etapta ilk kez gelenler yeni sayılır.
+    static func cards(_ kind: Kind, section: String, stageIndex: Int, tour: Int, progress: GameProgress, sequentialPlayer: Bool = false) -> [InfoCard] {
+        var seen: Set<String>
+        if sequentialPlayer {
+            seen = []
+            for earlier in 0..<max(stageIndex, 0) {
+                seen.formUnion(windowCodes(kind, section: section, tour: tour, stageIndex: earlier))
+            }
+        } else {
+            seen = seenCodes(kind, progress: progress)
+        }
         #if DEBUG
         // Yalnızca geliştirme: demo hesapta her etap tamamlanmış sayıldığından kartlar çıkmaz; `-debugForceCards 1`.
         if UserDefaults.standard.bool(forKey: "debugForceCards") { seen = [] }
@@ -126,6 +135,21 @@ extension StageCards {
             check(Set(c1.map(\.code)).isDisjoint(with: w0) && Set(c1.map(\.code)).isSubset(of: w1), "\(kind): etap 2 -> yalnızca yeni ülkeler (\(c1.count))")
             let tour2 = cards(kind, section: "Avrupa", stageIndex: 0, tour: 1, progress: p)
             check(Set(tour2.map(\.code)).isDisjoint(with: w0), "\(kind): Tur 2 -> Tur 1'de görülenler elenir (\(tour2.count))")
+        }
+        // Demo (sırayla ilerleyen oyuncu): önceki etaplarda geçen ülkelerin kartı sonraki etapta çıkmaz.
+        let pDemo = GameProgress()
+        for (kind, section) in [(Kind.flags, "Avrupa"), (Kind.flags, "Antarktika"), (Kind.capitals, "Asya"), (Kind.languages, "Avrupa"), (Kind.foods, "Yemekler")] {
+            var earlier: Set<String> = []
+            var allDisjoint = true
+            var firstFull = false
+            for stage in 0..<8 {
+                let c = Set(cards(kind, section: section, stageIndex: stage, tour: 0, progress: pDemo, sequentialPlayer: true).map(\.code))
+                if stage == 0 { firstFull = !c.isEmpty }
+                if !c.isDisjoint(with: earlier) { allDisjoint = false }
+                earlier.formUnion(windowCodes(kind, section: section, tour: 0, stageIndex: stage))
+            }
+            check(firstFull, "demo \(kind) \(section): etap 1'de tüm kartlar")
+            check(allDisjoint, "demo \(kind) \(section): önceki etaplarda görülen ülkenin kartı çıkmaz")
         }
         print("CARDCHECK done fails=\(fails)")
     }

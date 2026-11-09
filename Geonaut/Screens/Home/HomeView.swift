@@ -33,7 +33,7 @@ struct HomeView: View {
     var avatarCharacter: AvatarCharacter = AvatarCharacter()
     var hasCustomAvatar: Bool = false
     var isGuest: Bool = false
-    /// Demo hesap (App Review / tanıtım): ilerleme gerçek değil, bilgi kartları her zaman gösterilir.
+    /// Demo hesap (App Review / tanıtım): ilerleme gerçek değil; bilgi kartları sırayla ilerleyen oyuncu gibi hesaplanır.
     var isDemo: Bool = false
     var onRequireSignIn: () -> Void = {}
     /// Bir etap bitince çağrılır — AppState.recordStageCompletion'a kadar iletilir (bkz.
@@ -277,7 +277,7 @@ struct HomeView: View {
                     let progressKey = TourStructure.progressKey(continent, tour: tour)
                     let session = QuizSession(stageIndex: stageIndex, questions: Countries.makeQuestions(from: Countries.pool(forContinent: continent), isRecall: stageIndex >= 5, tour: tour, stageIndex: stageIndex))
                     StageCardsGate(
-                        cards: StageCards.cards(.flags, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, ignoreProgress: isDemo),
+                        cards: StageCards.cards(.flags, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),
                         onBack: { path.removeLast() }
                     ) {
                     QuizSessionView(
@@ -446,7 +446,7 @@ struct HomeView: View {
                         questions: Languages.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
                     )
                     StageCardsGate(
-                        cards: StageCards.cards(.languages, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, ignoreProgress: isDemo),
+                        cards: StageCards.cards(.languages, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),
                         onBack: { path.removeLast() }
                     ) {
                     LanguageQuizSessionView(
@@ -514,7 +514,7 @@ struct HomeView: View {
                         questions: Capitals.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
                     )
                     StageCardsGate(
-                        cards: StageCards.cards(.capitals, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, ignoreProgress: isDemo),
+                        cards: StageCards.cards(.capitals, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),
                         onBack: { path.removeLast() }
                     ) {
                     CapitalQuizSessionView(
@@ -581,7 +581,7 @@ struct HomeView: View {
                         questions: WorldFoods.makeQuestions(forSection: continent, stageIndex: stageIndex, tour: tour)
                     )
                     StageCardsGate(
-                        cards: StageCards.cards(.foods, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, ignoreProgress: isDemo),
+                        cards: StageCards.cards(.foods, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),
                         onBack: { path.removeLast() }
                     ) {
                     FoodQuizSessionView(
