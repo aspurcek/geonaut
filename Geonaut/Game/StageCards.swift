@@ -74,8 +74,10 @@ enum StageCards {
     }
 
     /// Etap başında gösterilecek kartlar. Boşsa kart ekranı atlanır, oyun doğrudan başlar.
-    static func cards(_ kind: Kind, section: String, stageIndex: Int, tour: Int, progress: GameProgress) -> [InfoCard] {
-        var seen = seenCodes(kind, progress: progress)
+    /// `ignoreProgress`: demo hesapta tüm etaplar tamamlanmış sayıldığından (ilerleme gerçek değil) hiçbir ülke "yeni"
+    /// olmaz; demoda kartları her zaman göstermek için ilerleme yok sayılır (App Review'ın da görebilmesi için).
+    static func cards(_ kind: Kind, section: String, stageIndex: Int, tour: Int, progress: GameProgress, ignoreProgress: Bool = false) -> [InfoCard] {
+        var seen = ignoreProgress ? [] : seenCodes(kind, progress: progress)
         #if DEBUG
         // Yalnızca geliştirme: demo hesapta her etap tamamlanmış sayıldığından kartlar çıkmaz; `-debugForceCards 1`.
         if UserDefaults.standard.bool(forKey: "debugForceCards") { seen = [] }
