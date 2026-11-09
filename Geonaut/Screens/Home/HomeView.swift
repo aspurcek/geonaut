@@ -73,7 +73,6 @@ struct HomeView: View {
     /// Kategori başına seçili tur (0 = Tur 1) — bkz. tourSelector. Kilitli bir tur seçilemez.
     @State private var selectedTours: [TourCategory: Int] = [:]
     /// Kilitli bir tura dokunulunca altında "önce Tur X'i bitir" ipucu gösterilir.
-    @State private var lockedTourHint: Int?
     @State private var infoSheet: InfoSheetContent?
 
     private enum Route: Hashable {
@@ -107,6 +106,16 @@ struct HomeView: View {
         case levelUp(from: GeoLevel, to: GeoLevel)
         case mixedComplete(category: TourCategory)
         case mapSectionBadge(isCountries: Bool)
+    }
+
+    /// Kilitli bir yere dokununca "neden kilitli" sayfasını açar. Misafir oyuncu bu kilitleri (Tur 1'i bitirmek
+    /// gibi) zaten aşamaz — onun için asıl engel giriş olduğundan doğrudan girişe yönlendirilir.
+    private func showLock(_ content: InfoSheetContent?) {
+        if isGuest {
+            onRequireSignIn()
+        } else {
+            infoSheet = content
+        }
     }
 
     private func selectedTour(_ category: TourCategory) -> Int {
@@ -202,7 +211,6 @@ struct HomeView: View {
             .background { ZStack { GeoColor.bgCanvas; GeoStarfield() }.ignoresSafeArea() }
             .ignoresSafeArea(edges: .bottom)
             .toolbar(.hidden, for: .navigationBar)
-            .onChange(of: selectedCategory) { _, _ in lockedTourHint = nil }
             .onChange(of: path.count) { _, count in
                 // Tüm kutlama ekranları kapanıp Ana Sayfa'ya dönülünce, ilk tamamlanan seviyeden sonra bir kez sor.
                 guard count == 0, !isGuest, !reminderPromptShown, completedStageThisSession,
@@ -773,7 +781,7 @@ struct HomeView: View {
                     let mapUnlocked = progress.isFlagGuessCategoryCompleted()
                     Button {
                         if !mapUnlocked {
-                            infoSheet = LockInfo.category(.maps) { selectedCategory = .bayrakTahmin }
+                            showLock(LockInfo.category(.maps) { selectedCategory = .bayrakTahmin })
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -793,7 +801,7 @@ struct HomeView: View {
                     let languagesUnlocked = progress.isMapPuzzleCategoryCompleted()
                     Button {
                         if !languagesUnlocked {
-                            infoSheet = LockInfo.category(.languages) { selectedCategory = .haritaBilmece }
+                            showLock(LockInfo.category(.languages) { selectedCategory = .haritaBilmece })
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -813,7 +821,7 @@ struct HomeView: View {
                     let foodsUnlocked = progress.isMainLanguageCategoryCompleted()
                     Button {
                         if !foodsUnlocked {
-                            infoSheet = LockInfo.category(.foods) { selectedCategory = .anaDiller }
+                            showLock(LockInfo.category(.foods) { selectedCategory = .anaDiller })
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -833,7 +841,7 @@ struct HomeView: View {
                     let capitalsUnlocked = progress.isWorldFoodCategoryCompleted()
                     Button {
                         if !capitalsUnlocked {
-                            infoSheet = LockInfo.category(.capitals) { selectedCategory = .dunyaYemekleri }
+                            showLock(LockInfo.category(.capitals) { selectedCategory = .dunyaYemekleri })
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -881,11 +889,10 @@ struct HomeView: View {
         return Button {
             if unlocked {
                 selectedTours[category] = tour
-                lockedTourHint = nil
             } else if isGuest {
                 onRequireSignIn()
             } else {
-                infoSheet = LockInfo.tour(tour)
+                showLock(LockInfo.tour(tour))
             }
         } label: {
             HStack(spacing: 4) {
@@ -966,7 +973,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.flagGuessPath(progress: progress, tour: selectedTour(.flags))) { node in
-                guard node.state != .locked else { infoSheet = LockInfo.section; return }
+                guard node.state != .locked else { showLock(LockInfo.section); return }
                 if isGuest && node.name != "Avrupa" {
                     onRequireSignIn()
                 } else {
@@ -1015,7 +1022,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.mainLanguagePath(progress: progress, tour: selectedTour(.languages))) { node in
-                guard node.state != .locked else { infoSheet = LockInfo.section; return }
+                guard node.state != .locked else { showLock(LockInfo.section); return }
                 path.append(Route.anaDillerEtapMap(continent: node.name, tour: selectedTour(.languages)))
             }
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -1060,7 +1067,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.capitalsPath(progress: progress, tour: selectedTour(.capitals))) { node in
-                guard node.state != .locked else { infoSheet = LockInfo.section; return }
+                guard node.state != .locked else { showLock(LockInfo.section); return }
                 path.append(Route.capitalsEtapMap(continent: node.name, tour: selectedTour(.capitals)))
             }
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -1105,7 +1112,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.worldFoodsSectionsPath(progress: progress, tour: selectedTour(.foods))) { node in
-                guard node.state != .locked else { infoSheet = LockInfo.section; return }
+                guard node.state != .locked else { showLock(LockInfo.section); return }
                 path.append(Route.worldFoodsEtapMap(continent: node.name, tour: selectedTour(.foods)))
             }
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -1156,7 +1163,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.mapPuzzleTracksPath(progress: progress, tour: selectedTour(.maps))) { node in
-                guard node.state != .locked else { infoSheet = LockInfo.section; return }
+                guard node.state != .locked else { showLock(LockInfo.section); return }
                 if node.name == "Kıtalar" {
                     path.append(Route.mapPuzzleEtapMap(tour: selectedTour(.maps)))
                 } else {

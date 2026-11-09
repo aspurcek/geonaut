@@ -44,8 +44,20 @@ enum StageCards {
         }
     }
 
+    /// Pencereler saf ve sabit (havuzlar uygulama içi veri) — her etap için bir kez hesaplanıp saklanır;
+    /// seenCodes en kötü durumda yüzlerce pencere hesapladığı için ana iş parçacığını yormasın.
+    nonisolated(unsafe) private static var windowCache: [String: [String]] = [:]
+
     /// Etapta sorulacak ülke kodları (sorulan havuzla birebir aynı pencere).
     static func windowCodes(_ kind: Kind, section: String, tour: Int, stageIndex: Int) -> [String] {
+        let cacheKey = "\(kind)|\(section)|\(tour)|\(stageIndex)"
+        if let cached = windowCache[cacheKey] { return cached }
+        let result = computeWindow(kind, section: section, tour: tour, stageIndex: stageIndex)
+        windowCache[cacheKey] = result
+        return result
+    }
+
+    private static func computeWindow(_ kind: Kind, section: String, tour: Int, stageIndex: Int) -> [String] {
         let codes: [String]
         switch kind {
         case .flags, .languages:
@@ -151,6 +163,13 @@ extension StageCards {
             check(firstFull, "demo \(kind) \(section): etap 1'de tüm kartlar")
             check(allDisjoint, "demo \(kind) \(section): önceki etaplarda görülen ülkenin kartı çıkmaz")
         }
+        // Performans: tamamlanmış (en kötü durum) ilerlemeyle bir etabın kart hesabı ana iş parçacığını yormamalı.
+        let full = GameProgress(completedStageKeys: GameProgress.allStageKeys)
+        let t0 = Date()
+        for _ in 0..<20 { _ = cards(.flags, section: "Avrupa", stageIndex: 3, tour: 1, progress: full) }
+        let ms = Date().timeIntervalSince(t0) * 1000 / 20
+        print("CARDCHECK perf: tamamlanmış ilerleme, tek hesap ≈ \(String(format: "%.1f", ms)) ms")
+        check(ms < 50, "kart hesabı hızlı (<50 ms)")
         print("CARDCHECK done fails=\(fails)")
     }
 }
