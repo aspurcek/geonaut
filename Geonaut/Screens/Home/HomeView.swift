@@ -667,14 +667,26 @@ struct HomeView: View {
         }
     }
 
-    /// Sağ üstteki profil kısayolu: her zaman oyuncunun avatarı (maskot) görünür. Avatar hiç
-    /// düzenlenmediyse varsayılan karakter/renk gösterilir — ProfileView.avatarSection'daki ile AYNI
-    /// bileşen, burada 38 pt'e ölçeklenmiş hali. (Eskiden avatar oluşturulmadıysa genel bir "kişi"
-    /// simgesi gösteriliyordu; kullanıcı geri bildirimi: maskot görünmüyordu.)
+    /// Sağ üstteki profil kısayolu. Maskot (oyuncunun avatarı) YALNIZCA giriş yapmış ve "Avatarını
+    /// Oluştur"u en az bir kez kaydetmiş oyuncuda görünür (kullanıcı kararı; bkz. hasCustomAvatar) —
+    /// ProfileView.avatarSection'daki ile AYNI bileşen, burada 38 pt'e ölçeklenmiş hali. Misafir ya da
+    /// avatar oluşturmamış oyuncuda sabit mor + profil ikonu daire gösterilir.
+    @ViewBuilder
     private var headerAvatar: some View {
-        GeoAvatar(backgroundColor: Color(hex: avatarColorHex), character: avatarCharacter)
-            .scaleEffect(38 / 104)
-            .frame(width: 38, height: 38)
+        if hasCustomAvatar && !isGuest {
+            GeoAvatar(backgroundColor: Color(hex: avatarColorHex), character: avatarCharacter)
+                .scaleEffect(38 / 104)
+                .frame(width: 38, height: 38)
+        } else {
+            Circle()
+                .fill(GeoColor.accentTertiary)
+                .frame(width: 38, height: 38)
+                .overlay {
+                    Image(systemName: "person.fill")
+                        .font(.system(size: 16))
+                        .foregroundStyle(.white)
+                }
+        }
     }
 
     /// Yalnızca üst istatistikler + kategori kartları — kategoriye özgü başlık/içerik
