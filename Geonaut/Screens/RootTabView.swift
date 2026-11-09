@@ -118,7 +118,7 @@ struct RootTabView: View {
                 streakAtRisk: streakAtRisk, cloudReachable: cloudReachable, cloudAccountMissing: cloudAccountMissing,
                 progress: progress,
                 avatarColorHex: profile.avatarColorHex, avatarCharacter: profile.avatarCharacter, hasCustomAvatar: hasCustomAvatar,
-                isGuest: isGuest, onRequireSignIn: onRequireSignIn,
+                isGuest: isGuest, isDemo: profile.appleUserIdentifier == "demo", onRequireSignIn: onRequireSignIn,
                 onStageCompleted: {
                     let bonus = onStageCompleted(points, progress.completedStageKeysExport, progress.learnedCountryCodes, progress.bestPointsExport)
                     if bonus > 0 {

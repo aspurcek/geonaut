@@ -405,7 +405,7 @@ final class AppState {
 }
 
 /// Birden fazla yarışan görevden yalnızca ilkinin sonucu sayılsın diye.
-private final class OneShotGate: @unchecked Sendable {
+private nonisolated final class OneShotGate: @unchecked Sendable {
     private let lock = NSLock()
     private var claimed = false
     func claim() -> Bool {
