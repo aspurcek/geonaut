@@ -11,6 +11,8 @@ struct EtapMapView: View {
     var onSelectEtap: (Int) -> Void
     var onBack: () -> Void
 
+    @State private var lockInfo: InfoSheetContent?
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -24,7 +26,11 @@ struct EtapMapView: View {
                 GeoZigzagPath(count: etapStates.count, rowHeight: 118) { index in
                     let state = etapStates[index]
                     Button {
-                        onSelectEtap(index)
+                        if state == .locked {
+                            lockInfo = LockInfo.stage
+                        } else {
+                            onSelectEtap(index)
+                        }
                     } label: {
                         VStack(spacing: GeoSpacing.sm) {
                             GeoEtapNode(state: state)
@@ -34,13 +40,14 @@ struct EtapMapView: View {
                         }
                     }
                     .buttonStyle(.plain)
-                    .disabled(state == .locked)
+                    .accessibilityHint(state == .locked ? Text("Kilitli. Neden kilitli olduğunu öğrenmek için dokun") : Text(""))
                 }
             }
             .padding(.horizontal, GeoSpacing.xl)
             .padding(.top, GeoSpacing.md)
         }
         .background { GeoColor.bgCanvas.ignoresSafeArea() }
+        .sheet(item: $lockInfo) { InfoSheet(content: $0) }
     }
 }
 

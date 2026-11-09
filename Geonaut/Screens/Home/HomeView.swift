@@ -72,6 +72,7 @@ struct HomeView: View {
     @State private var selectedTours: [TourCategory: Int] = [:]
     /// Kilitli bir tura dokunulunca altında "önce Tur X'i bitir" ipucu gösterilir.
     @State private var lockedTourHint: Int?
+    @State private var infoSheet: InfoSheetContent?
 
     private enum Route: Hashable {
         case etapMap(continent: String, tour: Int)
@@ -207,6 +208,7 @@ struct HomeView: View {
                 reminderPromptShown = true
                 showReminderPrompt = true
             }
+            .sheet(item: $infoSheet) { InfoSheet(content: $0) }
             .sheet(isPresented: $showReminderPrompt) {
                 ReminderPromptSheet(
                     streakDays: streak,
@@ -238,6 +240,12 @@ struct HomeView: View {
                 case "levelupmax": path.append(Route.levelUp(from: .dunyaGezgini, to: .efsanevi))
                 case "mapbadge": path.append(Route.mapSectionBadge(isCountries: false))
                 case "mixed": path.append(Route.mixedComplete(category: .flags))
+                // Bilgi kartları: etap 1 (demo/guest ilerlemesine göre) — ör. `-debugRoute cards_flags`.
+                case "cards_flags": path.append(Route.quiz(continent: "Avrupa", stageIndex: 0, tour: 0))
+                case "cards_flags2": path.append(Route.quiz(continent: "Avrupa", stageIndex: 1, tour: 0))
+                case "cards_capitals": path.append(Route.capitalsQuiz(continent: "Avrupa", stageIndex: 0, tour: 0))
+                case "cards_languages": path.append(Route.anaDillerQuiz(continent: "Avrupa", stageIndex: 0, tour: 0))
+                case "cards_foods": path.append(Route.worldFoodsQuiz(continent: "Yemekler", stageIndex: 0, tour: 0))
                 default: break
                 }
             }
@@ -266,6 +274,10 @@ struct HomeView: View {
                 case .quiz(let continent, let stageIndex, let tour):
                     let progressKey = TourStructure.progressKey(continent, tour: tour)
                     let session = QuizSession(stageIndex: stageIndex, questions: Countries.makeQuestions(from: Countries.pool(forContinent: continent), isRecall: stageIndex >= 5, tour: tour, stageIndex: stageIndex))
+                    StageCardsGate(
+                        cards: StageCards.cards(.flags, section: continent, stageIndex: stageIndex, tour: tour, progress: progress),
+                        onBack: { path.removeLast() }
+                    ) {
                     QuizSessionView(
                         session: session,
                         points: $points,
@@ -292,6 +304,7 @@ struct HomeView: View {
                         onExit: { path.removeLast() },
                         onFailed: onSessionFailed
                     )
+                    }
                     .toolbar(.hidden, for: .navigationBar)
 
                 case .continentComplete(let continent):
@@ -430,6 +443,10 @@ struct HomeView: View {
                         stageIndex: stageIndex,
                         questions: Languages.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
                     )
+                    StageCardsGate(
+                        cards: StageCards.cards(.languages, section: continent, stageIndex: stageIndex, tour: tour, progress: progress),
+                        onBack: { path.removeLast() }
+                    ) {
                     LanguageQuizSessionView(
                         session: languageSession,
                         points: $points,
@@ -455,6 +472,7 @@ struct HomeView: View {
                         onExit: { path.removeLast() },
                         onFailed: onSessionFailed
                     )
+                    }
                     .toolbar(.hidden, for: .navigationBar)
 
                 case .anaDillerContinentComplete(let continent):
@@ -493,6 +511,10 @@ struct HomeView: View {
                         stageIndex: stageIndex,
                         questions: Capitals.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
                     )
+                    StageCardsGate(
+                        cards: StageCards.cards(.capitals, section: continent, stageIndex: stageIndex, tour: tour, progress: progress),
+                        onBack: { path.removeLast() }
+                    ) {
                     CapitalQuizSessionView(
                         session: capitalSession,
                         points: $points,
@@ -517,6 +539,7 @@ struct HomeView: View {
                         onExit: { path.removeLast() },
                         onFailed: onSessionFailed
                     )
+                    }
                     .toolbar(.hidden, for: .navigationBar)
 
                 case .capitalsContinentComplete(let continent):
@@ -555,6 +578,10 @@ struct HomeView: View {
                         stageIndex: stageIndex,
                         questions: WorldFoods.makeQuestions(forSection: continent, stageIndex: stageIndex, tour: tour)
                     )
+                    StageCardsGate(
+                        cards: StageCards.cards(.foods, section: continent, stageIndex: stageIndex, tour: tour, progress: progress),
+                        onBack: { path.removeLast() }
+                    ) {
                     FoodQuizSessionView(
                         session: foodSession,
                         points: $points,
@@ -579,6 +606,7 @@ struct HomeView: View {
                         onExit: { path.removeLast() },
                         onFailed: onSessionFailed
                     )
+                    }
                     .toolbar(.hidden, for: .navigationBar)
 
                 case .worldFoodsContinentComplete(let continent):
@@ -672,8 +700,16 @@ struct HomeView: View {
         VStack(spacing: GeoSpacing.md) {
             HStack {
                 HStack(spacing: GeoSpacing.sm) {
-                    GeoStatPill(icon: .streak, value: "\(streak)")
-                    GeoStatPill(icon: .points, value: "\(points)")
+                    Button { infoSheet = InfoSheets.streak(days: streak) } label: {
+                        GeoStatPill(icon: .streak, value: "\(streak)")
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint(Text("Günlük seri hakkında bilgi verir"))
+                    Button { infoSheet = InfoSheets.points(current: points) } label: {
+                        GeoStatPill(icon: .points, value: "\(points)")
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint(Text("Puan hakkında bilgi verir"))
                 }
                 Spacer()
                 // Figma'daki referans görsele göre bu, Profil'e kısayol veren bir
@@ -735,7 +771,7 @@ struct HomeView: View {
                     let mapUnlocked = progress.isFlagGuessCategoryCompleted()
                     Button {
                         if !mapUnlocked {
-                            return
+                            infoSheet = LockInfo.category(.maps) { selectedCategory = .bayrakTahmin }
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -755,7 +791,7 @@ struct HomeView: View {
                     let languagesUnlocked = progress.isMapPuzzleCategoryCompleted()
                     Button {
                         if !languagesUnlocked {
-                            return
+                            infoSheet = LockInfo.category(.languages) { selectedCategory = .haritaBilmece }
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -775,7 +811,7 @@ struct HomeView: View {
                     let foodsUnlocked = progress.isMainLanguageCategoryCompleted()
                     Button {
                         if !foodsUnlocked {
-                            return
+                            infoSheet = LockInfo.category(.foods) { selectedCategory = .anaDiller }
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -795,7 +831,7 @@ struct HomeView: View {
                     let capitalsUnlocked = progress.isWorldFoodCategoryCompleted()
                     Button {
                         if !capitalsUnlocked {
-                            return
+                            infoSheet = LockInfo.category(.capitals) { selectedCategory = .dunyaYemekleri }
                         } else if isGuest {
                             onRequireSignIn()
                         } else {
@@ -829,12 +865,6 @@ struct HomeView: View {
                 }
             }
 
-            if let hint = lockedTourHint {
-                Text("Tur \(hint + 1)'in kilidini açmak için önce Tur \(hint)'i bitir.")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(GeoColor.textMuted)
-                    .padding(.horizontal, GeoSpacing.sm)
-            }
         }
         .padding(.horizontal, GeoSpacing.xl)
     }
@@ -853,7 +883,7 @@ struct HomeView: View {
             } else if isGuest {
                 onRequireSignIn()
             } else {
-                lockedTourHint = tour
+                infoSheet = LockInfo.tour(tour)
             }
         } label: {
             HStack(spacing: 4) {
@@ -934,7 +964,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.flagGuessPath(progress: progress, tour: selectedTour(.flags))) { node in
-                guard node.state != .locked else { return }
+                guard node.state != .locked else { infoSheet = LockInfo.section; return }
                 if isGuest && node.name != "Avrupa" {
                     onRequireSignIn()
                 } else {
@@ -983,7 +1013,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.mainLanguagePath(progress: progress, tour: selectedTour(.languages))) { node in
-                guard node.state != .locked else { return }
+                guard node.state != .locked else { infoSheet = LockInfo.section; return }
                 path.append(Route.anaDillerEtapMap(continent: node.name, tour: selectedTour(.languages)))
             }
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -1028,7 +1058,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.capitalsPath(progress: progress, tour: selectedTour(.capitals))) { node in
-                guard node.state != .locked else { return }
+                guard node.state != .locked else { infoSheet = LockInfo.section; return }
                 path.append(Route.capitalsEtapMap(continent: node.name, tour: selectedTour(.capitals)))
             }
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -1073,7 +1103,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.worldFoodsSectionsPath(progress: progress, tour: selectedTour(.foods))) { node in
-                guard node.state != .locked else { return }
+                guard node.state != .locked else { infoSheet = LockInfo.section; return }
                 path.append(Route.worldFoodsEtapMap(continent: node.name, tour: selectedTour(.foods)))
             }
             .padding(.horizontal, GeoSpacing.xxxxl)
@@ -1124,7 +1154,7 @@ struct HomeView: View {
             .padding(.horizontal, GeoSpacing.xxxxl)
 
             ContinentPathView(nodes: ContinentPathNode.mapPuzzleTracksPath(progress: progress, tour: selectedTour(.maps))) { node in
-                guard node.state != .locked else { return }
+                guard node.state != .locked else { infoSheet = LockInfo.section; return }
                 if node.name == "Kıtalar" {
                     path.append(Route.mapPuzzleEtapMap(tour: selectedTour(.maps)))
                 } else {

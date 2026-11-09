@@ -24,6 +24,7 @@ struct ProfileView: View {
     /// Rozet önizlemesine dokununca açılan bilgi penceresi (Rozetler sayfasındakiyle aynı bileşen).
     @State private var selectedBadge: BadgeCardInfo?
     @State private var showLevelSheet = false
+    @State private var infoSheet: InfoSheetContent?
 
     private var avatarColor: Color { Color(hex: avatarColorHex) }
     /// Kullanıcı kararı: bir soruda gösterilip cevaplanan (doğru/yanlış fark etmez)
@@ -198,6 +199,7 @@ struct ProfileView: View {
             }
         }
         .sheet(isPresented: $showLevelSheet) { LevelInfoSheet(standing: standing) }
+        .sheet(item: $infoSheet) { InfoSheet(content: $0) }
     }
 
     /// Dişli yerine Figma "Icon/Settings" (node 347:55504) ile birebir aynı iki-kaydırıcı
@@ -215,9 +217,18 @@ struct ProfileView: View {
 
     private var statCards: some View {
         HStack(spacing: 9) {
-            GeoStatCard(type: .points, value: "\(points)")
-            GeoStatCard(type: .streak, value: "\(streak)")
-            GeoStatCard(type: .countriesLearned, value: "\(countriesLearned)")
+            Button { infoSheet = InfoSheets.points(current: points) } label: {
+                GeoStatCard(type: .points, value: "\(points)")
+            }
+            .buttonStyle(.plain)
+            Button { infoSheet = InfoSheets.streak(days: streak) } label: {
+                GeoStatCard(type: .streak, value: "\(streak)")
+            }
+            .buttonStyle(.plain)
+            Button { infoSheet = InfoSheets.countries(learned: countriesLearned) } label: {
+                GeoStatCard(type: .countriesLearned, value: "\(countriesLearned)")
+            }
+            .buttonStyle(.plain)
         }
     }
 

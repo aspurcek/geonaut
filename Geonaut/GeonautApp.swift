@@ -11,6 +11,12 @@ import SwiftUI
 struct GeonautApp: App {
     @State private var appState = AppState()
 
+    init() {
+        #if DEBUG
+        if UserDefaults.standard.bool(forKey: "debugCardsCheck") { StageCards.debugSelfCheck() }
+        #endif
+    }
+
     #if DEBUG
     private func debugCapitalQuestion(_ format: CapitalQuestion.Format, _ options: [String], _ correct: String) -> some View {
         CapitalQuestionView(

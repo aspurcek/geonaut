@@ -5814,6 +5814,1224 @@
         }
       }
     },
+    "Hepsini atla" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alle überspringen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip all"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omitir todo"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hepsini atla"
+          }
+        }
+      }
+    },
+    "Sonraki" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weiter"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonraki"
+          }
+        }
+      }
+    },
+    "Başla" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los geht’s"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empezar"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başla"
+          }
+        }
+      }
+    },
+    "YENİ" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEU"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NEW"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NUEVO"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YENİ"
+          }
+        }
+      }
+    },
+    "Başkent" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptstadt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capital"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capital"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkent"
+          }
+        }
+      }
+    },
+    "Ana dil" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptsprache"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Main language"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idioma principal"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana dil"
+          }
+        }
+      }
+    },
+    "Kartları geçip oyunu başlatır" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überspringt die Karten und startet das Spiel"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skips the cards and starts the game"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omite las tarjetas y empieza el juego"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kartları geçip oyunu başlatır"
+          }
+        }
+      }
+    },
+    "Anladım" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verstanden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Got it"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entendido"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anladım"
+          }
+        }
+      }
+    },
+    "%lld gün" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld Tage"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld days"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld días"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld gün"
+          }
+        }
+      }
+    },
+    "%lld / %lld ülke" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld Länder"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld countries"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld países"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / %lld ülke"
+          }
+        }
+      }
+    },
+    "Her doğru cevap 10 puan kazandırır." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jede richtige Antwort bringt 10 Punkte."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every correct answer earns 10 points."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada respuesta correcta da 10 puntos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her doğru cevap 10 puan kazandırır."
+          }
+        }
+      }
+    },
+    "Bir seviyeyi bitirince puanların toplamına eklenir. Aynı seviyeyi tekrar oynarsan yalnızca en iyi sonucun sayılır." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn du ein Level abschließt, werden die Punkte zu deiner Gesamtsumme addiert. Spielst du ein Level erneut, zählt nur dein bestes Ergebnis."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When you finish a level, its points are added to your total. If you replay a level, only your best result counts."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Al terminar un nivel, sus puntos se suman a tu total. Si repites un nivel, solo cuenta tu mejor resultado."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir seviyeyi bitirince puanların toplamına eklenir. Aynı seviyeyi tekrar oynarsan yalnızca en iyi sonucun sayılır."
+          }
+        }
+      }
+    },
+    "Canların bitince 50 puanla devam edebilir, kopan serini 50 puanla canlandırabilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn deine Leben aufgebraucht sind, kannst du für 50 Punkte weiterspielen und eine gerissene Serie für 50 Punkte wiederbeleben."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When you run out of hearts you can continue for 50 points, and you can revive a broken streak for 50 points."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando te quedes sin vidas puedes continuar por 50 puntos y revivir una racha rota por 50 puntos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canların bitince 50 puanla devam edebilir, kopan serini 50 puanla canlandırabilirsin."
+          }
+        }
+      }
+    },
+    "Ünvanın, harcadığın puana değil şimdiye kadar kazandığın toplam puana bağlıdır. Puan harcamak ünvanını düşürmez." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Titel hängt von allen Punkten ab, die du je verdient hast, nicht von dem, was du ausgegeben hast. Punkte auszugeben senkt deinen Titel nicht."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your title depends on the total points you have ever earned, not on what you have spent. Spending points never lowers your title."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu título depende del total de puntos que has ganado, no de lo que has gastado. Gastar puntos nunca baja tu título."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ünvanın, harcadığın puana değil şimdiye kadar kazandığın toplam puana bağlıdır. Puan harcamak ünvanını düşürmez."
+          }
+        }
+      }
+    },
+    "Her gün en az bir seviye bitirince serin bir artar." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe jeden Tag mindestens ein Level ab, und deine Serie wächst um eins."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish at least one level every day and your streak grows by one."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina al menos un nivel cada día y tu racha aumenta en uno."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her gün en az bir seviye bitirince serin bir artar."
+          }
+        }
+      }
+    },
+    "Bir gün hiç oynamazsan seri kopar. 50 puanla kaldığın yerden canlandırabilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn du einen Tag aussetzt, reißt deine Serie. Für 50 Punkte kannst du sie dort wiederbeleben, wo du aufgehört hast."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "If you skip a day, your streak breaks. You can revive it where you left off for 50 points."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Si te saltas un día, tu racha se rompe. Puedes revivirla donde la dejaste por 50 puntos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir gün hiç oynamazsan seri kopar. 50 puanla kaldığın yerden canlandırabilirsin."
+          }
+        }
+      }
+    },
+    "Serin 7, 14, 21… güne ulaşınca 100 puan hediye kazanırsın." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erreicht deine Serie 7, 14, 21… Tage, bekommst du 100 Punkte geschenkt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When your streak reaches 7, 14, 21… days you get a 100-point gift."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando tu racha llega a 7, 14, 21… días recibes 100 puntos de regalo."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serin 7, 14, 21… güne ulaşınca 100 puan hediye kazanırsın."
+          }
+        }
+      }
+    },
+    "Profilindeki haftalık takvimde hangi günlerde oynadığını görebilirsin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Im Wochenkalender in deinem Profil siehst du, an welchen Tagen du gespielt hast."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In the weekly calendar on your profile you can see which days you played."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En el calendario semanal de tu perfil puedes ver qué días jugaste."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Profilindeki haftalık takvimde hangi günlerde oynadığını görebilirsin."
+          }
+        }
+      }
+    },
+    "Bir soruda gördüğün ve cevapladığın her ülke bu sayıya eklenir. Doğru ya da yanlış fark etmez." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jedes Land, das du in einer Frage siehst und beantwortest, wird zu dieser Zahl addiert, richtig oder falsch."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every country you see and answer in a question is added to this number, right or wrong."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cada país que ves y respondes en una pregunta se suma a este número, aciertes o no."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bir soruda gördüğün ve cevapladığın her ülke bu sayıya eklenir. Doğru ya da yanlış fark etmez."
+          }
+        }
+      }
+    },
+    "Bayraklar, Haritalar, Diller, Lezzetler ve Başkentler'deki ülkeler birlikte sayılır." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Länder aus Flaggen, Karten, Sprachen, Küche und Hauptstädten werden zusammengezählt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Countries from Flags, Maps, Languages, Flavors and Capitals are counted together."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Los países de Banderas, Mapas, Idiomas, Sabores y Capitales se cuentan juntos."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bayraklar, Haritalar, Diller, Lezzetler ve Başkentler'deki ülkeler birlikte sayılır."
+          }
+        }
+      }
+    },
+    "Aynı ülkeyi tekrar görmek sayıyı artırmaz. Hedef tüm ülkeleri tanımak." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dasselbe Land erneut zu sehen erhöht die Zahl nicht. Das Ziel ist, alle Länder zu kennen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seeing the same country again does not raise the number. The goal is to know every country."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver el mismo país otra vez no aumenta el número. La meta es conocer todos los países."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı ülkeyi tekrar görmek sayıyı artırmaz. Hedef tüm ülkeleri tanımak."
+          }
+        }
+      }
+    },
+    "Haritalar kilitli" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karten ist gesperrt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maps is locked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mapas está bloqueado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haritalar kilitli"
+          }
+        }
+      }
+    },
+    "Haritalar'ı açmak için Bayraklar'ın Tur 1'ini bitirmelisin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe Tour 1 von Flaggen ab, um Karten freizuschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Tour 1 of Flags to unlock Maps."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina la Ronda 1 de Banderas para desbloquear Mapas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haritalar'ı açmak için Bayraklar'ın Tur 1'ini bitirmelisin."
+          }
+        }
+      }
+    },
+    "Bayraklar'a git" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu Flaggen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Flags"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir a Banderas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bayraklar'a git"
+          }
+        }
+      }
+    },
+    "Diller kilitli" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprachen ist gesperrt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Languages is locked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idiomas está bloqueado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diller kilitli"
+          }
+        }
+      }
+    },
+    "Diller'i açmak için Haritalar'ın Tur 1'ini bitirmelisin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe Tour 1 von Karten ab, um Sprachen freizuschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Tour 1 of Maps to unlock Languages."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina la Ronda 1 de Mapas para desbloquear Idiomas."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diller'i açmak için Haritalar'ın Tur 1'ini bitirmelisin."
+          }
+        }
+      }
+    },
+    "Haritalar'a git" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu Karten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Maps"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir a Mapas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haritalar'a git"
+          }
+        }
+      }
+    },
+    "Lezzetler kilitli" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Küche ist gesperrt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flavors is locked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sabores está bloqueado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lezzetler kilitli"
+          }
+        }
+      }
+    },
+    "Lezzetler'i açmak için Diller'in Tur 1'ini bitirmelisin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe Tour 1 von Sprachen ab, um Küche freizuschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Tour 1 of Languages to unlock Flavors."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina la Ronda 1 de Idiomas para desbloquear Sabores."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lezzetler'i açmak için Diller'in Tur 1'ini bitirmelisin."
+          }
+        }
+      }
+    },
+    "Diller'e git" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu Sprachen"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Languages"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir a Idiomas"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diller'e git"
+          }
+        }
+      }
+    },
+    "Başkentler kilitli" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hauptstädte ist gesperrt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capitals is locked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capitales está bloqueado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentler kilitli"
+          }
+        }
+      }
+    },
+    "Başkentler'i açmak için Lezzetler'in Tur 1'ini bitirmelisin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe Tour 1 von Küche ab, um Hauptstädte freizuschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Tour 1 of Flavors to unlock Capitals."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina la Ronda 1 de Sabores para desbloquear Capitales."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başkentler'i açmak için Lezzetler'in Tur 1'ini bitirmelisin."
+          }
+        }
+      }
+    },
+    "Lezzetler'e git" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu Küche"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Go to Flavors"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ir a Sabores"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lezzetler'e git"
+          }
+        }
+      }
+    },
+    "Tur %lld kilitli" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour %lld ist gesperrt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tour %lld is locked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La ronda %lld está bloqueada"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tur %lld kilitli"
+          }
+        }
+      }
+    },
+    "Tur %lld'i açmak için önce Tur %lld'i bitirmelisin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe zuerst Tour %2$lld ab, um Tour %1$lld freizuschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish Tour %2$lld first to unlock Tour %1$lld."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina primero la Ronda %2$lld para desbloquear la Ronda %1$lld."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tur %lld'i açmak için önce Tur %lld'i bitirmelisin."
+          }
+        }
+      }
+    },
+    "Bu seviye kilitli" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Level ist gesperrt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This level is locked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este nivel está bloqueado"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu seviye kilitli"
+          }
+        }
+      }
+    },
+    "Önceki seviyeyi bitirince bu seviye açılır." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieses Level wird freigeschaltet, wenn du das vorherige abschließt."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This level unlocks when you finish the previous one."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este nivel se desbloquea al terminar el anterior."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki seviyeyi bitirince bu seviye açılır."
+          }
+        }
+      }
+    },
+    "Bu bölüm kilitli" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieser Bereich ist gesperrt"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This section is locked"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta sección está bloqueada"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu bölüm kilitli"
+          }
+        }
+      }
+    },
+    "Bu bölümü açmak için önceki bölümün tüm seviyelerini bitirmelisin." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe alle Level des vorherigen Bereichs ab, um diesen freizuschalten."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish all levels of the previous section to unlock this one."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termina todos los niveles de la sección anterior para desbloquear esta."
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu bölümü açmak için önceki bölümün tüm seviyelerini bitirmelisin."
+          }
+        }
+      }
+    },
+    "Kilitli. Neden kilitli olduğunu öğrenmek için dokun" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesperrt. Tippe, um zu sehen, warum"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Locked. Tap to see why"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bloqueado. Toca para ver por qué"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilitli. Neden kilitli olduğunu öğrenmek için dokun"
+          }
+        }
+      }
+    },
+    "Günlük seri hakkında bilgi verir" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt Informationen zu deiner Tagesserie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows information about your daily streak"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra información sobre tu racha diaria"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Günlük seri hakkında bilgi verir"
+          }
+        }
+      }
+    },
+    "Puan hakkında bilgi verir" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt Informationen zu Punkten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows information about points"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra información sobre los puntos"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puan hakkında bilgi verir"
+          }
+        }
+      }
+    },
     "Gizlilik Politikası" : {
       "extractionState" : "manual",
       "localizations" : {
