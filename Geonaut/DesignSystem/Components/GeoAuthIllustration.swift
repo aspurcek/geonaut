@@ -54,12 +54,7 @@ struct GeoAuthIllustration: View {
 /// yaklaşımıyla (bkz. GeoFlagAnswerOption) tutarlı şekilde emoji kullanıldı.
 struct GeoSadIllustration: View {
     var body: some View {
-        Circle()
-            .fill(GeoColor.accentTertiary)
-            .frame(width: 120, height: 120)
-            .overlay {
-                Text("🙁").font(.system(size: 48))
-            }
+        GeoSadFace(size: 120)
     }
 }
 

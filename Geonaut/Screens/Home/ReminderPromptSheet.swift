@@ -10,7 +10,8 @@ struct ReminderPromptSheet: View {
 
     var body: some View {
         VStack(spacing: GeoSpacing.lg) {
-            Text("🔥").font(.system(size: 54))
+            GeoGlyphCircle(symbol: "flame.fill", background: GeoColor.accentPrimary, size: 84)
+                .kasifWinGlow(color: GeoColor.accentHighlight, size: 170)
             Text("Serini korumak ister misin?")
                 .font(.custom(GeoFontName.balooBold, size: 22))
                 .foregroundStyle(GeoColor.textPrimary)

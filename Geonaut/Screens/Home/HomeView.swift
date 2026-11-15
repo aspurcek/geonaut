@@ -1,3 +1,4 @@
+import StoreKit
 import SwiftUI
 
 /// Figma "Ana Sayfa - Kıta Yolu" (node 271:5428) — tüm 4 kategorinin ortak ana ekranı.
@@ -55,6 +56,15 @@ struct HomeView: View {
     @State private var showReminderPrompt = false
     /// Bu oturumda bir seviye gerçekten bitti mi — sayfa, eski oyuncuya alakasız bir anda (ör. bir ekrandan geri dönerken) çıkmasın.
     @State private var completedStageThisSession = false
+    /// "Bugün" sayfası (günlük hedef + görevler + seri koruyucu, bkz. DailyEngagement).
+    @State private var showDailySheet = false
+    /// Ana Sayfa'daki "Düello: sıra sende" kartından açılan düello.
+    @State private var duelContext: DuelManager.PlayContext?
+    /// Son biten seviye 3 yıldız mıydı — mağaza puanı istemek için olumlu an (bkz. maybeRequestReview).
+    @State private var lastStageWasGreat = false
+    @Environment(\.requestReview) private var requestReview
+    /// Mağaza puanı penceresinin en son istendiği sürüm — her sürümde en fazla bir kez.
+    @AppStorage("geonaut.reviewRequestedVersion") private var reviewRequestedVersion = ""
 
     private enum HomeCategory {
         case bayrakTahmin, haritaBilmece, anaDiller, dunyaYemekleri, baskentler
@@ -133,10 +143,34 @@ struct HomeView: View {
             continentDone: progress.isContinentCompleted(progressKey, stageCount: stageCount),
             level: GeoLevel.level(forPoints: progress.lifetimePoints)
         )
-        points += progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+        let awarded = progress.pointsToAward(continent: progressKey, stageIndex: stageIndex, earnedPoints: earnedPoints)
+        points += awarded
+        // Haftalık arkadaş sıralaması (Game Center "Bu hafta") — bkz. SocialStats.
+        GameCenterManager.shared.submitWeekly(points: SocialStats.shared.addWeekPoints(awarded))
         progress.markStageCompleted(continent: progressKey, stageIndex: stageIndex)
         progress.markCountriesSeen(seenCodes)
+        // Günlük hedef / görevler (bkz. DailyEngagement). Her doğru cevap pointsPerCorrectAnswer kazandırdığı için doğru sayısı buradan çıkar.
+        let correct = earnedPoints / max(GameRules.pointsPerCorrectAnswer, 1)
+        DailyEngagement.shared.recordStageCompleted(correct: correct, total: seenCodes.count)
+        lastStageWasGreat = GameRules.stars(correctCount: correct) == 3
+        // Game Center'a bağlıysa güncel ömür boyu puanı skor tablosuna gönder (bağlı değilse hiçbir şey yapmaz).
+        GameCenterManager.shared.submit(points: progress.lifetimePoints)
         onStageCompleted()
+    }
+
+    /// Mağaza puanı penceresi (Apple'ın kendi penceresi; yılda en fazla 3 kez gösterilir, Apple karar verir).
+    /// Yalnızca olumlu bir anda: gerçek hesap, en az 5 seviye bitmiş, bu seviye 3 yıldız, bu sürümde ilk kez,
+    /// ve kutlama ekranları araya girmeden oyuncu seviye haritasına / Ana Sayfa'ya dönmüşken.
+    private func maybeRequestReview() {
+        guard !isGuest, !isDemo, lastStageWasGreat, progress.completedStageKeysExport.count >= 5 else { return }
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? ""
+        guard !version.isEmpty, reviewRequestedVersion != version else { return }
+        reviewRequestedVersion = version
+        lastStageWasGreat = false
+        Task {
+            try? await Task.sleep(for: .seconds(1))
+            requestReview()
+        }
     }
 
     /// Etap sonrası sıra: ünvan yükseldiyse önce ÜNVAN ekranı, sonra asıl akış (rozet → kupa → ana sayfa).
@@ -148,6 +182,8 @@ struct HomeView: View {
             path.append(Route.levelUp(from: levelBefore, to: levelAfter))
         } else {
             proceed()
+            // Rozet/kupa ekranı açılmadıysa (seviye haritasına ya da Ana Sayfa'ya dönüldüyse) uygun an.
+            if path.count <= 1 { maybeRequestReview() }
         }
     }
 
@@ -182,7 +218,7 @@ struct HomeView: View {
                     VStack(spacing: GeoSpacing.xxxxl) {
                         // Figma "Ana Sayfa - Seri Uyarısı (Toast)" (node 508:11955).
                         if streakAtRisk {
-                            GeoToast(message: "Serini kaybetmek üzeresin! Bugün oyna, seriyi koru. 🔥", tone: .warning)
+                            GeoToast(message: "Serini kaybetmek üzeresin! Bugün oyna, seriyi koru.", tone: .warning)
                                 .padding(.horizontal, GeoSpacing.xl)
                         }
                         if !cloudReachable && cloudAccountMissing {
@@ -219,6 +255,16 @@ struct HomeView: View {
                 showReminderPrompt = true
             }
             .sheet(item: $infoSheet) { InfoSheet(content: $0) }
+            .sheet(isPresented: $showDailySheet) { DailySheet() }
+            .fullScreenCover(item: $duelContext) { context in
+                DuelFlowView(context: context, onClose: {
+                    duelContext = nil
+                    Task { await DuelManager.shared.refresh() }
+                }, onRematch: { _, opponentID in
+                    duelContext = nil
+                    Task { await DuelManager.shared.challenge(friendID: opponentID) }
+                })
+            }
             .sheet(isPresented: $showReminderPrompt) {
                 ReminderPromptSheet(
                     streakDays: streak,
@@ -652,8 +698,8 @@ struct HomeView: View {
                 case .mixedComplete(let category):
                     BadgeEarnedView(
                         title: "Karışık",
-                        icon: "🔀",
-                        accentColor: BadgeCatalog.BadgeTint.apricot,
+                        icon: "shuffle",
+                        accentColor: BadgeCatalog.BadgeTint.mixed,
                         headline: "Karışık Bölüm Tamamlandı!",
                         message: mixedBadgeMessage(for: category),
                         onContinue: { advanceAfterStage(category, tour: 0, wasTourDone: false) }
@@ -663,7 +709,7 @@ struct HomeView: View {
                 case .mapSectionBadge(let isCountries):
                     BadgeEarnedView(
                         title: isCountries ? "Ülkeler Rozeti" : "Kıtalar Rozeti",
-                        icon: isCountries ? "📍" : "🌍",
+                        icon: isCountries ? "mappin.and.ellipse" : "globe.europe.africa.fill",
                         accentColor: isCountries ? GeoColor.accentSuccess : GeoColor.accentInfo,
                         headline: "Yeni rozet kazandın!",
                         message: isCountries
@@ -732,6 +778,20 @@ struct HomeView: View {
                 .accessibilityLabel("Profil")
             }
             .padding(.horizontal, GeoSpacing.xl)
+
+            // Günlük hedef + görevler + seri koruyucu (misafirde yok: kayıt tutulmuyor).
+            if !isGuest && DailyEngagement.shared.isActive {
+                DailyStrip(onTap: { showDailySheet = true })
+                    .padding(.horizontal, GeoSpacing.xl)
+            }
+
+            // Sırası gelen düello varsa tek dokunuşla oyna (kullanıcı kararı 2026-11-15).
+            if !isGuest {
+                DuelTurnBanner { entry in
+                    Task { duelContext = await DuelManager.shared.startPlaying(entry) }
+                }
+                .padding(.horizontal, GeoSpacing.xl)
+            }
 
             categoryRow
         }

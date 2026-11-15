@@ -63,7 +63,7 @@ struct LearnContinentsView: View {
         }
         .padding(.horizontal, GeoSpacing.xl)
         .padding(.top, GeoSpacing.md)
-        .background { GeoColor.bgSurface.ignoresSafeArea() }
+        .background { GeoColor.bgCanvas.ignoresSafeArea() }
         .countryInfoSheet(selected: $selectedCountry)
     }
 
@@ -128,14 +128,14 @@ struct LearnContinentsView: View {
                 GeoStatusView(style: .empty, title: "Sonuç bulunamadı", subtitle: "Farklı bir ülke veya kelime denemeyi dene.")
             } else {
             ScrollView {
-                LazyVStack(spacing: 0) {
+                LazyVStack(spacing: GeoSpacing.sm) {
                     ForEach(filteredCountries, id: \.code) { country in
                         Button {
                             selectedCountry = cardInfo(for: country)
                         } label: {
-                            GeoFlagListRow(
-                                countryCode: country.code, countryName: country.name, continentName: country.continent,
-                                showsWhiteBackground: false
+                            GeoLearnRow(
+                                code: country.code, name: country.name,
+                                detail: D(country.continent), detailIcon: "globe.europe.africa.fill"
                             )
                         }
                         .buttonStyle(.plain)

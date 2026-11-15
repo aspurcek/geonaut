@@ -13,7 +13,7 @@ struct StreakRevivedView: View {
 
             GeoAuthIllustration(type: .success)
 
-            Text("Serin Canlandırıldı! 🎉")
+            Text("Serin Canlandırıldı!")
                 .font(.custom(GeoFontName.balooBold, size: 26))
                 .foregroundStyle(GeoColor.textPrimary)
 

@@ -28,11 +28,19 @@ struct GeoStatPill: View {
 
     var body: some View {
         HStack(spacing: GeoSpacing.sm) {
-            Image(systemName: icon.systemImage)
-                .font(.system(size: 18))
-                .foregroundStyle(icon.tint)
-                .symbolEffect(.bounce, options: .nonRepeating, value: icon == .hearts ? value : "")
-                .overlay { fallingHeart }
+            switch icon {
+            // Seri ve puan: Geonaut'a özgü çizim ikonlar (bkz. GeoCurrencyIcons). Seri 0 ise alev sönük.
+            case .streak:
+                GeoFlameIcon(size: 21, lit: (Int(value) ?? 1) > 0)
+            case .points:
+                GeoGemIcon(size: 20)
+            case .hearts:
+                Image(systemName: icon.systemImage)
+                    .font(.system(size: 18))
+                    .foregroundStyle(icon.tint)
+                    .symbolEffect(.bounce, options: .nonRepeating, value: value)
+                    .overlay { fallingHeart }
+            }
             Text(value)
                 .font(GeoTypography.bodyBoldL)
                 .foregroundStyle(GeoColor.textPrimary)

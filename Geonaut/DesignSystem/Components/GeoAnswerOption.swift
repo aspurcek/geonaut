@@ -1,16 +1,22 @@
 import SwiftUI
 
 /// Figma Design System / Bileşenler / Answer Option (node 171:911). Soru ekranlarındaki
-/// çoktan seçmeli şıklar. State=Default/Correct/Wrong.
+/// çoktan seçmeli şıklar. State=Default/Correct/Wrong/Revealed.
+/// `.revealed`: oyuncu cevap veremeden (ör. düelloda süre bitti) doğru şıkkın gösterilmesi —
+/// başarı gibi yeşil değil, gri ve onay işaretli (kullanıcı kararı 2026-11-15).
 struct GeoAnswerOption: View {
-    enum State { case normal, correct, wrong }
+    enum State { case normal, correct, wrong, revealed }
 
     let text: String
     var state: State = .normal
     var action: (() -> Void)? = nil
 
     private var background: Color {
-        state == .correct ? GeoColor.accentSuccess : GeoColor.bgSurface
+        switch state {
+        case .correct: GeoColor.accentSuccess
+        case .revealed: GeoColor.bgLocked
+        default: GeoColor.bgSurface
+        }
     }
 
     private var borderColor: Color {
@@ -18,6 +24,7 @@ struct GeoAnswerOption: View {
         case .normal: GeoColor.borderSubtle
         case .correct: GeoColor.accentSuccessStrong
         case .wrong: GeoColor.accentDanger
+        case .revealed: GeoColor.iconInactive
         }
     }
 
@@ -26,6 +33,7 @@ struct GeoAnswerOption: View {
         case .normal: GeoColor.textPrimary
         case .correct: GeoColor.accentSuccessText
         case .wrong: GeoColor.accentDanger
+        case .revealed: GeoColor.textSecondary
         }
     }
 
@@ -33,7 +41,13 @@ struct GeoAnswerOption: View {
         Button {
             action?()
         } label: {
-            Text(D(text))
+            HStack(spacing: 6) {
+                if state == .revealed {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 15, weight: .bold))
+                }
+                Text(D(text))
+            }
                 .font(.custom(GeoFontName.balooBold, size: 15))
                 .foregroundStyle(textColor)
                 .frame(maxWidth: .infinity)
@@ -56,6 +70,7 @@ struct GeoAnswerOption: View {
         GeoAnswerOption(text: "Ülke Adı", state: .normal) {}
         GeoAnswerOption(text: "Ülke Adı", state: .correct) {}
         GeoAnswerOption(text: "Ülke Adı", state: .wrong) {}
+        GeoAnswerOption(text: "Ülke Adı", state: .revealed) {}
     }
     .padding(GeoSpacing.xxxl)
     .background(GeoColor.bgCanvas)

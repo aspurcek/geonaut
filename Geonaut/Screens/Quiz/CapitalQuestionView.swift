@@ -11,7 +11,10 @@ struct CapitalQuestionView: View {
     var onBack: () -> Void
 
     @State private var selectedOption: String?
-    @State private var isAnswered = false
+    @State private var didAnswer = false
+    /// Pas geçilince doğru cevap gösterilir (seçim yapılmadan) — bkz. GeoPassBar.
+    var revealAnswer = false
+    private var isAnswered: Bool { didAnswer || revealAnswer }
 
     private var promptText: LocalizedStringKey {
         switch question.format {
@@ -124,7 +127,7 @@ struct CapitalQuestionView: View {
     private func select(_ option: String) {
         guard !isAnswered else { return }
         selectedOption = option
-        isAnswered = true
+        didAnswer = true
         onAnswer(option == question.correct)
     }
 

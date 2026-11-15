@@ -125,6 +125,7 @@ enum InfoSheets {
             lines: [
                 L("Her gün en az bir seviye bitirince serin bir artar."),
                 L("Bir gün hiç oynamazsan seri kopar. 50 puanla kaldığın yerden canlandırabilirsin."),
+                L("Seri koruyucun varsa oynamadığın gün için kendiliğinden kullanılır ve serin bozulmaz. Günlük görevleri bitirerek kazanırsın."),
                 L("Serin 7, 14, 21… güne ulaşınca 100 puan hediye kazanırsın."),
                 L("Profilindeki haftalık takvimde hangi günlerde oynadığını görebilirsin."),
             ]

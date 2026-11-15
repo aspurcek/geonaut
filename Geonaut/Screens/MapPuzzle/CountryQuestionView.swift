@@ -11,7 +11,10 @@ struct CountryQuestionView: View {
     var onBack: () -> Void
 
     @State private var selectedCode: String?
-    @State private var isAnswered = false
+    @State private var didAnswer = false
+    /// Pas geçilince doğru cevap gösterilir (seçim yapılmadan) — bkz. GeoPassBar.
+    var revealAnswer = false
+    private var isAnswered: Bool { didAnswer || revealAnswer }
 
     var body: some View {
         VStack(spacing: GeoSpacing.xxl) {
@@ -98,7 +101,7 @@ struct CountryQuestionView: View {
     private func select(_ option: MapCountry) {
         guard !isAnswered else { return }
         selectedCode = option.code
-        isAnswered = true
+        didAnswer = true
         onAnswer(option.code == question.country.code)
     }
 

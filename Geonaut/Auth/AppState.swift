@@ -27,6 +27,8 @@ final class AppState {
     /// iCloud hesabı yok / giriş yapılmamış (CKError.notAuthenticated) — Ana Sayfa'da, ilerlemenin
     /// yalnızca bu cihazda kalacağını açıkça söyleyen ayrı bir uyarı gösterilir.
     private(set) var cloudAccountMissing = false
+    /// Seri koruyucu kaç günü kurtardı — Ana Sayfa bir kez bilgi verir, sonra temizlenir (bkz. DailyEngagement).
+    private(set) var freezeNoticeDays: Int?
     /// Yerel yedek gerçek oyuncu verisi taşıyorsa bulut tekrar denenebilir; yedek yoksa
     /// (boş varsayılan profil) buluttaki gerçek kaydın üzerine yazma riski nedeniyle denenmez.
     private var localIsAuthoritative = true
@@ -113,11 +115,13 @@ final class AppState {
     /// "Şimdi değil, önce deneyeyim" — Apple'a hiç dokunmadan doğrudan misafir moduna
     /// geçer (bkz. Phase.guest).
     func enterGuestMode() {
+        DailyEngagement.shared.activate(accountKey: nil)
         phase = .guest
     }
 
     /// Demo girişi başarılı olunca (bkz. DemoAccess) — tüm kilitler açık demo oturumu.
     func enterDemoMode() {
+        DailyEngagement.shared.activate(accountKey: "demo")
         phase = .demo
     }
 
@@ -137,6 +141,13 @@ final class AppState {
             let ago = UserDefaults.standard.integer(forKey: "debugStreakAgo")
             profile.lastActiveDate = Calendar.current.date(byAdding: .day, value: -ago, to: .now) ?? .now
         }
+        DailyEngagement.shared.activate(accountKey: "debug-guest")
+        if let raw = UserDefaults.standard.string(forKey: "debugFreezes"), let freezes = Int(raw) {
+            // `-debugFreezes N`: seri koruyucu sayısını ayarla (seri koruyucu akışını denemek için).
+            DailyEngagement.shared.debugSetFreezes(freezes)
+        }
+        let covered = applyStreakFreezes(&profile)
+        if covered > 0 { freezeNoticeDays = covered }
         phase = .signedIn(profile)
     }
 
@@ -165,6 +176,8 @@ final class AppState {
         }
         KeychainStore.remove(Self.userIdentifierKey)
         StreakReminderScheduler.cancelAll() // çıkış yapan kişiye eski serinin hatırlatması gitmesin
+        DailyEngagement.shared.activate(accountKey: nil)
+        freezeNoticeDays = nil
         phase = .signedOut
     }
 
@@ -190,6 +203,9 @@ final class AppState {
         LocalProfileCache.delete(userIdentifier: profile.appleUserIdentifier)
         KeychainStore.remove(Self.userIdentifierKey)
         StreakReminderScheduler.cancelAll()
+        DailyEngagement.shared.deleteStoredData(accountKey: profile.appleUserIdentifier)
+        DailyEngagement.shared.activate(accountKey: nil)
+        freezeNoticeDays = nil
         phase = .signedOut
         return true
     }
@@ -225,6 +241,7 @@ final class AppState {
     @MainActor
     private func loadProfile(userIdentifier: String, fallbackName: String, email: String? = nil) async {
         phase = .loadingProfile
+        DailyEngagement.shared.activate(accountKey: userIdentifier)
         let cached = LocalProfileCache.load(userIdentifier: userIdentifier)
         do {
             // iCloud yanıt vermezse (yavaş/kopuk ağ) CloudKit çağrısı süresiz bekleyebilir ve
@@ -243,7 +260,12 @@ final class AppState {
             }
             Self.recordCloudStatus(nil)
             updateCloudAccountState(nil)
+            let covered = applyStreakFreezes(&profile)
             phase = .signedIn(profile)
+            if covered > 0 {
+                freezeNoticeDays = covered
+                persist(profile)
+            }
         } catch {
             Self.recordCloudStatus(error)
             updateCloudAccountState(error)
@@ -251,11 +273,16 @@ final class AppState {
             // uygulama dışında bırakmak yerine cihazdaki yedekle (yoksa yeni profille) devam
             // ettiriyoruz. Değişiklikler `dirty` işaretlenir; bulut kaydının üzerine boş
             // profil yazılmaz, bağlantı gelince yedek gönderilir.
-            let profile = cached?.profile ?? PlayerProfile.newPlayer(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
+            var profile = cached?.profile ?? PlayerProfile.newPlayer(appleUserIdentifier: userIdentifier, displayName: fallbackName, email: email)
             LocalProfileCache.save(profile, dirty: cached?.dirty ?? false)
             cloudReachable = false
             localIsAuthoritative = cached != nil
+            let covered = applyStreakFreezes(&profile)
             phase = .signedIn(profile)
+            if covered > 0 {
+                freezeNoticeDays = covered
+                persist(profile)
+            }
         }
     }
 
@@ -301,6 +328,14 @@ final class AppState {
 
     /// "Avatarını Oluştur" ekranından zemin rengi + karakter (ten/saç/aksesuar/yüz
     /// detayı) güncellemesi — bkz. updateProfile'daki aynı fire-and-forget gerekçesi.
+    /// Düello / arkadaş daveti ödülü — puanı profile ekleyip kalıcı yazar.
+    func awardPoints(_ amount: Int) {
+        guard amount > 0, case .signedIn(var profile) = phase else { return }
+        profile.points += amount
+        phase = .signedIn(profile)
+        persist(profile)
+    }
+
     func updateAvatar(avatarColorHex: UInt32, character: AvatarCharacter) {
         guard case .signedIn(var profile) = phase else { return }
         profile.avatarColorHex = avatarColorHex
@@ -308,6 +343,47 @@ final class AppState {
         profile.hasCustomAvatar = true
         phase = .signedIn(profile)
         persist(profile)
+    }
+
+    // MARK: Seri koruyucu
+
+    /// Oynanmadan geçen gün sayısı (dün oynandıysa 0). Seri yoksa 0.
+    private static func missedDays(_ profile: PlayerProfile, now: Date = .now) -> Int {
+        guard profile.streakDays > 0 else { return 0 }
+        let calendar = Calendar.current
+        let daysSince = calendar.dateComponents([.day], from: calendar.startOfDay(for: profile.lastActiveDate), to: calendar.startOfDay(for: now)).day ?? 0
+        return max(daysSince - 1, 0)
+    }
+
+    /// Kopan seri, eldeki seri koruyucularla kurtarılabilir mi? (RootView bu durumda Seri Kaybı akışını göstermez.)
+    func streakCoverableByFreezes(_ profile: PlayerProfile) -> Bool {
+        DailyEngagement.shared.canCover(missedDays: Self.missedDays(profile))
+    }
+
+    /// Kaçırılan her gün için bir seri koruyucu harcar ve son aktif günü DÜNE çeker: seri sayısı korunur,
+    /// bugün oynanınca normal şekilde bir artar. Koruyucular yetmezse hiçbir şey değişmez (Seri Kaybı akışı çıkar).
+    /// Dönüş: kurtarılan gün sayısı (0 = harcanmadı).
+    private func applyStreakFreezes(_ profile: inout PlayerProfile) -> Int {
+        let missed = Self.missedDays(profile)
+        guard missed > 0, DailyEngagement.shared.consumeFreezes(missed) else { return 0 }
+        let calendar = Calendar.current
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: calendar.startOfDay(for: .now)) ?? .now
+        profile.lastActiveDate = yesterday.addingTimeInterval(12 * 60 * 60)
+        return missed
+    }
+
+    /// Uygulama ön plana gelince (gün değişmiş olabilir) — gerekiyorsa seri koruyucuyu uygular.
+    func handleBecameActive() {
+        guard case .signedIn(var profile) = phase else { return }
+        let covered = applyStreakFreezes(&profile)
+        guard covered > 0 else { return }
+        freezeNoticeDays = covered
+        phase = .signedIn(profile)
+        persist(profile)
+    }
+
+    func clearFreezeNotice() {
+        freezeNoticeDays = nil
     }
 
     /// "Seri Kaybı Akışı" (bkz. Streak.swift) — "50 Puan ile Canlandır": puan düşer,

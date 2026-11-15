@@ -32,7 +32,7 @@ struct GeoAvatar: View {
 
 /// GeoAvatar ve AvatarBuilderView arasında paylaşılan, karakteri tanımlayan değerler —
 /// bkz. PlayerProfile'daki kalıcı alanların taslak/geçici (draft) hâli.
-struct AvatarCharacter: Equatable {
+struct AvatarCharacter: Equatable, Codable {
     var skinTone: SkinTone = .acik
     var hairStyle: HairStyle = .kisa
     var hairColorHex: UInt32 = 0x222938
