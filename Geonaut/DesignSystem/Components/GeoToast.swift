@@ -63,7 +63,7 @@ struct GeoToast: View {
         GeoToast(message: "E-posta gelmedi mi? Spam klasörünü kontrol et ya da tekrar gönder.", tone: .info)
         GeoToast(message: "E-posta ya da şifre yanlış. Tekrar dene.", tone: .danger)
         GeoToast(message: "Harika! Bu İtalya", tone: .success)
-        GeoToast(message: "Serini kaybetmek üzeresin! Bugün oyna, seriyi koru. 🔥", tone: .warning)
+        GeoToast(message: "Serini kaybetmek üzeresin! Bugün oyna, seriyi koru.", tone: .warning)
     }
     .padding(GeoSpacing.xxxl)
     .background(GeoColor.bgCanvas)

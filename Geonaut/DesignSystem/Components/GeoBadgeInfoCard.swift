@@ -22,16 +22,8 @@ struct GeoBadgeInfoCard: View {
 
     var body: some View {
         VStack(spacing: GeoSpacing.lg) {
-            Circle()
-                .fill(info.unlocked ? info.accentColor : GeoColor.bgLocked)
-                .strokeBorder(info.unlocked ? .clear : GeoColor.borderSubtle, lineWidth: 1.5)
-                .frame(width: 88, height: 88)
-                .overlay {
-                    Text(info.icon)
-                        .font(.system(size: 40))
-                        .grayscale(info.unlocked ? 0 : 1)
-                        .opacity(info.unlocked ? 1 : 0.35)
-                }
+            GeoMedal(symbol: info.icon, color: info.accentColor, size: 96, locked: !info.unlocked)
+                .padding(.top, GeoSpacing.xs)
 
             Text(LocalizedStringKey(info.title))
                 .font(.custom(GeoFontName.balooExtraBold, size: 22))
@@ -39,7 +31,7 @@ struct GeoBadgeInfoCard: View {
                 .multilineTextAlignment(.center)
 
             GeoBadge(
-                text: info.unlocked ? "Kazanıldı! 🎉" : "Henüz kazanılmadı",
+                text: info.unlocked ? "Kazanıldı!" : "Henüz kazanılmadı",
                 tone: info.unlocked ? .success : .neutral
             )
 
@@ -79,12 +71,12 @@ extension View {
 #Preview {
     VStack {
         GeoBadgeInfoCard(info: BadgeCardInfo(
-            title: "Avrupa", icon: "🗼", accentColor: GeoColor.accentPrimary, unlocked: true,
+            title: "Avrupa", icon: "building.columns.fill", accentColor: GeoColor.accentPrimary, unlocked: true,
             description: "Bayraklar'da Avrupa bölümünün 8 seviyesini tamamla."
         ))
         Divider()
         GeoBadgeInfoCard(info: BadgeCardInfo(
-            title: "Karışık", icon: "🔀", accentColor: GeoColor.textSecondary, unlocked: false,
+            title: "Karışık", icon: "shuffle", accentColor: GeoColor.accentTertiaryStrong, unlocked: false,
             description: "Diğer 7 kıtayı bitirince açılan Karışık bölümünün 8 seviyesini tamamla."
         ))
     }

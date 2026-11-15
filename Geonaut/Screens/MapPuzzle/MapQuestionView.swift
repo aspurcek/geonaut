@@ -16,7 +16,10 @@ struct MapQuestionView: View {
     private static let mapAspectRatio: CGFloat = 633.982 / 545.852
 
     @State private var selectedOption: String?
-    @State private var isAnswered = false
+    @State private var didAnswer = false
+    /// Pas geçilince doğru cevap gösterilir (seçim yapılmadan) — bkz. GeoPassBar.
+    var revealAnswer = false
+    private var isAnswered: Bool { didAnswer || revealAnswer }
     @State private var tapPoint: CGPoint?
     @State private var tapWasCorrect = false
 
@@ -36,7 +39,7 @@ struct MapQuestionView: View {
                 .frame(maxWidth: .infinity)
 
             if question.kind == .highlightMapSelectName {
-                Text("🌍").font(.system(size: 40)).frame(height: 40)
+                GeoGlyphCircle(symbol: "globe.europe.africa.fill", background: GeoColor.accentInfo, size: 44)
             } else {
                 Text(GeoFlagAnswerOption.flagEmoji(for: question.country.code))
                     .font(.system(size: 90))
@@ -46,9 +49,14 @@ struct MapQuestionView: View {
             mapCard
 
             if question.kind == .flagTapMap {
-                Text(LocalizedStringKey(tapHintText))
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(GeoColor.textMuted)
+                HStack(spacing: 6) {
+                    Image(systemName: tapHint.icon)
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(tapHint.tint)
+                    Text(LocalizedStringKey(tapHint.text))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(GeoColor.textMuted)
+                }
             } else {
                 VStack(spacing: GeoSpacing.md) {
                     ForEach(question.continentOptions, id: \.self) { option in
@@ -76,9 +84,11 @@ struct MapQuestionView: View {
         }
     }
 
-    private var tapHintText: String {
-        guard isAnswered else { return "☝️ Ülkenin bulunduğu yere dokun" }
-        return tapWasCorrect ? "✓ Doğru!" : "✕ Doğru bölge işaretlendi"
+    private var tapHint: (icon: String, tint: Color, text: String) {
+        guard isAnswered else { return ("hand.tap.fill", GeoColor.textMuted, "Ülkenin bulunduğu yere dokun") }
+        return tapWasCorrect
+            ? ("checkmark.circle.fill", GeoColor.accentSuccessStrong, "Doğru!")
+            : ("xmark.circle.fill", GeoColor.accentDanger, "Doğru bölge işaretlendi")
     }
 
     @ViewBuilder
@@ -144,7 +154,7 @@ struct MapQuestionView: View {
                 let correct = (dx * dx + dy * dy) <= 1
                 tapPoint = location
                 tapWasCorrect = correct
-                isAnswered = true
+                didAnswer = true
                 onAnswer(correct)
             }
         }
@@ -157,7 +167,7 @@ struct MapQuestionView: View {
     private func select(_ option: String) {
         guard !isAnswered else { return }
         selectedOption = option
-        isAnswered = true
+        didAnswer = true
         onAnswer(option == question.correctContinent)
     }
 

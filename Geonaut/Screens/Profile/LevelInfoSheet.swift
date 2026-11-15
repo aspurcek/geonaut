@@ -47,7 +47,11 @@ struct LevelInfoSheet: View {
                 Circle()
                     .fill(standing.level.accentColor)
                     .frame(width: 80, height: 80)
-                    .overlay { Text(standing.level.emoji).font(.system(size: 38)) }
+                    .overlay {
+                        Image(systemName: standing.level.symbol)
+                            .font(.system(size: 34, weight: .bold))
+                            .foregroundStyle(GeoGlyph.ink(on: standing.level.accentColor))
+                    }
 
                 Text(L(standing.level.title))
                     .font(.custom(GeoFontName.balooExtraBold, size: 24))
@@ -103,11 +107,7 @@ struct LevelInfoSheet: View {
         let reached = level.rank <= standing.level.rank
         let isCurrent = level == standing.level
         return HStack(spacing: GeoSpacing.md) {
-            Text(level.emoji)
-                .font(.system(size: 18))
-                .frame(width: 34, height: 34)
-                .background(reached ? level.accentColor : GeoColor.bgLocked, in: Circle())
-                .opacity(reached ? 1 : 0.6)
+            GeoGlyphCircle(symbol: level.symbol, background: level.accentColor, size: 34, locked: !reached)
             Text(L(level.title))
                 .font(.custom(GeoFontName.balooBold, size: 16))
                 .foregroundStyle(reached ? GeoColor.textPrimary : GeoColor.textMuted)

@@ -1,50 +1,27 @@
 import SwiftUI
 
-/// Figma "Bayrakları Öğren" (node 278:2394). Bkz. Bayrak Tahmin Kural Kitabı böl. 02:
-/// "Oyun dışı, baskısız bir keşif alanı — puan veya can etkilemez."
+/// "Bayrakları Öğren" (ilk sürüm: Figma node 278:2394) — 2026-11-14'ten beri ortak
+/// LearnCatalogView iskeletiyle: günün ülkesi, kıta filtreleri, varsayılan ızgara görünümü.
+/// Kural Kitabı böl. 02: "Oyun dışı, baskısız bir keşif alanı — puan veya can etkilemez."
 struct LearnFlagsView: View {
     var onBack: () -> Void
-    @State private var query = ""
     @State private var selectedCountry: CountryCardInfo?
 
     private var allCountries: [Country] { Countries.all.sortedLocalized(by: \.name) }
 
-    private var filtered: [Country] {
-        guard !query.isEmpty else { return allCountries }
-        return allCountries.filter { $0.name.localizedCaseInsensitiveContains(query) }
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            GeoScreenHeader(title: "Bayrakları Öğren", subtitle: "\(allCountries.count) ülkenin bayrağını keşfet", onBack: onBack)
-            .padding(.bottom, GeoSpacing.lg)
-
-            GeoSearchBar(placeholder: "Bayrak veya ülke adı ara...", text: $query)
-                .padding(.bottom, GeoSpacing.sm)
-
-            if filtered.isEmpty {
-                GeoStatusView(style: .empty, title: "Sonuç bulunamadı", subtitle: "Farklı bir ülke veya kelime denemeyi dene.")
-            } else {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(filtered, id: \.code) { country in
-                        Button {
-                            selectedCountry = cardInfo(for: country)
-                        } label: {
-                            GeoFlagListRow(countryCode: country.code, countryName: country.name)
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
-            }
-        }
-        .padding(.horizontal, GeoSpacing.xl)
-        .padding(.top, GeoSpacing.md)
-        // Figma'da bu ekranın zemini krem bgCanvas değil, neredeyse beyaz
-        // bgSurface (#FDFCF8) — satır kartlarıyla (Color.white) aynı aileden,
-        // krem zemin diğer ekranlardan farklı olarak burada kullanılmıyor.
-        .background { GeoColor.bgSurface.ignoresSafeArea() }
+        LearnCatalogView(
+            title: "Bayrakları Öğren",
+            subtitle: "\(allCountries.count) ülkenin bayrağını keşfet",
+            symbol: "flag.fill", tint: GeoColor.accentPrimary,
+            countries: allCountries,
+            detailIcon: "globe.europe.africa.fill",
+            detail: { CountryData.facts(for: $0.code)?.continent },
+            searchPlaceholder: "Bayrak veya ülke adı ara...",
+            prefersGrid: true,
+            onSelect: { selectedCountry = cardInfo(for: $0) },
+            onBack: onBack
+        )
         .countryInfoSheet(selected: $selectedCountry)
     }
 

@@ -135,13 +135,13 @@ private struct IntroPageQuiz: View {
                     .frame(maxWidth: .infinity)
 
                 // Havada uçuşan oyun öğeleri (puan, can, yıldız) — alttaki bayrak seçeneklerinden ayrışsın diye bayrak değil.
-                IntroChip(text: "💎 340", color: .white)
+                IntroChip(text: "340", color: .white, symbol: "diamond.fill", symbolColor: GeoColor.accentInfoStrong)
                     .rotationEffect(.degrees(-8))
                     .offset(x: appeared ? -120 : -260, y: appeared ? 44 : -60)
-                IntroChip(text: "❤️ 5", color: GeoColor.accentPrimarySoft.opacity(0.55))
+                IntroChip(text: "5", color: GeoColor.accentPrimarySoft.opacity(0.55), symbol: "heart.fill", symbolColor: GeoColor.accentDanger)
                     .rotationEffect(.degrees(9))
                     .offset(x: appeared ? 124 : 260, y: appeared ? 62 : -60)
-                IntroChip(text: "⭐⭐⭐", color: GeoColor.accentHighlight)
+                IntroChip(text: nil, color: GeoColor.accentHighlight, symbol: "star.fill", symbolColor: .white, symbolCount: 3)
                     .rotationEffect(.degrees(-6))
                     .offset(x: appeared ? 118 : 260, y: appeared ? 140 : 200)
 
@@ -186,7 +186,10 @@ private struct IntroPageQuiz: View {
                 .scaleEffect(hint && option.correct && picked == nil ? 1.07 : 1)
                 .offset(x: shaking == index ? 6 : 0)
             if isPicked {
-                Text(verbatim: "✓ +10")
+                HStack(spacing: 3) {
+                    Image(systemName: "checkmark")
+                    Text(verbatim: "+10")
+                }
                     .font(.system(size: 12, weight: .heavy))
                     .foregroundStyle(GeoColor.textPrimary)
                     .padding(.horizontal, 10).padding(.vertical, 4)
@@ -241,7 +244,7 @@ private struct IntroPageMedal: View {
                         .rotation3DEffect(.degrees(sway + dragAngle), axis: (x: 0, y: 1, z: 0), perspective: 0.5)
                         .shadow(color: .black.opacity(0.18), radius: 14, y: 10)
 
-                    IntroChip(text: "🔥 7 gün", color: .white)
+                    IntroChip(text: "7 gün", color: .white, symbol: "flame.fill", symbolColor: GeoColor.accentPrimary)
                         .rotationEffect(.degrees(-8))
                         .offset(x: -116, y: 30 + 5 * sin(t * 1.3))
                     IntroChip(text: "+100 puan", color: GeoColor.accentHighlight)
@@ -398,7 +401,13 @@ struct GlitterBar: View {
 private struct IntroPageWorld: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private let stickers = ["🚩", "🗺️", "🗣️", "🍜"]
+    /// Kategori kartlarıyla aynı simge ve renkler (Bayraklar, Haritalar, Diller, Lezzetler).
+    private let stickers: [(symbol: String, fill: Color)] = [
+        ("flag.fill", GeoColor.accentPrimary),
+        ("map.fill", GeoColor.accentInfo),
+        ("character.book.closed.fill", GeoColor.accentTertiary),
+        ("fork.knife", GeoColor.accentSuccess)
+    ]
 
     var body: some View {
         IntroPageLayout(title: "Hazır mısın, Geonaut?", message: "Giriş yapmadan ilk seviyeyi hemen deneyebilirsin.") {
@@ -417,7 +426,7 @@ private struct IntroPageWorld: View {
                     ForEach(stickers.indices, id: \.self) { index in
                         let angle = t * 0.55 + Double(index) * .pi / 2
                         let depth = (sin(angle) + 1) / 2 // 0 arka, 1 ön
-                        IntroSticker(emoji: stickers[index], width: 52, height: 52, rotation: Double(index * 7 - 10), corner: 26)
+                        IntroSticker(symbol: stickers[index].symbol, width: 52, height: 52, rotation: Double(index * 7 - 10), corner: 26, fill: stickers[index].fill)
                             .scaleEffect(0.82 + 0.25 * depth)
                             .offset(x: 150 * cos(angle), y: 70 + 45 * sin(angle))
                             .zIndex(depth > 0.5 ? 1 : -1)
@@ -634,7 +643,9 @@ private final class ClayGlobeTexture {
 
 /// Clay (kil) çıkartma: yumuşak, kabarık, üstte ışık yansıması, altta iç gölge ve çift gölge.
 private struct IntroSticker: View {
-    let emoji: String
+    /// Bayrak emojisi (içerik) — ya da `symbol` verilirse SF Symbol.
+    var emoji: String = ""
+    var symbol: String? = nil
     var width: CGFloat
     var height: CGFloat
     var rotation: Double
@@ -642,8 +653,16 @@ private struct IntroSticker: View {
     var fill: Color = .white
 
     var body: some View {
-        Text(verbatim: emoji)
-            .font(.system(size: height * 0.62))
+        Group {
+            if let symbol {
+                Image(systemName: symbol)
+                    .font(.system(size: height * 0.42, weight: .bold))
+                    .foregroundStyle(GeoGlyph.ink(on: fill))
+            } else {
+                Text(verbatim: emoji)
+                    .font(.system(size: height * 0.62))
+            }
+        }
             .frame(width: width, height: height)
             .clayBackground(fill, corner: corner)
             .rotationEffect(.degrees(rotation))
@@ -672,11 +691,21 @@ extension View {
 }
 
 private struct IntroChip: View {
-    let text: LocalizedStringKey
+    let text: LocalizedStringKey?
     var color: Color
+    var symbol: String? = nil
+    var symbolColor: Color = GeoColor.textPrimary
+    var symbolCount = 1
 
     var body: some View {
-        Text(text)
+        HStack(spacing: 4) {
+            if let symbol {
+                ForEach(0..<symbolCount, id: \.self) { _ in
+                    Image(systemName: symbol).foregroundStyle(symbolColor)
+                }
+            }
+            if let text { Text(text) }
+        }
             .font(.system(size: 13, weight: .heavy))
             .foregroundStyle(GeoColor.textPrimary)
             .padding(.horizontal, 14).padding(.vertical, 7)

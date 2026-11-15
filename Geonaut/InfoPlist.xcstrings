@@ -1,0 +1,35 @@
+{
+  "sourceLanguage" : "tr",
+  "version" : "1.0",
+  "strings" : {
+    "NSGKFriendListUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game Center arkadaşlarını Geonaut'ta görmek ve puanlarınızı karşılaştırmak için."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To show your Game Center friends in Geonaut and compare your points."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um deine Game-Center-Freunde in Geonaut anzuzeigen und eure Punkte zu vergleichen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para mostrar a tus amigos de Game Center en Geonaut y comparar vuestros puntos."
+          }
+        }
+      }
+    }
+  }
+}

@@ -16,8 +16,7 @@ struct BadgeEarnedView: View {
 
             AchievementChip(text: "YENİ ROZET", color: accentColor)
 
-            GeoAchievementBadge(title: title, icon: icon, accentColor: accentColor, state: .unlocked)
-                .scaleEffect(1.1)
+            GeoAchievementBadge(title: title, icon: icon, accentColor: accentColor, state: .unlocked, size: 96)
                 .kasifWinGlow(color: accentColor)
 
             Text(headline)
@@ -45,6 +44,6 @@ struct BadgeEarnedView: View {
 }
 
 #Preview {
-    BadgeEarnedView(title: "Kıtalar Rozeti", icon: "🌍", accentColor: GeoColor.accentInfo,
+    BadgeEarnedView(title: "Kıtalar Rozeti", icon: "globe.europe.africa.fill", accentColor: GeoColor.accentInfo,
                     headline: "Yeni rozet kazandın!", message: "Haritalar'da Kıtalar bölümünün 8 seviyesini tamamladın.", onContinue: {})
 }

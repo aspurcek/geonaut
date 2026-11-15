@@ -21,6 +21,66 @@ struct GeoCountryInfoCard: View {
     let info: CountryCardInfo
 
     var body: some View {
+        if let capital = info.capital {
+            capitalLayout(capital)
+        } else {
+            classicLayout
+        }
+    }
+
+    /// Başkentler (2026-11-14): Lezzetler'deki fotoğraf galerisinin karşılığı — üstte bayrak + ad,
+    /// ortada başkenti iğneyle gösteren harita, altta Başkenti/Kıtası kutuları.
+    private func capitalLayout(_ capital: String) -> some View {
+        VStack(spacing: GeoSpacing.md) {
+            HStack(spacing: GeoSpacing.sm) {
+                Text(GeoFlagAnswerOption.flagEmoji(for: info.code))
+                    .font(.system(size: 30))
+                Text(info.name)
+                    .font(GeoTypography.headingL)
+                    .foregroundStyle(GeoColor.textPrimary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                Spacer(minLength: 0)
+            }
+
+            GeoCapitalMap(countryCode: info.code, countryName: info.name, capital: capital)
+                .frame(height: 220)
+                .clipShape(RoundedRectangle(cornerRadius: GeoRadius.xl))
+                // Etiket üst köşede: alt köşedeki Apple Haritalar yasal yazısı kapanmasın.
+                .overlay(alignment: .topLeading) {
+                    HStack(spacing: 6) {
+                        GeoGlyphCircle(symbol: "building.columns.fill", background: GeoColor.accentHighlight, size: 22)
+                        Text("Başkent")
+                            .foregroundStyle(GeoColor.textSecondary)
+                        Text(verbatim: "·")
+                            .foregroundStyle(GeoColor.textMuted)
+                        Text(D(capital))
+                            .foregroundStyle(GeoColor.textPrimary)
+                            .lineLimit(1)
+                    }
+                    .font(GeoTypography.bodyBold)
+                    .padding(.leading, 5)
+                    .padding(.trailing, GeoSpacing.md)
+                    .padding(.vertical, 5)
+                    .background(.white.opacity(0.92), in: Capsule())
+                    .shadow(color: .black.opacity(0.08), radius: 3, y: 1)
+                    .padding(GeoSpacing.md)
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text(verbatim: "\(L("Başkent")): \(D(capital))"))
+
+            HStack(spacing: GeoSpacing.md) {
+                chip(icon: "building.columns.fill", tint: GeoColor.accentHighlight, value: capital, label: "Başkenti")
+                chip(icon: "globe.europe.africa.fill", tint: GeoColor.accentInfo, value: info.continent, label: "Kıtası")
+            }
+            .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.horizontal, GeoSpacing.xl)
+        .padding(.top, GeoSpacing.xl)
+        .frame(maxWidth: .infinity)
+    }
+
+    private var classicLayout: some View {
         VStack(spacing: GeoSpacing.lg) {
             Text(GeoFlagAnswerOption.flagEmoji(for: info.code))
                 .font(.system(size: 64))
@@ -33,11 +93,11 @@ struct GeoCountryInfoCard: View {
 
             HStack(spacing: GeoSpacing.md) {
                 if let capital = info.capital {
-                    chip(icon: "🏛️", value: capital, label: "Başkenti")
+                    chip(icon: "building.columns.fill", tint: GeoColor.accentHighlight, value: capital, label: "Başkenti")
                 } else {
-                    chip(icon: "🗣️", value: info.language, label: "Dili")
+                    chip(icon: "character.bubble.fill", tint: GeoColor.accentTertiary, value: info.language, label: "Dili")
                 }
-                chip(icon: "🌍", value: info.continent, label: "Kıtası")
+                chip(icon: "globe.europe.africa.fill", tint: GeoColor.accentInfo, value: info.continent, label: "Kıtası")
             }
             // Kutular aynı yükseklikte olsun (kullanıcı kararı) — en uzun kutuya eşitlenir.
             .fixedSize(horizontal: false, vertical: true)
@@ -47,9 +107,9 @@ struct GeoCountryInfoCard: View {
         .frame(maxWidth: .infinity)
     }
 
-    private func chip(icon: String, value: String, label: String) -> some View {
+    private func chip(icon: String, tint: Color, value: String, label: String) -> some View {
         VStack(spacing: GeoSpacing.xs) {
-            Text(icon).font(.system(size: 22))
+            GeoGlyphCircle(symbol: icon, background: tint, size: 30)
             Text(D(value))
                 .font(.custom(GeoFontName.balooExtraBold, size: 16))
                 .foregroundStyle(GeoColor.textPrimary)
@@ -66,14 +126,38 @@ struct GeoCountryInfoCard: View {
     }
 }
 
+private struct CountrySheetHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+/// Alt sayfa içeriği: yüksekliği içeriğe göre ölçülür — üstte/altta boş alan kalmaz.
+private struct CountryInfoSheetContent: View {
+    let info: CountryCardInfo
+    @State private var height: CGFloat = 0
+
+    var body: some View {
+        GeoCountryInfoCard(info: info)
+            .padding(.bottom, GeoSpacing.sm)
+            .fixedSize(horizontal: false, vertical: true)
+            .background {
+                GeometryReader { proxy in
+                    Color.clear.preference(key: CountrySheetHeightKey.self, value: proxy.size.height)
+                }
+            }
+            .onPreferenceChange(CountrySheetHeightKey.self) { if $0 > 0 { height = $0 } }
+            .frame(maxHeight: .infinity, alignment: .top)
+            .presentationDetents([.height(height > 0 ? height : (info.capital != nil ? 460 : 320))])
+            .presentationDragIndicator(.visible)
+            .presentationBackground(Color.white)
+    }
+}
+
 extension View {
-    /// Her iki "Öğren" ekranının da paylaştığı sheet sunumu.
+    /// Öğren ekranlarının paylaştığı sheet sunumu (yüksekliği içeriğe göre).
     func countryInfoSheet(selected: Binding<CountryCardInfo?>) -> some View {
         sheet(item: selected) { info in
-            GeoCountryInfoCard(info: info)
-                .presentationDetents([.height(320)])
-                .presentationDragIndicator(.visible)
-                .presentationBackground(Color.white)
+            CountryInfoSheetContent(info: info)
         }
     }
 }

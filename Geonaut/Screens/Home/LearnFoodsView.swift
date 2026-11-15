@@ -5,50 +5,28 @@ import SwiftUI
 /// bilgisi dokunulunca açılan GeoCountryInfoCard'da (bkz. cardInfo) yer alır.
 struct LearnFoodsView: View {
     var onBack: () -> Void
-    @State private var query = ""
     @State private var selectedCountry: FoodCardInfo?
 
     private var allCountries: [Country] { WorldFoods.learnableCountries.sortedLocalized(by: \.name) }
 
-    private var filtered: [Country] {
-        guard !query.isEmpty else { return allCountries }
-        return allCountries.filter {
-            $0.name.localizedCaseInsensitiveContains(query)
-                || (WorldFoods.item(for: $0.code, type: .yemek) ?? "").localizedCaseInsensitiveContains(query)
-        }
-    }
-
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            GeoScreenHeader(title: "Lezzetleri Öğren", subtitle: "Dünya ülkelerinin yemeklerini öğren", onBack: onBack)
-            .padding(.bottom, GeoSpacing.lg)
-
-            GeoSearchBar(placeholder: "Ülke veya yemek ara...", text: $query)
-                .padding(.bottom, GeoSpacing.sm)
-
-            if filtered.isEmpty {
-                GeoStatusView(style: .empty, title: "Sonuç bulunamadı", subtitle: "Farklı bir ülke veya kelime denemeyi dene.")
-            } else {
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    ForEach(filtered, id: \.code) { country in
-                        Button {
-                            selectedCountry = cardInfo(for: country)
-                        } label: {
-                            GeoFlagListRow(
-                                countryCode: country.code, countryName: country.name,
-                                continentName: WorldFoods.item(for: country.code, type: .yemek)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
-            }
-        }
-        .padding(.horizontal, GeoSpacing.xl)
-        .padding(.top, GeoSpacing.md)
-        .background { GeoColor.bgSurface.ignoresSafeArea() }
+        LearnCatalogView(
+            title: "Lezzetleri Öğren",
+            subtitle: "Dünya ülkelerinin yemeklerini öğren",
+            symbol: "fork.knife", tint: GeoColor.accentSuccess,
+            countries: allCountries,
+            detailIcon: "fork.knife",
+            detail: { WorldFoods.item(for: $0.code, type: .yemek) },
+            searchPlaceholder: "Ülke veya yemek ara...",
+            matches: { country, query in
+                country.name.localizedCaseInsensitiveContains(query)
+                    || (WorldFoods.item(for: country.code, type: .yemek) ?? "").localizedCaseInsensitiveContains(query)
+            },
+            spotlightCaption: "Lezzet",
+            spotlightFeaturesDetail: true,
+            onSelect: { selectedCountry = cardInfo(for: $0) },
+            onBack: onBack
+        )
         .foodInfoSheet(selected: $selectedCountry)
     }
 

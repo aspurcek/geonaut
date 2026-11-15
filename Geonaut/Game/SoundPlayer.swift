@@ -4,7 +4,8 @@ import AVFoundation
 /// tebrik ekranı) için kısa efektler. Sesler bu projeye özel sentezlenmiş özgün dosyalardır
 /// (Sounds/), telif sorunu yoktur. Ayarlar > "Ses efektleri" kapalıysa hiçbir ses çalmaz.
 enum SoundEffect: String, CaseIterable {
-    case correct, wrong, success
+    /// `lose`: düelloyu rakip kazanınca çalan kısa, yumuşak "üzgün" melodi (kullanıcı isteği 2026-11-15).
+    case correct, wrong, success, lose
 }
 
 enum SoundPlayer {

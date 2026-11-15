@@ -192,7 +192,12 @@ private struct AnswerStateEffect: ViewModifier {
 final class RewardFlash {
     static let shared = RewardFlash()
     private(set) var counter = 0
-    func trigger() { counter += 1 }
+    /// Tetiklendiği andaki kombo (üst üste doğru sayısı).
+    private(set) var combo = 0
+    func trigger(combo: Int = 0) {
+        self.combo = combo
+        counter += 1
+    }
 }
 
 struct RewardFloatOverlay: View {
@@ -201,13 +206,35 @@ struct RewardFloatOverlay: View {
     @State private var visible = false
     @State private var lift: CGFloat = 0
 
+    /// Gösterilen kombo: rozet görünürken değişmesin diye tetiklenince kopyalanır.
+    @State private var shownCombo = 0
+
     var body: some View {
-        Text("✓ +\(GameRules.pointsPerCorrectAnswer)")
-            .font(.custom(GeoFontName.balooBold, size: 20))
-            .foregroundStyle(GeoColor.accentSuccessText)
-            .padding(.horizontal, 16).padding(.vertical, 6)
-            .background(GeoColor.accentSuccess, in: Capsule())
-            .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+        VStack(spacing: 6) {
+            HStack(spacing: 5) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 15, weight: .heavy))
+                Text("+\(GameRules.pointsPerCorrectAnswer)")
+            }
+                .font(.custom(GeoFontName.balooBold, size: 20))
+                .foregroundStyle(GeoColor.accentSuccessText)
+                .padding(.horizontal, 16).padding(.vertical, 6)
+                .background(GeoColor.accentSuccess, in: Capsule())
+                .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+            if shownCombo >= DailyEngagement.comboHighlightThreshold {
+                // Kombo: üst üste doğru — sayı büyüdükçe "ateş" hissi (bkz. DailyEngagement.combo).
+                HStack(spacing: 5) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 14, weight: .bold))
+                    Text("\(shownCombo) üst üste")
+                }
+                    .font(.custom(GeoFontName.balooBold, size: 17))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 14).padding(.vertical, 5)
+                    .background(GeoColor.accentPrimaryStrong, in: Capsule())
+                    .shadow(color: .black.opacity(0.10), radius: 4, y: 2)
+            }
+        }
             .opacity(visible ? 1 : 0)
             .offset(y: lift)
             .padding(.top, 138)
@@ -215,6 +242,7 @@ struct RewardFloatOverlay: View {
             .allowsHitTesting(false)
             .accessibilityHidden(true)
             .onChange(of: flash.counter) { _, _ in
+                shownCombo = flash.combo
                 guard !reduceMotion else { return }
                 lift = 12
                 withAnimation(.spring(response: 0.25, dampingFraction: 0.6)) { visible = true; lift = 0 }

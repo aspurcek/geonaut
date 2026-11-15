@@ -10,6 +10,14 @@ final class QuizSession {
     private(set) var hearts = GameRules.startingHeartsPerSession
     private(set) var correctCount = 0
     private(set) var pointsEarnedThisSession = 0
+    /// Pas hakkı — bkz. GameRules.passesPerStage / passCost.
+    private(set) var passesLeft = GameRules.passesPerStage
+    /// Asıl soru sayısı (pas geçilenler sona eklenince değişmez) — yıldız/sonuç bununla hesaplanır.
+    private(set) var baseCount = 0
+    /// Pas geçilip seviyenin sonuna eklenen (tekrar sorulan) soruların indeksleri.
+    private(set) var retryIndices: Set<Int> = []
+    var isRetryQuestion: Bool { retryIndices.contains(currentIndex) }
+    var canPass: Bool { phase == .playing && passesLeft > 0 && !isRetryQuestion }
 
     enum Phase { case playing, outOfHearts, completed }
     private(set) var phase: Phase = .playing
@@ -19,12 +27,21 @@ final class QuizSession {
     init(stageIndex: Int, questions: [FlagQuestion]) {
         self.stageIndex = stageIndex
         self.questions = questions
+        self.baseCount = questions.count
         // Boş soru dizisinde currentQuestion çökmesin diye oturum baştan biter.
         if questions.isEmpty { phase = .completed }
     }
 
     func answer(isCorrect: Bool) {
-        AnswerFeedback.play(isCorrect: isCorrect)
+        // Pas geçilmiş sorunun tekrarı: doğru cevap zaten gösterildi — puan/günlük hedef/kombo yok,
+        // yanlışta can yine gider.
+        if isRetryQuestion {
+            AnswerFeedback.play(isCorrect: isCorrect, showsReward: false)
+            if !isCorrect { hearts -= 1 }
+            return
+        }
+        let combo = DailyEngagement.shared.recordAnswer(isCorrect: isCorrect, isFirstQuestion: currentIndex == 0)
+        AnswerFeedback.play(isCorrect: isCorrect, combo: combo)
         if isCorrect {
             correctCount += 1
             pointsEarnedThisSession += GameRules.pointsPerCorrectAnswer
@@ -59,7 +76,18 @@ final class QuizSession {
     }
 
     /// "Etabı Baştan Başla" — ücretsiz, ilerleme sıfırlanır.
+    /// Pas: hak düşer, soru seviyenin sonuna eklenir (puanı çağıran taraf düşer — bkz. SessionView).
+    func pass() {
+        guard canPass else { return }
+        passesLeft -= 1
+        questions.append(currentQuestion)
+        retryIndices.insert(questions.count - 1)
+    }
+
     func restart() {
+        questions = Array(questions.prefix(baseCount))
+        retryIndices = []
+        passesLeft = GameRules.passesPerStage
         currentIndex = 0
         hearts = GameRules.startingHeartsPerSession
         correctCount = 0

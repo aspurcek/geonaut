@@ -8,6 +8,10 @@ enum GameRules {
     static let startingHeartsPerSession = 5
     static let pointsPerCorrectAnswer = 10
     static let pointsPerWrongAnswer = 0
+    /// Pas hakkı (kullanıcı kararı 2026-11-14): her seviyede 2 hak; her pas puandan düşer, can
+    /// gitmez, doğru cevap gösterilir ve soru seviyenin sonunda tekrar sorulur (puan kazandırmaz).
+    static let passesPerStage = 2
+    static let passCost = 5
 
     static let newPlayerStartingPoints = 100
 

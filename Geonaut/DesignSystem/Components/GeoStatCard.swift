@@ -35,9 +35,17 @@ struct GeoStatCard: View {
 
     var body: some View {
         VStack(spacing: 6) {
-            Image(systemName: type.systemImage)
-                .font(.system(size: 22))
-                .foregroundStyle(type.tint)
+            Group {
+                switch type {
+                case .streak: GeoFlameIcon(size: 25, lit: (Int(value) ?? 1) > 0)
+                case .points: GeoGemIcon(size: 24)
+                case .countriesLearned:
+                    Image(systemName: type.systemImage)
+                        .font(.system(size: 22))
+                        .foregroundStyle(type.tint)
+                }
+            }
+            .frame(height: 26)
             Text(value)
                 .font(GeoTypography.title)
                 .foregroundStyle(GeoColor.textPrimary)

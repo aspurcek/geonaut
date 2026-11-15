@@ -36,6 +36,11 @@ struct RootTabView: View {
     var onSignOut: () -> Void = {}
     /// Başarılıysa true — false ise Ayarlar'da hata gösterilir.
     var onDeleteAccount: () async -> Bool = { true }
+    /// Seri koruyucu kaç günü kurtardı (bkz. AppState.freezeNoticeDays) — bir kez bilgi verilir.
+    var freezeNoticeDays: Int? = nil
+    var onDismissFreezeNotice: () -> Void = {}
+    /// Düello / arkadaş daveti ödülü — AppState.awardPoints'e kadar iletilir.
+    var onAwardPoints: (Int) -> Void = { _ in }
 
     @State private var selectedTab: GeoTab = .home
     /// Kupalar ekranına Profil'deki "Tümünü Gör" ile mi gelindi — geri okunu göstermek için.
@@ -53,8 +58,12 @@ struct RootTabView: View {
         onStageCompleted: @escaping (_ points: Int, _ completedStageKeys: Set<String>, _ learnedCountryCodes: Set<String>, _ bestPointsByStage: [String]) -> Int = { _, _, _, _ in 0 },
         onSessionFailed: @escaping () -> Int = { 0 },
         onSignOut: @escaping () -> Void = {},
-        onDeleteAccount: @escaping () async -> Bool = { true }
+        onDeleteAccount: @escaping () async -> Bool = { true },
+        freezeNoticeDays: Int? = nil,
+        onDismissFreezeNotice: @escaping () -> Void = {},
+        onAwardPoints: @escaping (Int) -> Void = { _ in }
     ) {
+        self.onAwardPoints = onAwardPoints
         self.profile = profile
         self.isGuest = isGuest
         self.cloudReachable = cloudReachable
@@ -66,6 +75,8 @@ struct RootTabView: View {
         self.onSessionFailed = onSessionFailed
         self.onSignOut = onSignOut
         self.onDeleteAccount = onDeleteAccount
+        self.freezeNoticeDays = freezeNoticeDays
+        self.onDismissFreezeNotice = onDismissFreezeNotice
         #if DEBUG
         // `-debugTab cups|profile` ile başlat (ekran görüntüsü için).
         switch UserDefaults.standard.string(forKey: "debugTab") {
@@ -98,6 +109,21 @@ struct RootTabView: View {
 
     var body: some View {
         Group { tabContent }
+            .onAppear {
+                // Düello/davet ödülleri: ekrandaki bakiye + profile kalıcı yazım (misafirde yok).
+                SocialStats.shared.onReward = isGuest ? nil : { amount in
+                    points += amount
+                    onAwardPoints(amount)
+                }
+                guard !isGuest else { return }
+                // Düello kimliği (ad + avatar) ve kategoriler; Game Center'a önceden bağlandıysa sessizce yeniden bağlan.
+                DuelManager.shared.me = DuelPlayerInfo(id: "me", name: profile.displayName, avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter)
+                DuelManager.shared.myCategories = progress.duelCategories
+                GameCenterManager.shared.restoreIfPreviouslyConnected()
+                #if DEBUG
+                if UserDefaults.standard.bool(forKey: "debugDuelTurn") { DuelManager.shared.debugInjectTurn() }
+                #endif
+            }
             .onChange(of: selectedTab) { _, newTab in
                 // Başka sekmeye geçilince "Profil'den geldim" bilgisi sıfırlanır.
                 if newTab != .cups { cupsOpenedFromProfile = false }
@@ -106,6 +132,15 @@ struct RootTabView: View {
                 Button("Harika!", role: .cancel) {}
             } message: {
                 Text("\(profile.streakDays) gün üst üste oynadın. Hediye: +\(weeklyBonusAwarded ?? 0) puan.")
+            }
+            // Aynı görünüme iki .alert bağlamak birini sessizce devre dışı bırakabildiği için ayrı bir katmanda.
+            .background {
+                Color.clear
+                    .alert("Seri koruyucu devreye girdi", isPresented: Binding(get: { freezeNoticeDays != nil }, set: { if !$0 { onDismissFreezeNotice() } })) {
+                        Button("Harika!", role: .cancel) {}
+                    } message: {
+                        Text("Oynamadığın \(freezeNoticeDays ?? 0) gün için seri koruyucu kullanıldı. \(profile.streakDays) günlük serin devam ediyor. Bugün oynamayı unutma!")
+                    }
             }
     }
 

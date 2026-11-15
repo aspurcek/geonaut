@@ -16,7 +16,11 @@ struct LevelUpView: View {
             Circle()
                 .fill(to.accentColor)
                 .frame(width: 128, height: 128)
-                .overlay { Text(to.emoji).font(.system(size: 60)) }
+                .overlay {
+                    Image(systemName: to.symbol)
+                        .font(.system(size: 54, weight: .bold))
+                        .foregroundStyle(GeoGlyph.ink(on: to.accentColor))
+                }
                 .kasifWinGlow(color: to.accentColor)
 
             Text("\(L(to.title)) oldun!")
@@ -63,14 +67,15 @@ extension GeoLevel {
     /// Kademe sırası (0 = Çaylak ... 5 = Efsanevi) — ünvan yükselip yükselmediğini karşılaştırmak için.
     var rank: Int { Self.allCases.firstIndex(of: self) ?? 0 }
 
-    var emoji: String {
+    /// Ünvan simgesi (SF Symbol; emoji yerine — bkz. GeoGlyph).
+    var symbol: String {
         switch self {
-        case .caylak: "🌱"
-        case .gezgin: "🧭"
-        case .maceraci: "🎒"
-        case .yolUstasi: "🗺️"
-        case .dunyaGezgini: "🌍"
-        case .efsanevi: "👑"
+        case .caylak: "leaf.fill"
+        case .gezgin: "safari.fill"
+        case .maceraci: "backpack.fill"
+        case .yolUstasi: "map.fill"
+        case .dunyaGezgini: "globe.americas.fill"
+        case .efsanevi: "crown.fill"
         }
     }
 

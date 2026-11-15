@@ -19,7 +19,7 @@ struct ProfileView: View {
     var onSignOut: () -> Void = {}
     var onDeleteAccount: () async -> Bool = { true }
 
-    private enum Route: Hashable { case settings, avatarBuilder, photoCredits }
+    private enum Route: Hashable { case settings, avatarBuilder, photoCredits, friends }
     @State private var path = NavigationPath()
     /// Rozet önizlemesine dokununca açılan bilgi penceresi (Rozetler sayfasındakiyle aynı bileşen).
     @State private var selectedBadge: BadgeCardInfo?
@@ -73,6 +73,10 @@ struct ProfileView: View {
                         GeoStreakCalendar(dayStates: weekDayStates)
                             .padding(.horizontal, GeoSpacing.xl)
 
+                        // Game Center arkadaşları (kullanıcı kararı 2026-11-14).
+                        FriendsSection(myPoints: progress.lifetimePoints, onOpen: { path.append(Route.friends) })
+                            .padding(.horizontal, GeoSpacing.xl)
+
                         badgesSection
                             .padding(.horizontal, GeoSpacing.xl)
                     }
@@ -82,6 +86,20 @@ struct ProfileView: View {
             }
             .background(GeoColor.bgCanvas)
             .badgeInfoSheet(selected: $selectedBadge)
+            // Arka planda biten düello (ör. arkadaşın son sırayı oynadı): sonucu göster; "Geri Dön" Arkadaşlar'a götürür.
+            .fullScreenCover(item: Binding(
+                get: { DuelManager.shared.activeFlowID == nil ? DuelManager.shared.resultToShow : nil },
+                set: { if $0 == nil { DuelManager.shared.resultToShow = nil } }
+            )) { result in
+                DuelResultView(result: result, onRematch: {
+                    DuelManager.shared.resultToShow = nil
+                    path = NavigationPath([Route.friends])
+                    Task { await DuelManager.shared.challenge(friendID: result.opponentID) }
+                }, onBack: {
+                    DuelManager.shared.resultToShow = nil
+                    path = NavigationPath([Route.friends])
+                })
+            }
             // ScrollView, alt view'ın kendi ignoresSafeArea'sını hiçe sayıp yine de
             // güvenli alan kadar üst boşluk bırakıyor — bu yüzden bleed işlemi
             // burada, en dıştaki container'da yapılmalı (NavBar'ın alt bleed'iyle aynı mantık).
@@ -101,6 +119,15 @@ struct ProfileView: View {
                         },
                         onSignOut: onSignOut, onDeleteAccount: onDeleteAccount,
                         onOpenCredits: { path.append(Route.photoCredits) }
+                    )
+                    .toolbar(.hidden, for: .navigationBar)
+
+                case .friends:
+                    FriendsView(
+                        me: DuelPlayerInfo(id: "me", name: displayName, avatarColorHex: avatarColorHex, character: character),
+                        myCategories: progress.duelCategories,
+                        myPoints: progress.lifetimePoints,
+                        onBack: { path.removeLast() }
                     )
                     .toolbar(.hidden, for: .navigationBar)
 

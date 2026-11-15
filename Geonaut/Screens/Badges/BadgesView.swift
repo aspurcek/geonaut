@@ -18,19 +18,22 @@ struct BadgesView: View {
     private var languageBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.anaDillerBadges(progress: progress) }
     private var foodBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.dunyaYemekleriBadges(progress: progress) }
     private var capitalBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.baskentlerBadges(progress: progress) }
+    private var duelBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.duelBadges(stats: SocialStats.shared.stored) }
+    private var socialBadges: [BadgeCatalog.BadgeInfo] { BadgeCatalog.socialBadges(stats: SocialStats.shared.stored) }
+    private var allShown: [BadgeCatalog.BadgeInfo] { flagBadges + mapBadges + languageBadges + foodBadges + capitalBadges + duelBadges + socialBadges }
 
     private var totalUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges + foodBadges + capitalBadges).filter { $0.unlocked && !BadgeCatalog.isTrophy($0) }.count
+        allShown.filter { $0.unlocked && !BadgeCatalog.isTrophy($0) }.count
     }
     private var totalTrophiesUnlocked: Int {
-        (flagBadges + mapBadges + languageBadges + foodBadges + capitalBadges).filter { $0.unlocked && BadgeCatalog.isTrophy($0) }.count
+        allShown.filter { $0.unlocked && BadgeCatalog.isTrophy($0) }.count
     }
 
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: GeoSpacing.xxl) {
-                    GeoScreenHeader(title: "Rozetler & Kupalar", subtitle: "\(totalUnlocked) / \(BadgeCatalog.totalRozet) rozet, \(totalTrophiesUnlocked)/\(BadgeCatalog.totalKupa) kupa kazanıldı.", onBack: onBack)
+                    GeoScreenHeader(title: "Rozetler & Kupalar", subtitle: "\(totalUnlocked) / \(allShown.filter { !BadgeCatalog.isTrophy($0) }.count) rozet, \(totalTrophiesUnlocked)/\(allShown.filter { BadgeCatalog.isTrophy($0) }.count) kupa kazanıldı.", onBack: onBack)
 
                     badgeSection(
                         title: "Bayraklar", subtitle: "8 rozet + kategori kupası",
@@ -55,6 +58,16 @@ struct BadgesView: View {
                     badgeSection(
                         title: "Başkentler", subtitle: "8 rozet + kategori kupası",
                         badges: capitalBadges, displayTitle: Self.shortContinentName
+                    )
+
+                    badgeSection(
+                        title: "Düello", subtitle: "5 rozet + düello kupası",
+                        badges: duelBadges
+                    )
+
+                    badgeSection(
+                        title: "Sosyal", subtitle: "2 rozet",
+                        badges: socialBadges
                     )
                 }
                 .padding(.horizontal, GeoSpacing.xl)

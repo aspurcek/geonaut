@@ -11,7 +11,7 @@ struct ContinentCompleteView: View {
     var onContinue: () -> Void
 
     private var icon: (icon: String, color: Color) {
-        BadgeCatalog.continentIcon(for: continentName) ?? ("🏆", BadgeCatalog.BadgeTint.ink)
+        BadgeCatalog.continentIcon(for: continentName) ?? ("trophy.fill", BadgeCatalog.BadgeTint.ink)
     }
 
     var body: some View {
@@ -20,8 +20,7 @@ struct ContinentCompleteView: View {
 
             AchievementChip(text: "YENİ ROZET", color: icon.color)
 
-            GeoAchievementBadge(title: continentName, icon: icon.icon, accentColor: icon.color, state: .unlocked)
-                .scaleEffect(1.1)
+            GeoAchievementBadge(title: continentName, icon: icon.icon, accentColor: icon.color, state: .unlocked, size: 96)
                 .kasifWinGlow(color: icon.color)
 
             Text("\(L(continentName)) Kıtası Tamamlandı!")

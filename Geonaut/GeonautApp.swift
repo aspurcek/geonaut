@@ -10,10 +10,12 @@ import SwiftUI
 @main
 struct GeonautApp: App {
     @State private var appState = AppState()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         #if DEBUG
         if UserDefaults.standard.bool(forKey: "debugCardsCheck") { StageCards.debugSelfCheck() }
+        if UserDefaults.standard.bool(forKey: "debugDailyCheck") { DailyEngagement.debugSelfCheck() }
         #endif
     }
 
@@ -34,12 +36,83 @@ struct GeonautApp: App {
         case "streaklost": StreakLostView(streakDays: 12, points: 340, onRevive: {}, onGiveUp: {})
         case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
         case "learnfoods": LearnFoodsView(onBack: {})
+        case "foodcard":
+            Color.white.foodInfoSheet(selected: .constant(FoodCardInfo(code: "ES", name: "İspanya", dish: "Paella", dessert: "Churros", drink: "Portakal Suyu")))
+        // Pas çubuğu: kartsız doğrudan bir Başkentler seviyesi (`-debugScreen passbar`).
+        case "passbar":
+            CapitalQuizSessionView(
+                session: CapitalQuizSession(stageIndex: 0, questions: Capitals.makeQuestions(forContinent: "Avrupa", stageIndex: 0)),
+                points: .constant(340),
+                onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
+            )
+        case "friends":
+            ScrollView { FriendsSection(myPoints: 1240).padding(.horizontal, GeoSpacing.xl).padding(.top, 80) }
+                .background(GeoColor.bgCanvas)
+        // Düello ekranları (bot rakiple, Game Center'sız): friendsfull | duelintro | duelplay | duelresult_won/lost/tied
+        case "friendsfull":
+            FriendsView(me: DuelPlayerInfo(id: "me", name: "Test", avatarColorHex: 0xF0D777, character: AvatarCharacter(hairStyle: .kivircik, accessory: .gozluk)),
+                        myCategories: ["flags", "capitals", "languages"], myPoints: 980, onBack: {})
+        case "duelintro", "duelplay":
+            let manager = DuelManager.shared
+            let _ = { manager.me = DuelPlayerInfo(id: "me", name: "Test", avatarColorHex: 0xF0D777, character: AvatarCharacter(hairStyle: .kivircik, accessory: .gozluk)); manager.myCategories = ["flags", "capitals", "languages", "foods"] }()
+            let context = manager.startBotDuel()
+            if UserDefaults.standard.string(forKey: "debugScreen") == "duelplay" {
+                DuelPlayView(context: context, onFinished: { _ in })
+            } else {
+                DuelIntroView(context: context, onBack: {}, onStart: {})
+            }
+        case "duelresult_won", "duelresult_lost", "duelresult_tied":
+            let outcome: DuelOutcome = UserDefaults.standard.string(forKey: "debugScreen") == "duelresult_won" ? .won : (UserDefaults.standard.string(forKey: "debugScreen") == "duelresult_lost" ? .lost : .tied)
+            let mine = DuelResult(answers: Array(repeating: true, count: outcome == .lost ? 6 : (outcome == .tied ? 7 : 8)) + Array(repeating: false, count: outcome == .lost ? 4 : (outcome == .tied ? 3 : 2)), totalMilliseconds: 60_000)
+            let theirs = DuelResult(answers: Array(repeating: true, count: outcome == .won ? 6 : (outcome == .tied ? 7 : 8)) + Array(repeating: false, count: outcome == .won ? 4 : (outcome == .tied ? 3 : 2)), totalMilliseconds: 60_000)
+            DuelResultView(result: .init(id: "d", me: DuelPlayerInfo(id: "me", name: "Test", avatarColorHex: 0xF0D777, character: AvatarCharacter(hairStyle: .kivircik, accessory: .gozluk)),
+                                         opponent: DuelPlayerInfo(id: "o", name: "Ayşe", avatarColorHex: 0x9ED3F2, character: AvatarCharacter(skinTone: .bugday, hairStyle: .uzun, hairColorHex: 0xC09910)),
+                                         myResult: mine, theirResult: theirs, outcome: outcome, opponentID: "o", isBot: true),
+                           onRematch: {}, onBack: {})
+        case "capitalcard":
+            Color.white.countryInfoSheet(selected: .constant(CountryCardInfo(code: "DE", name: "Almanya", language: "Almanca", continent: "Avrupa", capital: "Berlin")))
+        case "learnflags": LearnFlagsView(onBack: {})
+        case "learncapitals": LearnCapitalsView(onBack: {})
+        case "learnlanguages": LearnLanguagesView(onBack: {})
         case "learncontinents": LearnContinentsView(onBack: {})
         case "capq_flagname": debugCapitalQuestion(.flagWithNameToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
         case "capq_flag": debugCapitalQuestion(.flagToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
         case "capq_map": debugCapitalQuestion(.mapToCapital, ["Berlin", "Paris", "Roma", "Madrid"], "Berlin")
         case "capq_country": debugCapitalQuestion(.capitalToCountry, ["Almanya", "Fransa", "İtalya", "İspanya"], "Almanya")
         case "capq_flags": debugCapitalQuestion(.capitalToFlag, ["DE", "FR", "IT", "ES"], "DE")
+        // 1.0.3: hatasız seviye + günlük haber kartı / kombo rozeti (bellek içi test hesabı, kayıt yazmaz).
+        case "stagecomplete", "stagecomplete_full":
+            StageCompleteView(stageIndex: 2, correctCount: 10, pointsEarned: 100, heartsRemaining: 5, onContinue: {})
+                .onAppear { DailyEngagement.shared.debugSimulateDay(freezesBefore: UserDefaults.standard.string(forKey: "debugScreen") == "stagecomplete_full" ? 2 : 0) }
+        // Günlük hedef kartı/sayfası: `daily` (yolda), `daily_done` (hedef tamam), `daily_sheet`, `daily_sheet_done`.
+        case "daily", "daily_done", "daily_sheet", "daily_sheet_done":
+            DailyDebugScreen(variant: UserDefaults.standard.string(forKey: "debugScreen") ?? "daily")
+        // Avatar düzenleyici (2026-11-14 tasarımı).
+        case "avatar":
+            AvatarBuilderView(avatarColorHex: 0xF0D777, character: AvatarCharacter(hairStyle: .kivircik, accessory: .gozluk), onBack: {}, onSave: { _, _ in })
+        case "avatars":
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 110))], spacing: 16) {
+                    ForEach(0..<15, id: \.self) { n in
+                        let tones = SkinTone.allCases, hairs = HairStyle.allCases
+                        GeoAvatar(backgroundColor: GeoColor.avatarSwatches[n % 6].color,
+                                  character: AvatarCharacter(skinTone: tones[n % 4], hairStyle: hairs[n % 5],
+                                                             hairColorHex: GeoHairColor.options[(n * 5) % 6].hex,
+                                                             accessory: n % 3 == 2 ? nil : AvatarAccessory.allCases[n % 4],
+                                                             facialFeature: n % 2 == 1 ? AvatarFacialFeature.allCases[n % 3] : nil))
+                    }
+                }
+                .padding(.top, 60).padding(.horizontal)
+            }
+            .background(GeoColor.bgCanvas)
+        case "combo":
+            OutOfHeartsView(currentPoints: 340, correctCount: 6, onContinueWithPoints: {}, onRestartStage: {})
+                .task {
+                    for n in 1...6 {
+                        try? await Task.sleep(for: .seconds(1.2))
+                        RewardFlash.shared.trigger(combo: n + 2)
+                    }
+                }
         default: RootView(appState: appState)
         }
         #else
@@ -64,6 +137,14 @@ struct GeonautApp: App {
                 .preferredColorScheme(.light)
                 .overlay { RewardFloatOverlay() }
                 .task { appState.start() }
+                // Uygulama arka plandan dönünce gün değişmiş olabilir: seri koruyucu gerekiyorsa devreye girer.
+                .onChange(of: scenePhase) { _, newPhase in
+                    if newPhase == .active {
+                        appState.handleBecameActive()
+                        // Arkadaşın sırasını oynamış olabilir: düello listesini tazele (bağlı değilse no-op).
+                        Task { await DuelManager.shared.refresh() }
+                    }
+                }
         }
     }
 }
@@ -158,7 +239,10 @@ private struct RootView: View {
         case .signedIn(let profile):
             // Seri koptuysa (bkz. Streak.swift), Ana Sayfa'nın önüne Seri Kaybı Akışı
             // geçer — kullanıcı canlandırıp/vazgeçip normal uygulamaya döner.
-            let lost = StreakStatus.compute(lastActiveDate: profile.lastActiveDate, streakDays: profile.streakDays) == .lost
+            // Seri koruyucu yetiyorsa akış hiç açılmaz; koruyucu RootTabView görünür görünmez uygulanır.
+            let status = StreakStatus.compute(lastActiveDate: profile.lastActiveDate, streakDays: profile.streakDays)
+            let coverable = status == .lost && appState.streakCoverableByFreezes(profile)
+            let lost = status == .lost && !coverable
             if isHandlingStreakLoss || lost {
                 StreakLossFlowView(
                     streakDays: profile.streakDays,
@@ -182,8 +266,14 @@ private struct RootView: View {
                     },
                     onSessionFailed: { appState.recordFailedAttempt() },
                     onSignOut: { appState.signOut() },
-                    onDeleteAccount: { await appState.deleteAccount() }
+                    onDeleteAccount: { await appState.deleteAccount() },
+                    freezeNoticeDays: appState.freezeNoticeDays,
+                    onDismissFreezeNotice: { appState.clearFreezeNotice() },
+                    onAwardPoints: { appState.awardPoints($0) }
                 )
+                .task(id: coverable) {
+                    if coverable { appState.handleBecameActive() }
+                }
             }
 
         case .error(let message):

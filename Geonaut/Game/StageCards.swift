@@ -24,6 +24,7 @@ struct InfoCard: Identifiable, Equatable {
 /// - "İlk kez göreceği" ülkeler = pencere − (aynı kategoride TAMAMLANMIŞ etapların pencereleri). Bu
 ///   bilgi zaten kayıtlı ilerlemeden (completedStages) türetilir; yeni bir bulut alanı gerekmez ve
 ///   cihazlar arasında tutarlıdır. Etap tamamlanmadıysa (canlar bitti, tekrar deneniyor) kartlar yine çıkar.
+/// - Tamamlanmış bir etap tekrar oynanırken o etabın TÜM kartları yeniden gösterilir (hatırlatma).
 enum StageCards {
     enum Kind { case flags, capitals, languages, foods }
 
@@ -96,6 +97,10 @@ enum StageCards {
             for earlier in 0..<max(stageIndex, 0) {
                 seen.formUnion(windowCodes(kind, section: section, tour: tour, stageIndex: earlier))
             }
+        } else if progress.isStageCompleted(continent: TourStructure.progressKey(baseProgressKey(kind, section: section), tour: tour), stageIndex: stageIndex) {
+            // Kullanıcı kararı (1.0.2): tamamlanmış etap tekrar oynanırken kartlar yine çıkar — o etabın
+            // tüm ülkeleri, hatırlatma için. İstemeyen "Hepsini atla" ile geçer.
+            seen = []
         } else {
             seen = seenCodes(kind, progress: progress)
         }
@@ -142,7 +147,8 @@ extension StageCards {
             let retry = cards(kind, section: "Avrupa", stageIndex: 0, tour: 0, progress: p)
             check(retry == c0, "\(kind): tamamlanmadan tekrar -> aynı kartlar")
             p.markStageCompleted(continent: base, stageIndex: 0)
-            check(cards(kind, section: "Avrupa", stageIndex: 0, tour: 0, progress: p).isEmpty, "\(kind): etap 1 tamamlandı -> tekrar oynayınca kart yok")
+            let replay = cards(kind, section: "Avrupa", stageIndex: 0, tour: 0, progress: p)
+            check(replay == c0 && !replay.isEmpty, "\(kind): etap 1 tamamlandı -> tekrar oynayınca tüm kartlar yine çıkar (\(replay.count))")
             let c1 = cards(kind, section: "Avrupa", stageIndex: 1, tour: 0, progress: p)
             check(Set(c1.map(\.code)).isDisjoint(with: w0) && Set(c1.map(\.code)).isSubset(of: w1), "\(kind): etap 2 -> yalnızca yeni ülkeler (\(c1.count))")
             let tour2 = cards(kind, section: "Avrupa", stageIndex: 0, tour: 1, progress: p)
