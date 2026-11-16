@@ -41,18 +41,16 @@ struct FoodQuizSessionView: View {
                     // İlk sorudaysa (ilerleme yok) onaysız çık; değilse onay iste.
                     if session.currentIndex > 0 { confirmingExit = true } else { onExit() }
                 },
-                revealAnswer: passedIndex == session.currentIndex
-            )
-            .id(session.currentIndex)
-            .safeAreaInset(edge: .bottom, spacing: 0) {
-                GeoPassBar(
+                revealAnswer: passedIndex == session.currentIndex,
+                pass: GeoPassState(
                     passesLeft: session.passesLeft,
                     isRetry: session.isRetryQuestion,
                     canPass: session.canPass && answeredIndex != session.currentIndex && passedIndex != session.currentIndex,
                     hasEnoughPoints: points >= GameRules.passCost,
                     onPass: pass
                 )
-            }
+            )
+            .id(session.currentIndex)
             .exitConfirmation(isPresented: $confirmingExit, onExit: onExit)
 
         case .outOfHearts:

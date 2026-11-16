@@ -23,8 +23,10 @@ struct QuestionView: View {
 
     @State private var selectedOption: String?
     @State private var didAnswer = false
-    /// Pas geçilince doğru cevap gösterilir (seçim yapılmadan) — bkz. GeoPassBar.
+    /// Pas geçilince doğru cevap gösterilir (seçim yapılmadan) — bkz. GeoPassPill.
     var revealAnswer = false
+    /// Pas hakkı hapı (üst satırda, canın solunda). Önizlemelerde nil.
+    var pass: GeoPassState? = nil
     private var isAnswered: Bool { didAnswer || revealAnswer }
 
     private var isCorrect: (String) -> Bool {
@@ -39,6 +41,7 @@ struct QuestionView: View {
                 GeoBackButton(action: onBack)
                     .padding(.horizontal, -13) // 44 pt dokunma alanı, görsel yer eskisiyle aynı
                 GeoProgressBar(progress: Double(questionIndex) / Double(totalQuestions))
+                if let pass { GeoPassPill(state: pass) }
                 GeoStatPill(icon: .hearts, value: "\(hearts)")
             }
 
