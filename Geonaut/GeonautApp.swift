@@ -85,7 +85,7 @@ struct GeonautApp: App {
             StageCompleteView(stageIndex: 2, correctCount: 10, pointsEarned: 100, heartsRemaining: 5, onContinue: {})
                 .onAppear { DailyEngagement.shared.debugSimulateDay(freezesBefore: UserDefaults.standard.string(forKey: "debugScreen") == "stagecomplete_full" ? 2 : 0) }
         // Günlük hedef kartı/sayfası: `daily` (yolda), `daily_done` (hedef tamam), `daily_sheet`, `daily_sheet_done`.
-        case "daily", "daily_done", "daily_sheet", "daily_sheet_done":
+        case "daily", "daily_done", "daily_sheet", "daily_sheet_done", "goalprompt":
             DailyDebugScreen(variant: UserDefaults.standard.string(forKey: "debugScreen") ?? "daily")
         // Avatar düzenleyici (2026-11-14 tasarımı).
         case "avatar":

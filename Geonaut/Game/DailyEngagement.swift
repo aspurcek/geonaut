@@ -16,7 +16,8 @@ import Observation
 final class DailyEngagement {
     static let shared = DailyEngagement()
 
-    static let goalOptions = [10, 20, 40]
+    /// 1.0.4: "Hafif" (5) eklendi — az vakti olanlar için (kullanıcı kararı 2026-11-16).
+    static let goalOptions = [5, 10, 20, 40]
     static let defaultGoal = 20
     static let maxFreezes = 2
     static let comboHighlightThreshold = 3
@@ -111,6 +112,8 @@ final class DailyEngagement {
         var pendingGoal = false
         var pendingQuests = false
         var pendingFreezeAwarded = false
+        /// Oyuncu tempoyu kendisi seçti mi (1.0.4: ilk seviye sonrası bir kez sorulur, bkz. GoalPromptSheet).
+        var goalChosen = false
 
         init() {}
 
@@ -131,6 +134,8 @@ final class DailyEngagement {
             pendingQuests = try c.decodeIfPresent(Bool.self, forKey: .pendingQuests) ?? false
             pendingFreezeAwarded = try c.decodeIfPresent(Bool.self, forKey: .pendingFreezeAwarded) ?? false
             if !DailyEngagement.goalOptions.contains(goal) { goal = DailyEngagement.defaultGoal }
+            // Eski kayıt: hedefi varsayılandan değiştirmiş oyuncu zaten seçmiş sayılır, bir daha sorulmaz.
+            goalChosen = try c.decodeIfPresent(Bool.self, forKey: .goalChosen) ?? (goal != DailyEngagement.defaultGoal)
             freezes = min(max(freezes, 0), DailyEngagement.maxFreezes)
         }
     }
@@ -298,8 +303,16 @@ final class DailyEngagement {
         save()
     }
 
+    /// Tempo sorusu gösterilmeli mi: giriş yapılmış ve oyuncu henüz hedef seçmemiş.
+    var needsGoalChoice: Bool { isActive && !stored.goalChosen }
+
     func setGoal(_ goal: Int, now: Date = .now) {
-        guard isActive, Self.goalOptions.contains(goal), goal != stored.goal else { return }
+        guard isActive, Self.goalOptions.contains(goal) else { return }
+        if !stored.goalChosen {
+            stored.goalChosen = true
+            save()
+        }
+        guard goal != stored.goal else { return }
         rollIfNeeded(now)
         stored.goal = goal
         // Yeni hedef bugün zaten aşılmışsa kutlama bir kez daha çıkmasın diye "gösterildi" sayılır.
