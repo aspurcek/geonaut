@@ -58,6 +58,8 @@ struct HomeView: View {
     @State private var completedStageThisSession = false
     /// "Bugün" sayfası (günlük hedef + görevler + seri koruyucu, bkz. DailyEngagement).
     @State private var showDailySheet = false
+    /// 1.0.4: ilk seviye sonrası bir kez tempo sorusu (bkz. GoalPromptSheet).
+    @State private var showGoalPrompt = false
     /// Ana Sayfa'daki "Düello: sıra sende" kartından açılan düello.
     @State private var duelContext: DuelManager.PlayContext?
     /// Son biten seviye 3 yıldız mıydı — mağaza puanı istemek için olumlu an (bkz. maybeRequestReview).
@@ -249,13 +251,33 @@ struct HomeView: View {
             .toolbar(.hidden, for: .navigationBar)
             .onChange(of: path.count) { _, count in
                 // Tüm kutlama ekranları kapanıp Ana Sayfa'ya dönülünce, ilk tamamlanan seviyeden sonra bir kez sor.
-                guard count == 0, !isGuest, !reminderPromptShown, completedStageThisSession,
+                // Önce tempo (günlük hedef), hatırlatma izni bir sonraki dönüşe kalır — iki sayfa üst üste gelmesin.
+                guard count == 0, !isGuest, completedStageThisSession else { return }
+                if DailyEngagement.shared.needsGoalChoice {
+                    showGoalPrompt = true
+                    return
+                }
+                guard !reminderPromptShown,
                       !UserDefaults.standard.bool(forKey: StreakReminderScheduler.enabledDefaultsKey) else { return }
                 reminderPromptShown = true
                 showReminderPrompt = true
             }
             .sheet(item: $infoSheet) { InfoSheet(content: $0) }
             .sheet(isPresented: $showDailySheet) { DailySheet() }
+            .sheet(isPresented: $showGoalPrompt) { GoalPromptSheet(onDone: { showGoalPrompt = false }) }
+            // 1.0.4: App Store'da yeni sürüm varsa bir kez "Güncelle" (bkz. AppUpdateChecker). Başka bir sayfa
+            // açıkken ya da oyuncu bir ekrandayken çıkmaz; kaydırıp kapatmak "Sonra" sayılır.
+            .sheet(isPresented: Binding(
+                get: { AppUpdateChecker.shared.availableVersion != nil && path.isEmpty && !showGoalPrompt && !showReminderPrompt && !showDailySheet },
+                set: { if !$0 { AppUpdateChecker.shared.dismiss() } }
+            )) {
+                UpdatePromptSheet(
+                    version: AppUpdateChecker.shared.availableVersion ?? "",
+                    onUpdate: { AppUpdateChecker.shared.openStore() },
+                    onLater: { AppUpdateChecker.shared.dismiss() }
+                )
+            }
+            .task { await AppUpdateChecker.shared.checkIfNeeded() }
             .fullScreenCover(item: $duelContext) { context in
                 DuelFlowView(context: context, onClose: {
                     duelContext = nil

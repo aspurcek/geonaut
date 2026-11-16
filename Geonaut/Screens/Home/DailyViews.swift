@@ -301,6 +301,102 @@ struct DailyStrip: View {
     }
 }
 
+// MARK: - Hedef temposu kartları
+
+/// Günlük hedef temposu kartları: "Bugün" sayfası ve ilk seviye sonrası tempo sorusu
+/// (GoalPromptSheet) ortak kullanır. Renkler GeoColor açık/koyu ton çiftleri.
+struct DailyGoalPicker: View {
+    let selected: Int
+    var onSelect: (Int) -> Void
+
+    struct Pace {
+        let goal: Int
+        let icon: String
+        let soft: Color
+        let strong: Color
+    }
+
+    static func pace(for goal: Int) -> Pace {
+        switch goal {
+        case ..<8: Pace(goal: goal, icon: "cup.and.saucer.fill", soft: GeoColor.accentInfo, strong: GeoColor.accentInfoStrong)
+        case ..<15: Pace(goal: goal, icon: "leaf.fill", soft: GeoColor.accentSuccess, strong: GeoColor.accentSuccessStrong)
+        case ..<30: Pace(goal: goal, icon: "flame.fill", soft: GeoColor.accentPrimarySoft, strong: GeoColor.accentPrimaryStrong)
+        default: Pace(goal: goal, icon: "bolt.fill", soft: GeoColor.accentTertiary, strong: GeoColor.accentTertiaryStrong)
+        }
+    }
+
+    static func name(_ goal: Int) -> LocalizedStringKey {
+        switch goal {
+        case ..<8: "Hafif"
+        case ..<15: "Rahat"
+        case ..<30: "Normal"
+        default: "Ciddi"
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: GeoSpacing.sm) {
+            ForEach(DailyEngagement.goalOptions, id: \.self) { goal in
+                tile(Self.pace(for: goal), selected: goal == selected)
+            }
+        }
+    }
+
+    private func tile(_ pace: Pace, selected: Bool) -> some View {
+        Button {
+            withAnimation(.spring(duration: 0.35, bounce: 0.35)) { onSelect(pace.goal) }
+        } label: {
+            VStack(spacing: 3) {
+                Image(systemName: pace.icon)
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(selected ? Color.white : pace.strong)
+                    .frame(width: 38, height: 38)
+                    .background(selected ? pace.strong : pace.soft.opacity(0.35), in: Circle())
+                    .padding(.bottom, 2)
+                Text(Self.name(pace.goal))
+                    .font(GeoTypography.title)
+                    .foregroundStyle(GeoColor.textPrimary)
+                Text("\(pace.goal) doğru")
+                    .font(GeoTypography.bodyBold)
+                    .foregroundStyle(GeoColor.textPrimary)
+                    .monospacedDigit()
+                Group {
+                    if pace.goal < GameRules.questionsPerStage {
+                        Text("≈ yarım seviye")
+                    } else {
+                        Text("≈ \(pace.goal / GameRules.questionsPerStage) seviye")
+                    }
+                }
+                .font(GeoTypography.caption)
+                .foregroundStyle(GeoColor.textSecondary)
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, GeoSpacing.md + 2)
+            .padding(.horizontal, 4)
+            .background(selected ? pace.soft.opacity(0.45) : GeoColor.bgSurface, in: RoundedRectangle(cornerRadius: GeoRadius.md))
+            .overlay {
+                RoundedRectangle(cornerRadius: GeoRadius.md)
+                    .strokeBorder(selected ? pace.strong : GeoColor.borderSubtle, lineWidth: selected ? 2.5 : 1.5)
+            }
+            .overlay(alignment: .topTrailing) {
+                if selected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(.white, pace.strong)
+                        .padding(5)
+                        .transition(.scale.combined(with: .opacity))
+                }
+            }
+            .shadow(color: selected ? pace.strong.opacity(0.25) : .black.opacity(0.04), radius: selected ? 8 : 2, x: 0, y: selected ? 4 : 1)
+            .scaleEffect(selected ? 1 : 0.96)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+}
+
 // MARK: - "Bugün" sayfası
 
 private struct DailySheetHeightKey: PreferenceKey {
@@ -338,7 +434,8 @@ struct DailySheet: View {
                 freezeSection(day)
 
                 Button {
-                    if hasChanges, let goal = draftGoal { daily.setGoal(goal) }
+                    // Değişiklik yoksa da çağrılır: tempo sayfası görüldü, ilk seviye sonrası tempo sorusu bir daha gelmez.
+                    daily.setGoal(draftGoal ?? saved.goal)
                     dismiss()
                 } label: {
                     // Hedef değiştiyse "Kaydet", değişmediyse "Anladım" (kullanıcı kararı 2026-11-14).
@@ -425,22 +522,6 @@ struct DailySheet: View {
 
     // MARK: Hedef temposu
 
-    /// Tempo kartı renkleri: seçiliyken açık ton zemin + koyu ton kenar/ikon (GeoColor çiftleri).
-    private struct Pace {
-        let goal: Int
-        let icon: String
-        let soft: Color
-        let strong: Color
-    }
-
-    private func pace(for goal: Int) -> Pace {
-        switch goal {
-        case ..<15: Pace(goal: goal, icon: "leaf.fill", soft: GeoColor.accentSuccess, strong: GeoColor.accentSuccessStrong)
-        case ..<30: Pace(goal: goal, icon: "flame.fill", soft: GeoColor.accentPrimarySoft, strong: GeoColor.accentPrimaryStrong)
-        default: Pace(goal: goal, icon: "bolt.fill", soft: GeoColor.accentTertiary, strong: GeoColor.accentTertiaryStrong)
-        }
-    }
-
     private func goalPicker(_ day: DailyEngagement.Day) -> some View {
         VStack(alignment: .leading, spacing: GeoSpacing.md) {
             VStack(alignment: .leading, spacing: 2) {
@@ -453,66 +534,7 @@ struct DailySheet: View {
                     .foregroundStyle(GeoColor.textSecondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            HStack(spacing: GeoSpacing.sm) {
-                ForEach(DailyEngagement.goalOptions, id: \.self) { goal in
-                    goalTile(pace(for: goal), selected: goal == day.goal)
-                }
-            }
-        }
-    }
-
-    private func goalTile(_ pace: Pace, selected: Bool) -> some View {
-        Button {
-            withAnimation(.spring(duration: 0.35, bounce: 0.35)) { draftGoal = pace.goal }
-        } label: {
-            VStack(spacing: 4) {
-                Image(systemName: pace.icon)
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(selected ? Color.white : pace.strong)
-                    .frame(width: 42, height: 42)
-                    .background(selected ? pace.strong : pace.soft.opacity(0.35), in: Circle())
-                    .padding(.bottom, 2)
-                Text(goalName(pace.goal))
-                    .font(GeoTypography.title)
-                    .foregroundStyle(GeoColor.textPrimary)
-                Text("\(pace.goal) doğru")
-                    .font(GeoTypography.bodyBold)
-                    .foregroundStyle(GeoColor.textPrimary)
-                    .monospacedDigit()
-                Text("≈ \(pace.goal / GameRules.questionsPerStage) seviye")
-                    .font(GeoTypography.caption)
-                    .foregroundStyle(GeoColor.textSecondary)
-            }
-            .lineLimit(1)
-            .minimumScaleFactor(0.8)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, GeoSpacing.md + 2)
-            .background(selected ? pace.soft.opacity(0.45) : GeoColor.bgSurface, in: RoundedRectangle(cornerRadius: GeoRadius.md))
-            .overlay {
-                RoundedRectangle(cornerRadius: GeoRadius.md)
-                    .strokeBorder(selected ? pace.strong : GeoColor.borderSubtle, lineWidth: selected ? 2.5 : 1.5)
-            }
-            .overlay(alignment: .topTrailing) {
-                if selected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(.white, pace.strong)
-                        .padding(7)
-                        .transition(.scale.combined(with: .opacity))
-                }
-            }
-            .shadow(color: selected ? pace.strong.opacity(0.25) : .black.opacity(0.04), radius: selected ? 8 : 2, x: 0, y: selected ? 4 : 1)
-            .scaleEffect(selected ? 1 : 0.96)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(selected ? .isSelected : [])
-    }
-
-    private func goalName(_ goal: Int) -> LocalizedStringKey {
-        switch goal {
-        case ..<15: "Rahat"
-        case ..<30: "Normal"
-        default: "Ciddi"
+            DailyGoalPicker(selected: day.goal) { draftGoal = $0 }
         }
     }
 
@@ -660,6 +682,7 @@ struct DailyDebugScreen: View {
     let variant: String
     @State private var ready = false
     @State private var showSheet = false
+    @State private var showGoalPrompt = false
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -672,11 +695,13 @@ struct DailyDebugScreen: View {
             }
         }
         .sheet(isPresented: $showSheet) { DailySheet() }
+        .sheet(isPresented: $showGoalPrompt) { GoalPromptSheet(onDone: { showGoalPrompt = false }) }
         .onAppear {
             let done = variant.hasSuffix("done")
             DailyEngagement.shared.debugSetDay(correct: done ? 23 : 7, goal: 20, freezes: done ? 2 : 1, stages: done ? 3 : 1, perfect: done ? 1 : 0)
             ready = true
             showSheet = variant.contains("sheet")
+            showGoalPrompt = variant == "goalprompt"
         }
     }
 }
