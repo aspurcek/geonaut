@@ -265,6 +265,19 @@ struct HomeView: View {
             .sheet(item: $infoSheet) { InfoSheet(content: $0) }
             .sheet(isPresented: $showDailySheet) { DailySheet() }
             .sheet(isPresented: $showGoalPrompt) { GoalPromptSheet(onDone: { showGoalPrompt = false }) }
+            // 1.0.4: App Store'da yeni sürüm varsa bir kez "Güncelle" (bkz. AppUpdateChecker). Başka bir sayfa
+            // açıkken ya da oyuncu bir ekrandayken çıkmaz; kaydırıp kapatmak "Sonra" sayılır.
+            .sheet(isPresented: Binding(
+                get: { AppUpdateChecker.shared.availableVersion != nil && path.isEmpty && !showGoalPrompt && !showReminderPrompt && !showDailySheet },
+                set: { if !$0 { AppUpdateChecker.shared.dismiss() } }
+            )) {
+                UpdatePromptSheet(
+                    version: AppUpdateChecker.shared.availableVersion ?? "",
+                    onUpdate: { AppUpdateChecker.shared.openStore() },
+                    onLater: { AppUpdateChecker.shared.dismiss() }
+                )
+            }
+            .task { await AppUpdateChecker.shared.checkIfNeeded() }
             .fullScreenCover(item: $duelContext) { context in
                 DuelFlowView(context: context, onClose: {
                     duelContext = nil

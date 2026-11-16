@@ -143,6 +143,8 @@ struct GeonautApp: App {
                         appState.handleBecameActive()
                         // Arkadaşın sırasını oynamış olabilir: düello listesini tazele (bağlı değilse no-op).
                         Task { await DuelManager.shared.refresh() }
+                        // Uygulama öne gelince App Store'da yeni sürüm var mı (günde en fazla bir kez).
+                        Task { await AppUpdateChecker.shared.checkIfNeeded() }
                     }
                 }
         }
