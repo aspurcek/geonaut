@@ -39,10 +39,15 @@ struct GeonautApp: App {
             SettingsView(displayName: "Kaşif", email: "ornek@example.com", avatarColorHex: 0xF0D777, character: AvatarCharacter(),
                          streakDays: 3, onBack: {}, onEditAvatar: {}, onSave: { _ in }, onSignOut: {},
                          onDeleteAccount: { true }, onOpenCredits: {})
+        // Düello seviye şartı uyarısı (kullanıcı kararı 2026-11-19).
+        case "firstlevel":
+            GeoColor.bgCanvas.ignoresSafeArea()
+                .firstLevelRequiredAlert()
+                .onAppear { DuelManager.shared.showFirstLevelRequired = true }
         case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
         case "learnfoods": LearnFoodsView(onBack: {})
         case "foodcard":
-            Color.white.foodInfoSheet(selected: .constant(FoodCardInfo(code: "ES", name: "İspanya", dish: "Paella", dessert: "Churros", drink: "Portakal Suyu")))
+            Color.white.foodInfoSheet(selected: .constant(FoodCardInfo(code: "ES", name: Countries.all.first { $0.code == "ES" }?.name ?? "İspanya", dish: "Paella", dessert: "Churros", drink: "Portakal Suyu")))
         // Pas çubuğu: kartsız doğrudan bir Başkentler seviyesi (`-debugScreen passbar`).
         case "passbar":
             CapitalQuizSessionView(
@@ -75,7 +80,7 @@ struct GeonautApp: App {
                                          myResult: mine, theirResult: theirs, outcome: outcome, opponentID: "o", isBot: true),
                            onRematch: {}, onBack: {})
         case "capitalcard":
-            Color.white.countryInfoSheet(selected: .constant(CountryCardInfo(code: "DE", name: "Almanya", language: "Almanca", continent: "Avrupa", capital: "Berlin")))
+            Color.white.countryInfoSheet(selected: .constant(CountryCardInfo(code: "DE", name: Countries.all.first { $0.code == "DE" }?.name ?? "Almanya", language: "Almanca", continent: "Avrupa", capital: "Berlin")))
         case "learnflags": LearnFlagsView(onBack: {})
         case "learncapitals": LearnCapitalsView(onBack: {})
         case "learnlanguages": LearnLanguagesView(onBack: {})

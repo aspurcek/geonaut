@@ -70,6 +70,20 @@ final class DuelManager {
         set { myCard = newValue }
     }
     var myCategories: [String] = []
+    /// Kullanıcı kararı 2026-11-19: düello için en az bir seviye bitirilmiş olmalı (hiç oynamadan
+    /// düelloya girilmez). RootTabView ilerlemeden doldurur.
+    var hasCompletedALevel = false
+    /// Seviye bitirmeden düello denenince açılan uyarı (Arkadaşlar ekranı ve Ana Sayfa gösterir).
+    var showFirstLevelRequired = false
+
+    /// Düello başlatmadan/oynamadan önce: seviye şartı sağlanmıyorsa uyarıyı açar ve false döner.
+    func checkCanDuel() -> Bool {
+        guard hasCompletedALevel else {
+            showFirstLevelRequired = true
+            return false
+        }
+        return true
+    }
 
     private init() {}
 
@@ -138,6 +152,7 @@ final class DuelManager {
     // MARK: Davet
 
     func challenge(friendID: String) async {
+        guard checkCanDuel() else { return }
         guard let me, let player = GameCenterManager.shared.player(id: friendID) else {
             errorMessage = L("Düello başlatılamadı. Biraz sonra tekrar dene.")
             return
@@ -161,6 +176,7 @@ final class DuelManager {
     // MARK: Oynama
 
     func startPlaying(_ entry: Entry) async -> PlayContext? {
+        guard checkCanDuel() else { return nil }
         guard let me, var match = entry.match else { return nil }
         do {
             let local = match.participants.first { $0.player?.gamePlayerID == me.id }

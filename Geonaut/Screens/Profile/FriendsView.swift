@@ -93,6 +93,7 @@ struct FriendsView: View {
         .sheet(isPresented: $showGameCenterRequired) {
             GameCenterRequiredSheet(onConnect: { gameCenter.authenticate() }, onLater: { showGameCenterRequired = false })
         }
+        .firstLevelRequiredAlert()
         .alert("Bir sorun oldu", isPresented: Binding(get: { duels.errorMessage != nil }, set: { if !$0 { duels.errorMessage = nil } })) {
             Button("Tamam", role: .cancel) {}
         } message: {
@@ -390,6 +391,7 @@ struct FriendsView: View {
 
     private func challenge(_ friendID: String) {
         guard gameCenter.isSignedIn else { showGameCenterRequired = true; return }
+        guard duels.checkCanDuel() else { return }
         busyID = friendID
         Task {
             await duels.challenge(friendID: friendID)
@@ -399,6 +401,7 @@ struct FriendsView: View {
     }
 
     private func play(_ entry: DuelManager.Entry) {
+        guard duels.checkCanDuel() else { return }
         busyID = entry.id
         Task {
             playContext = await duels.startPlaying(entry)

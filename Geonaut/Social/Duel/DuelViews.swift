@@ -632,3 +632,20 @@ struct DuelTurnBanner: View {
         }
     }
 }
+
+
+// MARK: - Seviye şartı uyarısı
+
+extension View {
+    /// Hiç seviye bitirmeden düello denenince (bkz. DuelManager.checkCanDuel).
+    func firstLevelRequiredAlert() -> some View {
+        alert("Önce bir seviye tamamla", isPresented: Binding(
+            get: { DuelManager.shared.showFirstLevelRequired },
+            set: { DuelManager.shared.showFirstLevelRequired = $0 }
+        )) {
+            Button("Tamam", role: .cancel) {}
+        } message: {
+            Text("Düello yapabilmek için en az bir seviye bitirmelisin. Ana Sayfa'dan istediğin kategoride ilk seviyeyi oynayabilirsin.")
+        }
+    }
+}

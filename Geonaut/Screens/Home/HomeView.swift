@@ -265,6 +265,7 @@ struct HomeView: View {
             .sheet(item: $infoSheet) { InfoSheet(content: $0) }
             .sheet(isPresented: $showDailySheet) { DailySheet() }
             .sheet(isPresented: $showGoalPrompt) { GoalPromptSheet(onDone: { showGoalPrompt = false }) }
+            .firstLevelRequiredAlert()
             // 1.0.4: App Store'da yeni sürüm varsa bir kez "Güncelle" (bkz. AppUpdateChecker). Başka bir sayfa
             // açıkken ya da oyuncu bir ekrandayken çıkmaz; kaydırıp kapatmak "Sonra" sayılır.
             .sheet(isPresented: Binding(

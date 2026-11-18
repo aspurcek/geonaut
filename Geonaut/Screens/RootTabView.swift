@@ -119,10 +119,16 @@ struct RootTabView: View {
                 // Düello kimliği (ad + avatar) ve kategoriler; Game Center'a önceden bağlandıysa sessizce yeniden bağlan.
                 DuelManager.shared.me = DuelPlayerInfo(id: "me", name: profile.displayName, avatarColorHex: profile.avatarColorHex, character: profile.avatarCharacter)
                 DuelManager.shared.myCategories = progress.duelCategories
+                DuelManager.shared.hasCompletedALevel = !progress.completedStageKeysExport.isEmpty
                 GameCenterManager.shared.restoreIfPreviouslyConnected()
                 #if DEBUG
                 if UserDefaults.standard.bool(forKey: "debugDuelTurn") { DuelManager.shared.debugInjectTurn() }
                 #endif
+            }
+            // Oturum içinde ilk seviye bitince düello şartı ve kategoriler güncellensin.
+            .onChange(of: progress.completedStageKeysExport.count) { _, count in
+                DuelManager.shared.hasCompletedALevel = count > 0
+                DuelManager.shared.myCategories = progress.duelCategories
             }
             .onChange(of: selectedTab) { _, newTab in
                 // Başka sekmeye geçilince "Profil'den geldim" bilgisi sıfırlanır.

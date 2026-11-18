@@ -20252,6 +20252,62 @@
           }
         }
       }
+    },
+    "Önce bir seviye tamamla" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önce bir seviye tamamla"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finish a level first"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schließe zuerst ein Level ab"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Primero completa un nivel"
+          }
+        }
+      }
+    },
+    "Düello yapabilmek için en az bir seviye bitirmelisin. Ana Sayfa'dan istediğin kategoride ilk seviyeyi oynayabilirsin." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düello yapabilmek için en az bir seviye bitirmelisin. Ana Sayfa'dan istediğin kategoride ilk seviyeyi oynayabilirsin."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "To duel, you need to finish at least one level. You can play the first level of any category from the Home screen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Um Duelle zu spielen, musst du mindestens ein Level abschließen. Auf dem Startbildschirm kannst du das erste Level einer beliebigen Kategorie spielen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para jugar duelos, debes completar al menos un nivel. Puedes jugar el primer nivel de cualquier categoría desde Inicio."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
