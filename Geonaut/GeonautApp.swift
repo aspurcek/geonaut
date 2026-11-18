@@ -34,6 +34,11 @@ struct GeonautApp: App {
         switch UserDefaults.standard.string(forKey: "debugScreen") {
         case "hearts": OutOfHeartsView(currentPoints: 340, correctCount: 6, onContinueWithPoints: {}, onRestartStage: {})
         case "streaklost": StreakLostView(streakDays: 12, points: 340, onRevive: {}, onGiveUp: {})
+        // Ayarlar (hesap silme görünürlüğü, App Review 2026-11-17).
+        case "settings":
+            SettingsView(displayName: "Kaşif", email: "ornek@example.com", avatarColorHex: 0xF0D777, character: AvatarCharacter(),
+                         streakDays: 3, onBack: {}, onEditAvatar: {}, onSave: { _ in }, onSignOut: {},
+                         onDeleteAccount: { true }, onOpenCredits: {})
         case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
         case "learnfoods": LearnFoodsView(onBack: {})
         case "foodcard":

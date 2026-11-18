@@ -70,6 +70,11 @@ struct ProfileView: View {
                         statCards
                             .padding(.horizontal, GeoSpacing.xl)
 
+                        // App Review 2026-11-17 (5.1.1(v)): Ayarlar yalnızca avatar köşesindeki küçük rozetten
+                        // açılıyordu ve hesap silme bulunamadı. Açık, yazılı bir giriş noktası.
+                        settingsRow
+                            .padding(.horizontal, GeoSpacing.xl)
+
                         GeoStreakCalendar(dayStates: weekDayStates)
                             .padding(.horizontal, GeoSpacing.xl)
 
@@ -148,6 +153,36 @@ struct ProfileView: View {
                 }
             }
         }
+    }
+
+    private var settingsRow: some View {
+        Button { path.append(Route.settings) } label: {
+            HStack(spacing: GeoSpacing.md) {
+                settingsIcon
+                    .foregroundStyle(.white)
+                    .frame(width: 40, height: 40)
+                    .background(GeoColor.accentPrimary, in: Circle())
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Ayarlar ve hesap")
+                        .font(GeoTypography.title)
+                        .foregroundStyle(GeoColor.textPrimary)
+                    Text("Ad, bildirimler, gizlilik ve hesabı silme")
+                        .font(GeoTypography.caption)
+                        .foregroundStyle(GeoColor.textSecondary)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(GeoColor.iconInactive)
+            }
+            .padding(GeoSpacing.lg)
+            .background(GeoColor.bgSurface, in: RoundedRectangle(cornerRadius: GeoRadius.lg))
+            .overlay { RoundedRectangle(cornerRadius: GeoRadius.lg).strokeBorder(GeoColor.borderSubtle, lineWidth: 1.5) }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
     }
 
     private var headerBanner: some View {

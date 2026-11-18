@@ -61,6 +61,15 @@ struct SettingsView: View {
         !trimmedDraftName.isEmpty && trimmedDraftName != displayName
     }
 
+    /// Yalnızca geliştirme: `-debugScrollBottom 1` ile sayfanın en altı (hesap silme) görünür açılır.
+    private var debugScrollAnchor: UnitPoint {
+        #if DEBUG
+        UserDefaults.standard.bool(forKey: "debugScrollBottom") ? .bottom : .top
+        #else
+        .top
+        #endif
+    }
+
     var body: some View {
         ScrollView {
             // Kullanıcı kararı: sayfa diğer ekranlar gibi (Ana Sayfa/Profil) TEK bir
@@ -212,22 +221,38 @@ struct SettingsView: View {
                         .foregroundStyle(GeoColor.textMuted)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                    // Yanlışlıkla basılmasın diye üsttekilerden bilerek büyük bir boşlukla
-                    // ayrılmış, ekranın en altında (kullanıcı kararı: "aradaki boşluk çok olmalı").
-                    Button("Hesabımı Sil") {
-                        isConfirmingDelete = true
+                    // Ekranın en altında, üsttekilerden boşlukla ayrı (kullanıcı kararı: yanlışlıkla basılmasın),
+                    // ama App Review 2026-11-17 (5.1.1(v)) bulamadığı için artık başlıklı ve kırmızı.
+                    // Silmeden önce onay sorulur.
+                    VStack(alignment: .leading, spacing: GeoSpacing.sm) {
+                        Text("Hesap")
+                            .font(GeoTypography.title)
+                            .foregroundStyle(GeoColor.textPrimary)
+                        Button {
+                            isConfirmingDelete = true
+                        } label: {
+                            Label("Hesabımı Sil", systemImage: "trash")
+                                .font(.system(size: 15, weight: .bold))
+                                .foregroundStyle(GeoColor.accentDanger)
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, GeoSpacing.md)
+                                .background(GeoColor.accentDanger.opacity(0.08), in: RoundedRectangle(cornerRadius: GeoRadius.md))
+                                .overlay { RoundedRectangle(cornerRadius: GeoRadius.md).strokeBorder(GeoColor.accentDanger.opacity(0.35), lineWidth: 1.5) }
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(isDeleting)
+                        Text("Tüm ilerlemen, puanların ve rozetlerin kalıcı olarak silinir.")
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(GeoColor.textMuted)
                     }
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(GeoColor.textMuted)
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, GeoSpacing.xxxxl * 2)
-                    .disabled(isDeleting)
+                    .padding(.top, GeoSpacing.xxxl)
                 }
             }
             .padding(.horizontal, GeoSpacing.xl)
             .padding(.top, GeoSpacing.md)
             .padding(.bottom, GeoSpacing.xxxl)
         }
+        .defaultScrollAnchor(debugScrollAnchor)
         .background { GeoColor.bgCanvas.ignoresSafeArea() }
         .alert("Çıkış yapmak istediğine emin misin?", isPresented: $isConfirmingSignOut) {
             Button("Vazgeç", role: .cancel) {}
