@@ -240,7 +240,8 @@ private struct RootView: View {
             RootTabView(
                 profile: demoProfile,
                 onSignOut: { appState.signOut() },
-                onDeleteAccount: { appState.signOut(); return true }
+                // Demo: bulutta hiçbir şey yok; cihazdaki demo günlük kaydı silinir ve çıkış yapılır.
+                onDeleteAccount: { DailyEngagement.shared.deleteStoredData(accountKey: "demo"); appState.signOut(); return true }
             )
 
         case .signedIn(let profile):

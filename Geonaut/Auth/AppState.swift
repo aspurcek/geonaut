@@ -204,6 +204,10 @@ final class AppState {
         KeychainStore.remove(Self.userIdentifierKey)
         StreakReminderScheduler.cancelAll()
         DailyEngagement.shared.deleteStoredData(accountKey: profile.appleUserIdentifier)
+        // Düello/arkadaş sayaçları ve Game Center bağlantı tercihi de cihazdan silinir (Game Center'ın
+        // kendi verileri Apple'da kalır; bkz. gizlilik politikası).
+        SocialStats.shared.deleteAllLocalData()
+        UserDefaults.standard.removeObject(forKey: GameCenterManager.connectedDefaultsKey)
         DailyEngagement.shared.activate(accountKey: nil)
         freezeNoticeDays = nil
         phase = .signedOut

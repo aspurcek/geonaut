@@ -132,6 +132,15 @@ final class SocialStats {
         if let data = try? JSONEncoder().encode(stored) { defaults.set(data, forKey: storageKey) }
     }
 
+    /// "Hesabımı Sil": bu cihazdaki tüm düello/arkadaş sayaçlarını (her Game Center oyuncusu için) siler.
+    func deleteAllLocalData() {
+        for key in defaults.dictionaryRepresentation().keys where key.hasPrefix("geonaut.social.") {
+            defaults.removeObject(forKey: key)
+        }
+        stored = Stored()
+        storageKey = "geonaut.social.local"
+    }
+
     #if DEBUG
     func debugReset() {
         stored = Stored()

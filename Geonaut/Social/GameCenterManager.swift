@@ -56,10 +56,10 @@ final class GameCenterManager {
 
     /// Daha önce bağlanan oyuncu için açılışta sessizce yeniden bağlanmak (Game Center her açılışta
     /// authenticateHandler ister; bağlıysa pencere açmaz, yalnızca "Tekrar hoş geldin" bandı).
-    private static let connectedKey = "geonaut.gameCenter.connected"
+    static let connectedDefaultsKey = "geonaut.gameCenter.connected"
 
     func restoreIfPreviouslyConnected() {
-        guard UserDefaults.standard.bool(forKey: Self.connectedKey), status == .idle else { return }
+        guard UserDefaults.standard.bool(forKey: Self.connectedDefaultsKey), status == .idle else { return }
         authenticate()
     }
 
@@ -109,7 +109,7 @@ final class GameCenterManager {
 
     /// Bağlanınca: oyuncuya özel sayaçları aç, düello olaylarını dinle, düello listesini tazele.
     private func didSignIn() {
-        UserDefaults.standard.set(true, forKey: Self.connectedKey)
+        UserDefaults.standard.set(true, forKey: Self.connectedDefaultsKey)
         SocialStats.shared.activate(playerID: GKLocalPlayer.local.gamePlayerID)
         if !didRegisterListener {
             GKLocalPlayer.local.register(listener)
