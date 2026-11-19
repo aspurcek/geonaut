@@ -23,6 +23,13 @@ struct GeoAvatarCharacterView: View {
     var showHair: Bool = true
     /// Omuzlardaki tişört rengi.
     var shirtColor: Color = GeoColor.bgSurface
+    /// İfade (tanıtım videosu vb. için; varsayılanlarla avatar bugünkü hâliyle aynıdır).
+    /// 0…1: kaşlar kalkar, gözler büyür, ağız "O" olur.
+    var surprise: CGFloat = 0
+    /// 0…1: konuşurken ağız açılır (gülüşün yerine açık ağız).
+    var mouthOpen: CGFloat = 0
+    /// Göz bebeklerinin bakış yönü (-1…1).
+    var gaze: CGPoint = .zero
 
     private let darkLine = GeoColor.textPrimary
     private var skin: Color { skinTone.color }
@@ -146,23 +153,24 @@ struct GeoAvatarCharacterView: View {
             ForEach([-1.0, 1.0], id: \.self) { side in
                 Path { p in
                     let cx = 50 + 12 * side
-                    p.move(to: CGPoint(x: cx - 5.5, y: 42))
-                    p.addQuadCurve(to: CGPoint(x: cx + 5.5, y: 42), control: CGPoint(x: cx, y: 38.8))
+                    let lift = 4 * surprise
+                    p.move(to: CGPoint(x: cx - 5.5, y: 42 - lift))
+                    p.addQuadCurve(to: CGPoint(x: cx + 5.5, y: 42 - lift), control: CGPoint(x: cx, y: 38.8 - lift * 1.4))
                 }
                 .stroke(hairColor.geoMixed(with: .black, by: 0.15), style: StrokeStyle(lineWidth: 2.6, lineCap: .round))
             }
-            // Gözler: beyaz, iris, parlama
+            // Gözler: beyaz, iris, parlama (şaşırınca büyür; bakış yönüne kayar)
             ForEach([38.0, 62.0], id: \.self) { x in
                 Ellipse()
                     .fill(.white)
-                    .frame(width: 11, height: 12)
+                    .frame(width: 11 + 2.5 * surprise, height: 12 + 3.5 * surprise)
                     .overlay { Ellipse().strokeBorder(darkLine.opacity(0.12), lineWidth: 0.8) }
                     .position(x: x, y: 50.5)
                 Circle()
                     .fill(RadialGradient(colors: [darkLine.geoMixed(with: .white, by: 0.25), darkLine], center: .bottom, startRadius: 0, endRadius: 5))
-                    .frame(width: 7.5, height: 7.5)
-                    .position(x: x + 0.6, y: 51.5)
-                Circle().fill(.white).frame(width: 2.6, height: 2.6).position(x: x - 1.1, y: 49.4)
+                    .frame(width: 7.5 - 1.2 * surprise, height: 7.5 - 1.2 * surprise)
+                    .position(x: x + 0.6 + 2 * gaze.x, y: 51.5 + 1.6 * gaze.y)
+                Circle().fill(.white).frame(width: 2.6, height: 2.6).position(x: x - 1.1 + 2 * gaze.x, y: 49.4 + 1.6 * gaze.y)
             }
             // Allık
             ForEach([31.0, 69.0], id: \.self) { x in
@@ -178,19 +186,39 @@ struct GeoAvatarCharacterView: View {
                 .frame(width: 6, height: 4.2)
                 .position(x: 50, y: 58.5)
             Circle().fill(.white.opacity(0.35)).frame(width: 2, height: 2).position(x: 49, y: 57.6)
-            // Ağız: hilal gülüş
-            Path { p in
-                p.move(to: CGPoint(x: 42.5, y: 64.5))
-                p.addQuadCurve(to: CGPoint(x: 57.5, y: 64.5), control: CGPoint(x: 50, y: 73))
-                p.addQuadCurve(to: CGPoint(x: 42.5, y: 64.5), control: CGPoint(x: 50, y: 67.5))
-                p.closeSubpath()
+            if surprise > 0.5 {
+                // Ağız: şaşkın "O"
+                Ellipse()
+                    .fill(darkLine)
+                    .frame(width: 6 + 2 * surprise, height: 7 + 3 * surprise)
+                    .overlay(alignment: .bottom) {
+                        Ellipse().fill(GeoColor.accentPrimarySoft).frame(width: 4, height: 3).padding(.bottom, 1)
+                    }
+                    .position(x: 50, y: 67)
+            } else if mouthOpen > 0.05 {
+                // Ağız: konuşurken açık gülüş
+                Path { p in
+                    p.move(to: CGPoint(x: 43, y: 64.5))
+                    p.addQuadCurve(to: CGPoint(x: 57, y: 64.5), control: CGPoint(x: 50, y: 66 + 9 * mouthOpen))
+                    p.addQuadCurve(to: CGPoint(x: 43, y: 64.5), control: CGPoint(x: 50, y: 63.5))
+                    p.closeSubpath()
+                }
+                .fill(darkLine)
+            } else {
+                // Ağız: hilal gülüş
+                Path { p in
+                    p.move(to: CGPoint(x: 42.5, y: 64.5))
+                    p.addQuadCurve(to: CGPoint(x: 57.5, y: 64.5), control: CGPoint(x: 50, y: 73))
+                    p.addQuadCurve(to: CGPoint(x: 42.5, y: 64.5), control: CGPoint(x: 50, y: 67.5))
+                    p.closeSubpath()
+                }
+                .fill(darkLine)
+                Path { p in
+                    p.move(to: CGPoint(x: 42.5, y: 64.5))
+                    p.addQuadCurve(to: CGPoint(x: 57.5, y: 64.5), control: CGPoint(x: 50, y: 73))
+                }
+                .stroke(darkLine, style: StrokeStyle(lineWidth: 1.6, lineCap: .round))
             }
-            .fill(darkLine)
-            Path { p in
-                p.move(to: CGPoint(x: 42.5, y: 64.5))
-                p.addQuadCurve(to: CGPoint(x: 57.5, y: 64.5), control: CGPoint(x: 50, y: 73))
-            }
-            .stroke(darkLine, style: StrokeStyle(lineWidth: 1.6, lineCap: .round))
         }
     }
 

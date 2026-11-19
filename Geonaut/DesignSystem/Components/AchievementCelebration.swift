@@ -17,7 +17,7 @@ struct AchievementChip: View {
 }
 
 /// Ekranın üst kısmına serpiştirilmiş sabit konfeti parçaları (Figma FLOW7). Dokunuşları engellemez.
-private struct AchievementConfetti: View {
+struct AchievementConfetti: View {
     private struct Piece {
         let x: CGFloat, y: CGFloat, size: CGFloat, color: Color, isBar: Bool, angle: Double
     }

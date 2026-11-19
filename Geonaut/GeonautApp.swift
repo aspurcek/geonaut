@@ -44,6 +44,10 @@ struct GeonautApp: App {
             GeoColor.bgCanvas.ignoresSafeArea()
                 .firstLevelRequiredAlert()
                 .onAppear { DuelManager.shared.showFirstLevelRequired = true }
+        // TikTok tanıtım videosu (kullanıcı isteği 2026-11-19): `promo` canlı, `promoexport` MP4 yazar.
+        case "carousels": CarouselsDebugScreen()
+        case "promo": PromoDebugScreen(export: false)
+        case "promoexport": PromoDebugScreen(export: true)
         case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
         case "learnfoods": LearnFoodsView(onBack: {})
         case "foodcard":

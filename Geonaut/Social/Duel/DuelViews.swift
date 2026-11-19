@@ -514,7 +514,13 @@ struct DuelResultView: View {
         }
         .padding(.horizontal, GeoSpacing.xxl)
         .padding(.bottom, GeoSpacing.sm)
-        .background { GeoColor.bgCanvas.ignoresSafeArea() }
+        // Konfeti yazıların ARKASINDA: üstte kalınca bir parça "DÜELLO KAZANILDI" etiketinin harfini kapatıyordu.
+        .background {
+            ZStack {
+                GeoColor.bgCanvas.ignoresSafeArea()
+                if result.outcome == .won { AchievementConfetti() }
+            }
+        }
         .modifier(DuelResultEffects(outcome: result.outcome))
         .scaleEffect(appeared ? 1 : 0.94)
         .opacity(appeared ? 1 : 0)
@@ -551,7 +557,7 @@ private struct DuelResultEffects: ViewModifier {
 
     func body(content: Content) -> some View {
         if outcome == .won {
-            content.achievementCelebration(confetti: true)
+            content.achievementCelebration(confetti: false) // konfeti arka planda (bkz. body)
         } else {
             content.onAppear {
                 guard !played else { return }
