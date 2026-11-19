@@ -150,14 +150,24 @@ struct GeonautApp: App {
                 // koyu moddaki sistem metin renkleri okunmaz hâle gelirdi — her zaman açık tema.
                 .preferredColorScheme(.light)
                 .overlay { RewardFloatOverlay() }
+                // Zorunlu güncelleme: her şeyin üstünde, kapatılamaz (bkz. AppUpdateChecker.mustUpdate).
+                .overlay {
+                    if AppUpdateChecker.shared.mustUpdate {
+                        ForceUpdateView(version: AppUpdateChecker.shared.availableVersion ?? "") {
+                            AppUpdateChecker.shared.openStore()
+                        }
+                        .transition(.opacity)
+                    }
+                }
                 .task { appState.start() }
+                .task { await AppUpdateChecker.shared.checkIfNeeded() }
                 // Uygulama arka plandan dönünce gün değişmiş olabilir: seri koruyucu gerekiyorsa devreye girer.
                 .onChange(of: scenePhase) { _, newPhase in
                     if newPhase == .active {
                         appState.handleBecameActive()
                         // Arkadaşın sırasını oynamış olabilir: düello listesini tazele (bağlı değilse no-op).
                         Task { await DuelManager.shared.refresh() }
-                        // Uygulama öne gelince App Store'da yeni sürüm var mı (günde en fazla bir kez).
+                        // Uygulama öne gelince App Store'da yeni sürüm var mı (açılışta, sonra 8 saatte bir).
                         Task { await AppUpdateChecker.shared.checkIfNeeded() }
                     }
                 }

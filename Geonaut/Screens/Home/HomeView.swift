@@ -269,7 +269,7 @@ struct HomeView: View {
             // 1.0.4: App Store'da yeni sürüm varsa bir kez "Güncelle" (bkz. AppUpdateChecker). Başka bir sayfa
             // açıkken ya da oyuncu bir ekrandayken çıkmaz; kaydırıp kapatmak "Sonra" sayılır.
             .sheet(isPresented: Binding(
-                get: { AppUpdateChecker.shared.availableVersion != nil && path.isEmpty && !showGoalPrompt && !showReminderPrompt && !showDailySheet },
+                get: { AppUpdateChecker.shared.availableVersion != nil && !AppUpdateChecker.shared.mustUpdate && path.isEmpty && !showGoalPrompt && !showReminderPrompt && !showDailySheet },
                 set: { if !$0 { AppUpdateChecker.shared.dismiss() } }
             )) {
                 UpdatePromptSheet(

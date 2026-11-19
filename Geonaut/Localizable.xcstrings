@@ -20308,6 +20308,62 @@
           }
         }
       }
+    },
+    "Güncellemen gerekiyor" : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncellemen gerekiyor"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update required"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update erforderlich"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualización necesaria"
+          }
+        }
+      }
+    },
+    "Geonaut %@ yayında. Oynamaya devam etmek için uygulamayı App Store'dan güncelle; ilerlemen olduğu gibi kalır." : {
+      "localizations" : {
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geonaut %@ yayında. Oynamaya devam etmek için uygulamayı App Store'dan güncelle; ilerlemen olduğu gibi kalır."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geonaut %@ is out. Update the app from the App Store to keep playing; your progress stays as it is."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geonaut %@ ist da. Aktualisiere die App im App Store, um weiterzuspielen; dein Fortschritt bleibt erhalten."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Geonaut %@ ya está disponible. Actualiza la app desde el App Store para seguir jugando; tu progreso se mantiene."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
