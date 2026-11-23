@@ -588,7 +588,9 @@ enum Countries {
         return Array(uniqueByCode(all).filter { !taken.contains($0.code) }.shuffled().prefix(needed))
     }
 
-    static func makeQuestions(from rawPool: [Country], count: Int = GameRules.questionsPerStage, isRecall: Bool, tour: Int = 0, stageIndex: Int = 0) -> [FlagQuestion] {
+    /// `typedCount`: kaç soru yazarak cevaplanacak ("Karışık" bölümü, bkz. typedQuestionCount).
+    /// İlk soru hiçbir zaman yazılı değildir; yalnızca adı kısa ülkeler yazdırılır (TypedAnswer.isTypeable).
+    static func makeQuestions(from rawPool: [Country], count: Int = GameRules.questionsPerStage, isRecall: Bool, tour: Int = 0, stageIndex: Int = 0, typedCount: Int = 0) -> [FlagQuestion] {
         guard !rawPool.isEmpty else { return [] }
         let base = uniqueByCode(rawPool)
         // Küçük havuz: tekrar yerine havuz dışından tamamlama (bkz. fillerCountries).
@@ -623,6 +625,20 @@ enum Countries {
                 result.append(FlagQuestion(direction: .flagToName, countryCode: correct.code, countryName: correct.name, options: options))
             }
         }
+        if typedCount > 0 {
+            let typeableCodes = Set(pool.filter(TypedAnswer.isTypeable).map(\.code))
+            let candidates = result.indices.dropFirst().filter { typeableCodes.contains(result[$0].countryCode) }
+            for i in candidates.shuffled().prefix(typedCount) {
+                let q = result[i]
+                result[i] = FlagQuestion(direction: .typeName, countryCode: q.countryCode, countryName: q.countryName, options: [])
+            }
+        }
         return result
+    }
+
+    /// "Karışık" bölümünde seviye başına yazılı soru sayısı: ilk 4 seviyede 2, sonra 3.
+    static func typedQuestionCount(section: String, stageIndex: Int) -> Int {
+        guard section == "Karışık" else { return 0 }
+        return stageIndex < 4 ? 2 : 3
     }
 }

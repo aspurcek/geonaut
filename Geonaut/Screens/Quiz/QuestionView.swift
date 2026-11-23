@@ -2,8 +2,9 @@ import SwiftUI
 
 /// Bir soru — bkz. Bayrak Tahmin Kural Kitabı böl. 03: etap 1-5 bayrak→isim (tanıma),
 /// etap 6-8 karışık yön (bayrak→isim ya da isim→bayrak, hatırlama).
+/// `.typeName`: yalnızca "Karışık" bölümünde — bayrak gösterilir, oyuncu ülke adını yazar (bkz. TypedAnswer).
 struct FlagQuestion {
-    enum Direction { case flagToName, nameToFlag }
+    enum Direction { case flagToName, nameToFlag, typeName }
     let direction: Direction
     let countryCode: String
     let countryName: String
@@ -45,7 +46,7 @@ struct QuestionView: View {
                 GeoStatPill(icon: .hearts, value: "\(hearts)")
             }
 
-            Text(question.direction == .flagToName ? LocalizedStringKey("Bu hangi ülkenin bayrağı?") : LocalizedStringKey("\"\(question.countryName)\" bayrağı hangisi?"))
+            Text(question.direction == .nameToFlag ? LocalizedStringKey("\"\(question.countryName)\" bayrağı hangisi?") : LocalizedStringKey("Bu hangi ülkenin bayrağı?"))
                 .font(.custom(GeoFontName.balooBold, size: 20))
                 .foregroundStyle(GeoColor.textPrimary)
                 .multilineTextAlignment(.center)
@@ -55,9 +56,24 @@ struct QuestionView: View {
                 Text(GeoFlagAnswerOption.flagEmoji(for: question.countryCode))
                     .font(.system(size: 130))
                     .frame(height: 220)
+            } else if question.direction == .typeName {
+                // Klavye açıkken de sığsın diye daha küçük.
+                Text(GeoFlagAnswerOption.flagEmoji(for: question.countryCode))
+                    .font(.system(size: 110))
+                    .frame(height: 150)
             }
 
-            if question.direction == .flagToName {
+            if question.direction == .typeName {
+                TypedFlagAnswerView(
+                    countryCode: question.countryCode,
+                    countryName: question.countryName,
+                    revealAnswer: revealAnswer,
+                    onAnswer: { correct in
+                        didAnswer = true
+                        onAnswer(correct)
+                    }
+                )
+            } else if question.direction == .flagToName {
                 VStack(spacing: GeoSpacing.md) {
                     ForEach(question.options, id: \.self) { option in
                         GeoAnswerOption(text: option, state: state(for: option), action: { select(option) })

@@ -59,6 +59,15 @@ struct GeonautApp: App {
                 points: .constant(340),
                 onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
             )
+        // Yazılı bayrak sorusu: Arjantin ile başlayan bir Bayrak "Karışık" seviyesi (`-debugScreen typedflag`).
+        case "typedflag":
+            QuizSessionView(
+                session: QuizSession(stageIndex: 4, questions:
+                    [FlagQuestion(direction: .typeName, countryCode: "AR", countryName: D("Arjantin"), options: [])]
+                    + Countries.makeQuestions(from: Countries.pool(forContinent: "Karışık"), count: 9, isRecall: false, stageIndex: 4, typedCount: 2)),
+                points: .constant(340),
+                onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
+            )
         case "friends":
             ScrollView { FriendsSection(myPoints: 1240).padding(.horizontal, GeoSpacing.xl).padding(.top, 80) }
                 .background(GeoColor.bgCanvas)

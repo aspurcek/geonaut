@@ -352,7 +352,7 @@ struct HomeView: View {
 
                 case .quiz(let continent, let stageIndex, let tour):
                     let progressKey = TourStructure.progressKey(continent, tour: tour)
-                    let session = QuizSession(stageIndex: stageIndex, questions: Countries.makeQuestions(from: Countries.pool(forContinent: continent), isRecall: stageIndex >= 5, tour: tour, stageIndex: stageIndex))
+                    let session = QuizSession(stageIndex: stageIndex, questions: Countries.makeQuestions(from: Countries.pool(forContinent: continent), isRecall: stageIndex >= 5, tour: tour, stageIndex: stageIndex, typedCount: Countries.typedQuestionCount(section: continent, stageIndex: stageIndex)))
                     StageCardsGate(
                         cards: StageCards.cards(.flags, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),
                         onBack: { path.removeLast() }

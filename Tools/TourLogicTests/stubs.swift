@@ -2,7 +2,7 @@ import Foundation
 struct GeoEtapNode { enum State { case completed, active, locked } }
 struct GeoContinentNode { enum State { case completed, active, locked } }
 struct FlagQuestion {
-    enum Direction { case flagToName, nameToFlag }
+    enum Direction { case flagToName, nameToFlag, typeName }
     let direction: Direction
     let countryCode: String
     let countryName: String
