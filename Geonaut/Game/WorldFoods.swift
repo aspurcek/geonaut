@@ -28,6 +28,8 @@ struct FoodQuestion {
     var foodImage: String? = nil
     var options: [String] = [] // foodImageToCountry/foodNameToCountryText: 4 ülke adı. countryToFood: 4 yemek/tatlı/içecek adı
     var flagOptions: [String] = [] // yalnızca foodNameToCountryFlags: 4 ülke kodu
+    /// Yazılı soru ("Karışık" bölümü, yalnızca ülke soran stillerde): oyuncu ülke adını yazar (bkz. TypedAnswer).
+    var typed = false
 
     var correctAnswer: String {
         switch style {
@@ -82,7 +84,7 @@ enum WorldFoods {
     /// Bir etap için 10 soru üretir — bkz. WorldFoodStructure.foodType(for:) (bölüme göre
     /// sabit tür, "Karışık" için nil = soru başına rastgele) ve style(forStage:) (etaba
     /// göre sabit stil, etap 7-8 için nil = soru başına rastgele).
-    static func makeQuestions(forSection section: String, stageIndex: Int, tour: Int = 0) -> [FoodQuestion] {
+    static func makeQuestions(forSection section: String, stageIndex: Int, tour: Int = 0, typedCount: Int = 0) -> [FoodQuestion] {
         let pool = imageCoveredCountries
         guard !pool.isEmpty else { return [] }
         let mapPool = pool.filter { CountryCoordinates.coordinate(for: $0.code) != nil }
@@ -122,6 +124,13 @@ enum WorldFoods {
                 // Kullanıcı kuralı: aynı ülke bir testte (hangi soru stilinde olursa olsun) tekrar etmesin.
                 usedCodes.insert(question.countryCode)
             }
+        }
+        // Yazılı sorular: yalnızca ülkeyi ad olarak soran stillerde (görsel + ad ya da yalnızca ad → ülke).
+        let typeable = Set(Countries.uniqueByCode(Countries.all).filter(TypedAnswer.isTypeable).map(\.code))
+        for i in TypedAnswer.pickIndices(questionCount: result.count, typedCount: typedCount, eligible: {
+            [.foodImageToCountry, .foodNameToCountryText, .foodNameToCountryFlags].contains(result[$0].style) && typeable.contains(result[$0].countryCode)
+        }) {
+            result[i].typed = true
         }
         return result
     }

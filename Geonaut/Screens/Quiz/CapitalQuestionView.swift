@@ -42,10 +42,37 @@ struct CapitalQuestionView: View {
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
 
-            stimulus
-                .frame(height: 220)
+            if question.typed {
+                // Yazılı soru: klavye açıkken de sığsın diye bayrak + ad daha küçük.
+                VStack(spacing: GeoSpacing.sm) {
+                    Text(GeoFlagAnswerOption.flagEmoji(for: question.countryCode))
+                        .font(.system(size: 90))
+                    Text(D(question.countryName))
+                        .font(.custom(GeoFontName.balooExtraBold, size: 24))
+                        .foregroundStyle(GeoColor.textPrimary)
+                        .multilineTextAlignment(.center)
+                        .minimumScaleFactor(0.7)
+                        .lineLimit(2)
+                }
+                .frame(height: 160)
 
-            options
+                TypedAnswerField(
+                    correctText: question.capitalName,
+                    key: question.countryCode,
+                    kind: .capital,
+                    placeholder: "Başkentin adını yaz",
+                    revealAnswer: revealAnswer,
+                    onAnswer: { correct in
+                        didAnswer = true
+                        onAnswer(correct)
+                    }
+                )
+            } else {
+                stimulus
+                    .frame(height: 220)
+
+                options
+            }
 
             Spacer(minLength: 0)
         }

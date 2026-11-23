@@ -22,3 +22,4 @@ struct AvatarCharacter: Equatable {
     var facialFeature: AvatarFacialFeature? = nil
 }
 
+enum DisplayName { static func languageCode(for _: String) -> String? { nil } }

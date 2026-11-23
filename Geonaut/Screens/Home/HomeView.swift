@@ -520,7 +520,7 @@ struct HomeView: View {
                     let progressKey = TourStructure.progressKey(MainLanguageStructure.progressKey(for: continent), tour: tour)
                     let languageSession = LanguageQuizSession(
                         stageIndex: stageIndex,
-                        questions: Languages.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
+                        questions: Languages.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour, typedCount: TypedAnswer.questionCount(section: continent, stageIndex: stageIndex))
                     )
                     StageCardsGate(
                         cards: StageCards.cards(.languages, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),
@@ -588,7 +588,7 @@ struct HomeView: View {
                     let progressKey = TourStructure.progressKey(CapitalStructure.progressKey(for: continent), tour: tour)
                     let capitalSession = CapitalQuizSession(
                         stageIndex: stageIndex,
-                        questions: Capitals.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour)
+                        questions: Capitals.makeQuestions(forContinent: continent, stageIndex: stageIndex, tour: tour, typedCount: TypedAnswer.questionCount(section: continent, stageIndex: stageIndex))
                     )
                     StageCardsGate(
                         cards: StageCards.cards(.capitals, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),
@@ -655,7 +655,7 @@ struct HomeView: View {
                     let progressKey = TourStructure.progressKey(WorldFoodStructure.progressKey(for: continent), tour: tour)
                     let foodSession = FoodQuizSession(
                         stageIndex: stageIndex,
-                        questions: WorldFoods.makeQuestions(forSection: continent, stageIndex: stageIndex, tour: tour)
+                        questions: WorldFoods.makeQuestions(forSection: continent, stageIndex: stageIndex, tour: tour, typedCount: TypedAnswer.questionCount(section: continent, stageIndex: stageIndex))
                     )
                     StageCardsGate(
                         cards: StageCards.cards(.foods, section: continent, stageIndex: stageIndex, tour: tour, progress: progress, sequentialPlayer: isDemo),

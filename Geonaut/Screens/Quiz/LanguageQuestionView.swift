@@ -37,16 +37,30 @@ struct LanguageQuestionView: View {
             switch question.stimulus {
             case .flag:
                 Text(GeoFlagAnswerOption.flagEmoji(for: question.countryCode))
-                    .font(.system(size: 130))
-                    .frame(height: 220)
+                    .font(.system(size: question.typed ? 110 : 130))
+                    .frame(height: question.typed ? 150 : 220)
             case .map:
                 mapCard
-                    .frame(height: 220)
+                    .frame(height: question.typed ? 160 : 220)
             }
 
-            VStack(spacing: GeoSpacing.md) {
-                ForEach(question.options, id: \.self) { option in
-                    GeoAnswerOption(text: option, state: state(for: option), action: { select(option) })
+            if question.typed {
+                TypedAnswerField(
+                    correctText: D(question.correctLanguage),
+                    key: question.correctLanguage,
+                    kind: .language,
+                    placeholder: "Dilin adını yaz",
+                    revealAnswer: revealAnswer,
+                    onAnswer: { correct in
+                        didAnswer = true
+                        onAnswer(correct)
+                    }
+                )
+            } else {
+                VStack(spacing: GeoSpacing.md) {
+                    ForEach(question.options, id: \.self) { option in
+                        GeoAnswerOption(text: option, state: state(for: option), action: { select(option) })
+                    }
                 }
             }
 

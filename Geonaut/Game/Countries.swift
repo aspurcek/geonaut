@@ -627,8 +627,7 @@ enum Countries {
         }
         if typedCount > 0 {
             let typeableCodes = Set(pool.filter(TypedAnswer.isTypeable).map(\.code))
-            let candidates = result.indices.dropFirst().filter { typeableCodes.contains(result[$0].countryCode) }
-            for i in candidates.shuffled().prefix(typedCount) {
+            for i in TypedAnswer.pickIndices(questionCount: result.count, typedCount: typedCount, eligible: { typeableCodes.contains(result[$0].countryCode) }) {
                 let q = result[i]
                 result[i] = FlagQuestion(direction: .typeName, countryCode: q.countryCode, countryName: q.countryName, options: [])
             }
@@ -636,9 +635,8 @@ enum Countries {
         return result
     }
 
-    /// "Karışık" bölümünde seviye başına yazılı soru sayısı: ilk 4 seviyede 2, sonra 3.
+    /// "Karışık" bölümünde seviye başına yazılı soru sayısı — bkz. TypedAnswer.questionCount.
     static func typedQuestionCount(section: String, stageIndex: Int) -> Int {
-        guard section == "Karışık" else { return 0 }
-        return stageIndex < 4 ? 2 : 3
+        TypedAnswer.questionCount(section: section, stageIndex: stageIndex)
     }
 }

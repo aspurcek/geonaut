@@ -5,4 +5,4 @@ cd "$(dirname "$0")"
 S=../../Geonaut
 swiftc -o /tmp/kasif_tourtests stubs.swift main.swift \
   "$S/Game/GameProgress.swift" "$S/Game/Streak.swift" "$S/Game/Tour.swift" "$S/Game/GameRules.swift" \
-  "$S/Game/ContinentPath.swift" "$S/Game/Countries.swift" $S/Game/TypedAnswer.swift "$S/Game/AvatarOptions.swift" "$S/Persistence/PlayerProfile.swift" "$S/DesignSystem/Tokens/GeoColor.swift" && /tmp/kasif_tourtests
+  "$S/Game/ContinentPath.swift" "$S/Game/Countries.swift" $S/Game/TypedAnswer.swift $S/Game/Capitals.swift $S/Game/CapitalQuestion.swift $S/Game/CountryFacts.swift $S/Game/CountryCoordinates.swift "$S/Game/AvatarOptions.swift" "$S/Persistence/PlayerProfile.swift" "$S/DesignSystem/Tokens/GeoColor.swift" && /tmp/kasif_tourtests

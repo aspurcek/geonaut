@@ -1,11 +1,15 @@
 import SwiftUI
 
-/// Yazarak cevaplanan bayrak sorusunun cevap alanı (Bayrak "Karışık" bölümü, bkz. TypedAnswer).
-/// Oyuncu ülke adını yazar, "Kontrol Et" ya da klavyedeki onay tuşuyla gönderir.
+/// Yazarak cevaplanan soruların cevap alanı ("Karışık" bölümleri, bkz. TypedAnswer).
+/// Oyuncu cevabı yazar, "Kontrol Et" ya da klavyedeki onay tuşuyla gönderir.
 /// Cevaptan sonra alan yeşil/kırmızı olur; yanlışta ya da küçük yazım hatasında doğru yazılış gösterilir.
-struct TypedFlagAnswerView: View {
-    let countryCode: String
-    let countryName: String
+struct TypedAnswerField: View {
+    /// Doğru cevabın ekranda gösterilen (yerelleştirilmiş) yazılışı.
+    let correctText: String
+    /// Ne yazılacağı: ülke kodu (ülke/başkent) ya da Türkçe dil adı (dil).
+    let key: String
+    var kind: TypedAnswer.Kind = .country
+    var placeholder: LocalizedStringKey = "Ülkenin adını yaz"
     /// Pas geçilince doğru cevap gösterilir.
     var revealAnswer = false
     var onAnswer: (Bool) -> Void
@@ -45,10 +49,10 @@ struct TypedFlagAnswerView: View {
     /// Alanın altındaki doğru cevap satırı (yanlış, yazım hatası ya da pas).
     private var correctionText: LocalizedStringKey? {
         switch verdict {
-        case .wrong: "Doğru cevap: \(countryName)"
-        case .closeEnough: "Doğru yazılışı: \(countryName)"
+        case .wrong: "Doğru cevap: \(correctText)"
+        case .closeEnough: "Doğru yazılışı: \(correctText)"
         case .exact: nil
-        case nil: revealAnswer ? "Doğru cevap: \(countryName)" : nil
+        case nil: revealAnswer ? "Doğru cevap: \(correctText)" : nil
         }
     }
 
@@ -58,7 +62,7 @@ struct TypedFlagAnswerView: View {
                 Image(systemName: "keyboard")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundStyle(isAnswered ? GeoColor.iconInactive : GeoColor.accentPrimaryStrong)
-                TextField("Ülkenin adını yaz", text: $text)
+                TextField(placeholder, text: $text)
                     .focused($isFocused)
                     .font(.custom(GeoFontName.balooBold, size: 20))
                     .foregroundStyle(textColor)
@@ -134,7 +138,7 @@ struct TypedFlagAnswerView: View {
 
     private func submit() {
         guard canSubmit else { return }
-        let result = TypedAnswer.check(text, code: countryCode)
+        let result = TypedAnswer.check(text, key: key, kind: kind)
         submittedText = text
         verdict = result
         onAnswer(result != .wrong)
@@ -143,7 +147,7 @@ struct TypedFlagAnswerView: View {
 
 #Preview {
     VStack {
-        TypedFlagAnswerView(countryCode: "AR", countryName: "Arjantin", onAnswer: { _ in })
+        TypedAnswerField(correctText: "Arjantin", key: "AR", onAnswer: { _ in })
     }
     .padding(GeoSpacing.xl)
     .background(GeoColor.bgCanvas)

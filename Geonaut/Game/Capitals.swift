@@ -245,7 +245,7 @@ extension Capitals {
 
     /// Bir etap için 10 soru üretir. Şıklar GÖSTERİLEN yazılışa göre tekilleştirilir (farklı ülkelerin başkenti
     /// bir dilde aynı yazılabilir).
-    static func makeQuestions(forContinent continent: String, stageIndex: Int, tour: Int = 0) -> [CapitalQuestion] {
+    static func makeQuestions(forContinent continent: String, stageIndex: Int, tour: Int = 0, typedCount: Int = 0) -> [CapitalQuestion] {
         let formats = formats(forStage: stageIndex)
         let fullPool = pool(forContinent: continent)
         let mapPool = fullPool.filter { CountryCoordinates.coordinate(for: $0.code) != nil }
@@ -300,6 +300,12 @@ extension Capitals {
                 format: effectiveFormat, countryCode: correct.code, countryName: correct.turkishName,
                 capitalName: capital, options: options.shuffled(), correct: answer
             ))
+        }
+        // Yazılı sorular: bayrak + ülke adı gösterilir, başkent yazılır.
+        for i in TypedAnswer.pickIndices(questionCount: result.count, typedCount: typedCount, eligible: { TypedAnswer.isCapitalTypeable(result[$0].countryCode) }) {
+            let q = result[i]
+            result[i] = CapitalQuestion(format: .flagWithNameToCapital, countryCode: q.countryCode, countryName: q.countryName,
+                                        capitalName: q.capitalName, options: [], correct: q.capitalName, typed: true)
         }
         return result
     }

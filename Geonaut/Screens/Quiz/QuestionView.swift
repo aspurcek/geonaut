@@ -64,9 +64,9 @@ struct QuestionView: View {
             }
 
             if question.direction == .typeName {
-                TypedFlagAnswerView(
-                    countryCode: question.countryCode,
-                    countryName: question.countryName,
+                TypedAnswerField(
+                    correctText: D(question.countryName),
+                    key: question.countryCode,
                     revealAnswer: revealAnswer,
                     onAnswer: { correct in
                         didAnswer = true

@@ -68,6 +68,35 @@ struct GeonautApp: App {
                 points: .constant(340),
                 onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
             )
+        // Yazılı başkent/dil/lezzet soruları (`-debugScreen typedcapital|typedlanguage|typedfood`): ilk soru yazılı.
+        case "typedcapital":
+            CapitalQuizSessionView(
+                session: CapitalQuizSession(stageIndex: 4, questions:
+                    [CapitalQuestion(format: .flagWithNameToCapital, countryCode: "AR", countryName: "Arjantin", capitalName: Capitals.name(for: "AR"), options: [], correct: Capitals.name(for: "AR"), typed: true)]
+                    + Capitals.makeQuestions(forContinent: "Karışık", stageIndex: 4, typedCount: 2).prefix(9)),
+                points: .constant(340),
+                onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
+            )
+        case "typedlanguage":
+            LanguageQuizSessionView(
+                session: LanguageQuizSession(stageIndex: 4, questions:
+                    [LanguageQuestion(stimulus: .flag, countryCode: "AR", countryName: D("Arjantin"), correctLanguage: "İspanyolca", options: [], typed: true)]
+                    + Languages.makeQuestions(forContinent: "Karışık", stageIndex: 4, typedCount: 2).prefix(9)),
+                points: .constant(340),
+                onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
+            )
+        case "typedfood":
+            FoodQuizSessionView(
+                session: FoodQuizSession(stageIndex: 0, questions: {
+                    var qs = WorldFoods.makeQuestions(forSection: "Karışık", stageIndex: 0)
+                    if let i = qs.firstIndex(where: { $0.style == .foodImageToCountry }) {
+                        var q = qs.remove(at: i); q.typed = true; qs.insert(q, at: 0)
+                    }
+                    return qs
+                }()),
+                points: .constant(340),
+                onCompleted: { _, _ in }, onFinished: { _, _ in }, onExit: {}
+            )
         case "friends":
             ScrollView { FriendsSection(myPoints: 1240).padding(.horizontal, GeoSpacing.xl).padding(.top, 80) }
                 .background(GeoColor.bgCanvas)

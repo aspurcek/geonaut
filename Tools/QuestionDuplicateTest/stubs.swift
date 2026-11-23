@@ -17,3 +17,4 @@ func D(_ s: String) -> String {
     }
 }
 func L(_ s: String) -> String { s }
+enum DisplayName { static func languageCode(for _: String) -> String? { nil } }

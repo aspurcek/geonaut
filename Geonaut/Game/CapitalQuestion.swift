@@ -27,4 +27,6 @@ struct CapitalQuestion {
     let options: [String]
     /// `options` içindeki doğru şık (aynı alanda).
     let correct: String
+    /// Yazılı soru ("Karışık" bölümü): bayrak + ülke adı gösterilir, oyuncu başkenti yazar (bkz. TypedAnswer).
+    var typed = false
 }

@@ -35,6 +35,7 @@ struct FoodQuestionView: View {
                 .foregroundStyle(GeoColor.textPrimary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
+                .fixedSize(horizontal: false, vertical: true) // klavye açıkken (yazılı soru) tek satıra sıkışmasın
 
             switch question.style {
             case .foodImageToCountry:
@@ -62,6 +63,17 @@ struct FoodQuestionView: View {
             }
 
             switch question.style {
+            case _ where question.typed:
+                TypedAnswerField(
+                    correctText: D(question.countryName),
+                    key: question.countryCode,
+                    revealAnswer: revealAnswer,
+                    onAnswer: { correct in
+                        didAnswer = true
+                        onAnswer(correct)
+                    }
+                )
+
             case .foodNameToCountryFlags:
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: GeoSpacing.md) {
                     ForEach(question.flagOptions, id: \.self) { code in
@@ -115,7 +127,7 @@ struct FoodQuestionView: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 220)
+        .frame(height: question.typed ? 150 : 220) // yazılı soruda klavyeye yer kalsın
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: GeoRadius.lg))
         .clipped()

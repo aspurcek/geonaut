@@ -48,6 +48,9 @@ enum DisplayName {
         "Bengalce": "bn", "Belarusça": "be", "Azerbaycan Türkçesi": "az", "Amharca": "am"
     ]
 
+    /// Türkçe dil adının ISO kodu (yazılı cevap kontrolü için, bkz. TypedAnswer).
+    static func languageCode(for turkishName: String) -> String? { languageCodeByName[turkishName] }
+
     static func localized(_ turkishName: String) -> String {
         let loc = locale
         if loc.language.languageCode?.identifier == "tr" { return turkishName }

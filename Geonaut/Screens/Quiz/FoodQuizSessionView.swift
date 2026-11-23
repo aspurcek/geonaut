@@ -31,9 +31,11 @@ struct FoodQuizSessionView: View {
                 hearts: session.hearts,
                 onAnswer: { isCorrect in
                     answeredIndex = session.currentIndex
+                    // Yazılı soruda doğru yazılış okunabilsin diye geri bildirim biraz daha uzun.
+                    let typed = session.currentQuestion.typed
                     session.answer(isCorrect: isCorrect)
                     Task {
-                        try? await Task.sleep(for: .milliseconds(isCorrect ? 700 : 1400))
+                        try? await Task.sleep(for: .milliseconds(isCorrect ? (typed ? 1100 : 700) : (typed ? 2000 : 1400)))
                         session.advance()
                     }
                 },
@@ -90,9 +92,10 @@ struct FoodQuizSessionView: View {
               answeredIndex != session.currentIndex, passedIndex != session.currentIndex else { return }
         points -= GameRules.passCost
         passedIndex = session.currentIndex
+        let typed = session.currentQuestion.typed
         session.pass()
         Task {
-            try? await Task.sleep(for: .milliseconds(1600))
+            try? await Task.sleep(for: .milliseconds(typed ? 2000 : 1600))
             session.advance()
         }
     }

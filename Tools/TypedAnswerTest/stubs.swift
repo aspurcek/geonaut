@@ -7,7 +7,4 @@ struct FlagQuestion {
     let options: [String]
     var flagOptions: [String] = []
 }
-func D(_ s: String) -> String { s }
-func L(_ s: String) -> String { s }
-enum FoodType: CaseIterable { case yemek, tatli, icecek }
-struct FoodQuestion { enum Style: CaseIterable { case foodImageToCountry, foodNameToCountryFlags, foodNameToCountryText, countryToFood } }
+class UIImage { init?(named: String) {} }

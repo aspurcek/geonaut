@@ -11,6 +11,8 @@ struct LanguageQuestion {
     let countryName: String
     let correctLanguage: String
     let options: [String] // 4 dil adı, karışık sırada
+    /// Yazılı soru ("Karışık" bölümü): oyuncu dili yazar (bkz. TypedAnswer).
+    var typed = false
 }
 
 enum Languages {
@@ -42,7 +44,7 @@ enum Languages {
     /// Bir etap için 10 soru üretir — bkz. MainLanguageStructure.style(forStage:):
     /// .standard/.tricky → her zaman bayrak uyarımı; .mixed (etap 7-8) → soru başına
     /// rastgele bayrak ya da harita uyarımı (harita yalnızca görseli olan ülkelerden).
-    static func makeQuestions(forContinent continent: String, stageIndex: Int, tour: Int = 0) -> [LanguageQuestion] {
+    static func makeQuestions(forContinent continent: String, stageIndex: Int, tour: Int = 0, typedCount: Int = 0) -> [LanguageQuestion] {
         let style = MainLanguageStructure.style(forStage: stageIndex)
         let fullPool = Countries.pool(forContinent: continent)
         let sourcePool = style == .tricky ? trickyPool(forContinent: continent) : fullPool
@@ -92,6 +94,9 @@ enum Languages {
                 correctLanguage: correctLanguage,
                 options: options
             ))
+        }
+        for i in TypedAnswer.pickIndices(questionCount: result.count, typedCount: typedCount, eligible: { TypedAnswer.isLanguageTypeable(result[$0].correctLanguage) }) {
+            result[i].typed = true
         }
         return result
     }
