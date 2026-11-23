@@ -191,8 +191,13 @@ private struct RootView: View {
     // "lost" dönmese bile, kullanıcı "Devam Et"/"Yeniden Başla"ya basana kadar akışı
     // ekranda tutar — bkz. StreakLossFlowView'ın kendi @State'iyle dondurduğu sayılar.
     @State private var isHandlingStreakLoss = false
-    /// İlk açılışta 3 sayfalık tanıtım (IntroView) bir kez gösterilir; sonra doğrudan giriş ekranı.
-    @AppStorage("geonaut.hasSeenIntro") private var hasSeenIntro = false
+    /// 3 sayfalık tanıtım (IntroView), giriş yapılmamış herkese giriş ekranından önce gösterilir:
+    /// uygulama her açıldığında (oturum yoksa) ve her çıkış/hesap silmeden sonra. Kullanıcı kararı
+    /// 2026-11-23: "çıkış yaptım tekrar gireceğim, yine göreyim". Apple girişi iptal edilip giriş
+    /// ekranına dönülünce yeniden gösterilmez (yalnızca bellekte tutulur).
+    /// Tanıtımın en son hangi çıkıştan sonra görüldüğü (AppState.signOutCount); nil = bu açılışta görülmedi.
+    @State private var introSeenAt: Int?
+    private var hasSeenIntro: Bool { introSeenAt == appState.signOutCount }
 
     var body: some View {
         switch appState.phase {
@@ -222,15 +227,15 @@ private struct RootView: View {
                     #endif
                 } else {
                     IntroView(
-                        onFinish: { hasSeenIntro = true },
-                        onTryAsGuest: { hasSeenIntro = true; appState.enterGuestMode() }
+                        onFinish: { introSeenAt = appState.signOutCount },
+                        onTryAsGuest: { introSeenAt = appState.signOutCount; appState.enterGuestMode() }
                     )
                 }
             }
                 #if DEBUG
                 .onAppear {
                     // `-debugIntro 1`: tanıtımı (IntroView) yeniden göster.
-                    if UserDefaults.standard.bool(forKey: "debugIntro") { hasSeenIntro = false }
+                    if UserDefaults.standard.bool(forKey: "debugIntro") { introSeenAt = nil }
                     // `-debugSignIn 1` ile başlat: ekran görüntüsü almak için otomatik giriş.
                     if UserDefaults.standard.bool(forKey: "debugSignIn") { appState.signInAsDebugGuest() }
                     // `-debugPhase demo|guest`: demo girişi / misafir deneme akışını doğrudan aç.

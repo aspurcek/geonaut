@@ -22,6 +22,8 @@ final class AppState {
     }
 
     private(set) var phase: Phase = .checkingExistingSession
+    /// Çıkış yapıldıkça/hesap silindikçe artar — giriş ekranından önce tanıtım (IntroView) yeniden gösterilir.
+    private(set) var signOutCount = 0
     /// Son CloudKit çağrısı başarısızsa false — yerel yedek kullanılıyor demektir.
     private(set) var cloudReachable = true
     /// iCloud hesabı yok / giriş yapılmamış (CKError.notAuthenticated) — Ana Sayfa'da, ilerlemenin
@@ -178,6 +180,7 @@ final class AppState {
         StreakReminderScheduler.cancelAll() // çıkış yapan kişiye eski serinin hatırlatması gitmesin
         DailyEngagement.shared.activate(accountKey: nil)
         freezeNoticeDays = nil
+        signOutCount += 1
         phase = .signedOut
     }
 
@@ -210,6 +213,7 @@ final class AppState {
         UserDefaults.standard.removeObject(forKey: GameCenterManager.connectedDefaultsKey)
         DailyEngagement.shared.activate(accountKey: nil)
         freezeNoticeDays = nil
+        signOutCount += 1
         phase = .signedOut
         return true
     }
