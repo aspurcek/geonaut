@@ -82,7 +82,7 @@ struct PromoRetroScene: View {
 
     private var globe: some View {
         let d: CGFloat = 300
-        let angle = t / 13 * 2 * .pi
+        let angle = t / 24 * 2 * .pi
         return ZStack {
             Circle()
                 .fill(Color(hex: 0xBFE3FF).opacity(0.55))
@@ -611,7 +611,7 @@ final class RetroEarth {
         let n = size
         var pixels = [UInt32](repeating: 0, count: n * n)
         let offset = Float(angle / (2 * .pi)) * Float(texW)
-        let cloudOffset = offset * 1.18
+        let cloudOffset = offset * 1.04
         let w = texW
         pixels.withUnsafeMutableBufferPointer { out in
             surface.withUnsafeBufferPointer { tex in
@@ -765,7 +765,9 @@ final class RetroEarth {
         lutShade = [Float](repeating: 0, count: n * n)
         lutRim = [Float](repeating: 0, count: n * n)
         lutAlpha = [Float](repeating: 0, count: n * n)
-        let tilt: Float = 0.38, lean: Float = 0.30   // eksen eğikliği (düzlemde) ve kuzeyin izleyiciye dönüklüğü
+        let tilt: Float = 0.30, lean: Float = -0.08   // eksen eğikliği (düzlemde) ve kuzeyin izleyiciye dönüklüğü.
+        // lean ≤ 0: kuzey kutbu görünmez (kürenin arkasında kalır); görünse, kutup çevresi ters yöne (sola) akıp
+        // dünya dönüyor değil kayıyormuş gibi görünüyordu (kullanıcı geri bildirimi 2026-11-23).
         let light: (Float, Float, Float) = { let v: (Float, Float, Float) = (-0.55, 0.5, 0.67); let l = (v.0 * v.0 + v.1 * v.1 + v.2 * v.2).squareRoot(); return (v.0 / l, v.1 / l, v.2 / l) }()
         for py in 0..<n {
             for px in 0..<n {
