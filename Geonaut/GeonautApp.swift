@@ -48,6 +48,8 @@ struct GeonautApp: App {
         case "carousels": CarouselsDebugScreen()
         case "promo": PromoDebugScreen(export: false)
         case "promoexport": PromoDebugScreen(export: true)
+        case "retro": PromoRetroDebugScreen(export: false)
+        case "retroexport": PromoRetroDebugScreen(export: true)
         case "reminder": ReminderPromptSheet(streakDays: 3, onAccept: {}, onDecline: {})
         case "learnfoods": LearnFoodsView(onBack: {})
         case "foodcard":

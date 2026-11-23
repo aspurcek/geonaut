@@ -380,7 +380,14 @@ private struct Triangle: Shape {
 @MainActor
 enum PromoVideoExporter {
     static func export(fps: Int = 30, progress: @escaping (Double) -> Void) async throws -> URL {
-        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("geonaut_tiktok_argentina.mp4")
+        try await export(fileName: "geonaut_tiktok_argentina.mp4", duration: PromoArgentinaScene.duration,
+                         size: PromoArgentinaScene.size, fps: fps, progress: progress) { PromoArgentinaScene(t: $0) }
+    }
+
+    /// Herhangi bir zamana bağlı sahneyi (t saniye → View) 1080×1920 MP4'e yazar.
+    static func export<V: View>(fileName: String, duration: Double, size: CGSize, fps: Int = 30,
+                                progress: @escaping (Double) -> Void, frame: @escaping (Double) -> V) async throws -> URL {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(fileName)
         try? FileManager.default.removeItem(at: url)
         let width = 1080, height = 1920
         let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
@@ -397,11 +404,11 @@ enum PromoVideoExporter {
         writer.add(input)
         writer.startWriting()
         writer.startSession(atSourceTime: .zero)
-        let frames = Int(PromoArgentinaScene.duration * Double(fps))
+        let frames = Int(duration * Double(fps))
         for i in 0..<frames {
             let t = Double(i) / Double(fps)
-            let renderer = ImageRenderer(content: PromoArgentinaScene(t: t))
-            renderer.scale = CGFloat(width) / PromoArgentinaScene.size.width
+            let renderer = ImageRenderer(content: frame(t))
+            renderer.scale = CGFloat(width) / size.width
             guard let cg = renderer.cgImage else { continue }
             while !input.isReadyForMoreMediaData { try await Task.sleep(for: .milliseconds(5)) }
             if let buffer = pixelBuffer(from: cg, pool: adaptor.pixelBufferPool, width: width, height: height) {

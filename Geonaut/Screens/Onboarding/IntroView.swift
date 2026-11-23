@@ -527,13 +527,13 @@ private struct ClayGlobeScene: UIViewRepresentable {
 }
 
 /// Equirectangular (enlem/boylam) dünya dokusu: renk + yumuşatılmış kabartma haritası. Kıtalar sadeleştirilmiş çokgenlerdir.
-private final class ClayGlobeTexture {
+final class ClayGlobeTexture {
     static let shared = ClayGlobeTexture()
 
     let color: UIImage
     let normal: UIImage
 
-    private static let continents: [[(Double, Double)]] = [
+    static let continents: [[(Double, Double)]] = [
         // Kuzey Amerika
         [(-168,66),(-140,70),(-95,72),(-80,65),(-62,58),(-55,50),(-67,44),(-76,35),(-81,25),(-97,26),(-97,18),(-87,21),(-83,10),(-78,8),(-92,15),(-105,22),(-117,32),(-124,40),(-125,49),(-135,58),(-150,60),(-165,60)],
         // Grönland
